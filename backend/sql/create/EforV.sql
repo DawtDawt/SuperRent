@@ -4,4 +4,4 @@ CREATE TABLE EforV (
     PRIMARY KEY(etname, vtname),
     FOREIGN Key (etname) REFERENCES EquipType (etname),
     FOREIGN KEY (vtname) REFERENCES VehicleType (vtname)
-)
+);

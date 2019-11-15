@@ -9,4 +9,4 @@ CREATE TABLE Reservation (
     FOREIGN KEY (vtname) REFERENCES VehicleType(vtname),
     FOREIGN KEY (cellphone) REFERENCES Customer(cellphone),
     FOREIGN KEY (fromDate, toDate, fromTime, toTime) REFERENCES TimePeriod(fromDate, toDate, fromTime, toTime)
-)
+);

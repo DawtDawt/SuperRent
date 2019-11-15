@@ -1,4 +1,4 @@
-CREATE TABLE RENT(
+CREATE TABLE Rent(
     rid BIGINT PRIMARY KEY,
     vid BIGINT,
     cellphone BIGINT,
@@ -15,4 +15,4 @@ CREATE TABLE RENT(
     FOREIGN KEY (cellphone) REFERENCES Customer(cellphone),
     FOREIGN KEY (fromDate, toDate, fromTime, toTime) REFERENCES TimePeriod(fromDate, toDate, fromTime, toTime),
     FOREIGN KEY (confNo) REFERENCES Reservation(confNo)
-)
+);

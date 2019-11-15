@@ -4,4 +4,4 @@ CREATE TABLE Rent_Includes(
     PRIMARY KEY (rid, eid),
     FOREIGN KEY (rid) REFERENCES Rent(rid),
     FOREIGN KEY (eid) REFERENCES Equipment(eid)
-)
+);

@@ -5,4 +5,4 @@ CREATE TABLE Return (
     odometer INT,
     fulltank BOOLEAN,
     value BIGINT
-)
+);

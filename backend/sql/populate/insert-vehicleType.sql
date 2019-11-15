@@ -1,0 +1,3 @@
+INSERT INTO VehicleType
+VALUES
+    ('SUV', 'ELECTRIC', 500, 70, 30, 40, 20, 10, 0.5);
