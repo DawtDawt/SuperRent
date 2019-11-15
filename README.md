@@ -19,7 +19,7 @@ CREATE DATABASE cpsc304;
 4) Run the SQL script located at ```/backend/sql/create/createAllTables.sql``` to batch create tables for this project. You can do one of either:
 
     * Copy the SQL script, paste it in DataGrip and run it on the database console.
-    * Run ```\i <sql_script>``` in the psql CLI.
+    * Run ```\i <sql_filename>``` in the psql CLI.
 
 ### 2) Run Frontend/Backend
 To run the frontend and/or backend, run the following in the command line once you're in the ```/frontend``` or ```/backend``` directory respectively. Any code changes will automatically restart the node application, without having to manually run yarn start again. 
