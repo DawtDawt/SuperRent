@@ -1,6 +1,6 @@
 CREATE TABLE Customer (
-    cellphone BIGINT PRIMARY KEY,
+    dlicense VARCHAR(50) PRIMARY KEY,
+    cellphone BIGINT,
     name VARCHAR(255),
-    address TEXT,
-    dlicense VARCHAR(50)
+    address TEXT
 );

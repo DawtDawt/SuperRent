@@ -1,4 +1,4 @@
-CREATE TABLE VehicleType(
+CREATE TABLE VehicleType (
     vtname VARCHAR(50) PRIMARY KEY,
     features TEXT,
     wrate INTEGER,
