@@ -1,0 +1,1 @@
+INSERT INTO Customers ("cellphone", "name", "address", "dlicense") VALUES (7781234567, 'John Doe', '123 Main St.', '12345')

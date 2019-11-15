@@ -1,10 +1,23 @@
-const Pool = require('pg').Pool;
+const {Pool} = require('pg');
+require('dotenv').config();
+
 const pool = new Pool({
-    user: "me",
-    host: "localhost",
-    database: "cpsc304",
-    password: "password",
-    port: 5432,
+    user: process.env.DB_USER,
+    host: process.env.DB_HOST,
+    database: process.env.DB_NAME,
+    password: process.env.DB_PASSWRD,
+    port: process.env.DB_PORT,
 });
 
-pool.query();
+function getCustomers(request, response) {
+    pool.query("SELECT * FROM customer", (error, result) => {
+        if (error) {
+            throw error
+        }
+        response.json(result.rows);
+    });
+}
+
+module.exports = {
+    getCustomers
+};

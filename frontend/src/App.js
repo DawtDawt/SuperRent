@@ -10,7 +10,7 @@ function App() {
             <Navbar/>
             <Switch>
                 <Route exact path={"/vehicles"} component={Vehicles}/>
-                <Route exact path={"/"} component={Vehicles}/>
+                <Route exact path={"/"}/>
             </Switch>
         </React.Fragment>
     );
