@@ -10,8 +10,34 @@ const pool = new Pool({
 });
 
 function getVehicle(request, response) {
-    // View available vehicles based on any subset of {specific car type, location, time interval}
-    // TODO
+    // View available vehicles based on any subset of {specific car type, location, time interval
+    const vtname = request.params.vtname;
+    const location = request.params.location;
+    const fromTime = request.params.fromTime;
+    const toTime = request.params.toTime;
+    const fromDate = request.params.fromDate;
+    const toDate = request.params.toDate;
+    // query: SELECT vehicles fulfilling type, location, and NOT in Rent during time interval
+    pool.query(`SELECT * FROM vehicle 
+                WHERE vtname = ${vtname} AND location = ${location} AND NOT IN
+                    (SELECT * FROM rent r
+                    WHERE (r.fromDate < ${fromDate} AND ${fromDate} < r.toDate) OR
+                          (r.fromDate < ${toDate} AND ${toDate} < r.toDate) OR
+                          (r.fromDate = ${toDate} AND r.fromTime < ${toTime}) OR
+                          (r.toDate = ${fromDate} AND ${fromTime} < r.toTime)
+                    )`,
+        (error, result) => {
+        if (error) {
+            return response.status(404).send({
+                error: error,
+                message: "Table Not Found"
+            });
+        }
+        // sends response containing the table rows back to client
+        return response.json({
+            data: result.rows
+        });
+    })
 }
 
 function reserve(request, response) {

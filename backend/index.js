@@ -11,7 +11,7 @@ express.urlencoded({
 // Endpoints
 
 // View the number of available vehicles
-app.get('/vehicle', query.getVehicle);
+app.get('/vehicle/:vtname/:location/:fromTime/:toTime/:fromDate/:toDate', query.getVehicle);
 
 // Make a reservation
 app.post('/reserve', query.reserve);
