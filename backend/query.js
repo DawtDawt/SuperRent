@@ -19,7 +19,7 @@ function getVehicle(request, response) {
     const toDate = request.params.toDate;
     // query: SELECT vehicles fulfilling type, location, and NOT in Rent during time interval
     pool.query(`SELECT * FROM vehicle 
-                WHERE vtname = ${vtname} AND location = ${location} AND NOT IN
+                WHERE vtname = ${vtname} AND location = ${location} AND NOT EXISTS
                     (SELECT * FROM rent r
                     WHERE (r.fromDate < ${fromDate} AND ${fromDate} < r.toDate) OR
                           (r.fromDate < ${toDate} AND ${toDate} < r.toDate) OR

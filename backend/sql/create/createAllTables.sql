@@ -62,7 +62,7 @@ CREATE TABLE Vehicle (
 );
 
 CREATE TABLE TimePeriod(
-    fromDate DATE, 
+    fromDate DATE,
     toDate DATE,
     fromTime TIME,
     toTime TIME,
