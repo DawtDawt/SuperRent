@@ -1,5 +1,7 @@
 import React from 'react';
 import './Generate.css';
+import { Route, Switch, Link } from 'react-router-dom'
+
 
 class Generate extends React.Component {
     render() {
@@ -7,8 +9,9 @@ class Generate extends React.Component {
 
             <div>
                 <div class ="buttons">
-                    <button>
+                    <button> <Link to = "/vehicles">
                         Generate Report
+                    </Link>
                     </button>
                 </div>
 

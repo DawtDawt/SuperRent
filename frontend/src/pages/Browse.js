@@ -1,7 +1,7 @@
 import Generate from "./Generate";
 import React from 'react';
 import DatePicker from "react-datepicker";
-
+import { Route, Switch, Link } from 'react-router-dom'
 class Browse extends React.Component {
     state = {
         startDate: new Date()
@@ -57,8 +57,9 @@ class Browse extends React.Component {
 
 
 
-                    <button>
+                    <button> <Link to = "/vehicles">
                         Search
+                    </Link>
                     </button>
                 </div>
             </div>
