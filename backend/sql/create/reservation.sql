@@ -1,5 +1,5 @@
 CREATE TABLE Reservation (
-    confNo BIGINT PRIMARY KEY,
+    confNo SERIAL PRIMARY KEY,
     vtname VARCHAR(50),
     dlicense VARCHAR(50),
     fromDate DATE,

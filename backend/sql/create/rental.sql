@@ -1,5 +1,5 @@
 CREATE TABLE Rental(
-    rid BIGINT PRIMARY KEY,
+    rid SERIAL PRIMARY KEY,
     vlicense BIGINT,
     dlicense VARCHAR(50),
     fromDate DATE,
@@ -9,7 +9,7 @@ CREATE TABLE Rental(
     odometer INT,
     cardName VARCHAR(50),
     cardNo BIGINT,
-    ExpDate DATE,
+    expDate DATE,
     confNo BIGINT,
     FOREIGN KEY (dlicense) REFERENCES Customer(dlicense),
     FOREIGN KEY (confNo) REFERENCES Reservation(confNo)

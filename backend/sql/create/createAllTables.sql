@@ -18,7 +18,7 @@ CREATE TABLE Customer (
 );
 
 CREATE TABLE Reservation (
-    confNo BIGINT PRIMARY KEY,
+    confNo SERIAL PRIMARY KEY,
     vtname VARCHAR(50),
     dlicense VARCHAR(50),
     fromDate DATE,
@@ -30,7 +30,7 @@ CREATE TABLE Reservation (
 );
 
 CREATE TABLE Rental(
-    rid BIGINT PRIMARY KEY,
+    rid SERIAL PRIMARY KEY,
     vlicense BIGINT,
     dlicense VARCHAR(50),
     fromDate DATE,
@@ -40,7 +40,7 @@ CREATE TABLE Rental(
     odometer INT,
     cardName VARCHAR(50),
     cardNo BIGINT,
-    ExpDate DATE,
+    expDate DATE,
     confNo BIGINT,
     FOREIGN KEY (dlicense) REFERENCES Customer(dlicense),
     FOREIGN KEY (confNo) REFERENCES Reservation(confNo)
