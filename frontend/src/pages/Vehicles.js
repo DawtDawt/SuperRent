@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from "react-router-dom";
 
 class Vehicles extends React.Component {
     constructor(props) {
@@ -21,6 +22,7 @@ class Vehicles extends React.Component {
                 <table className={"table table-bordered table-responsive"}>
                     <thead>
                     <tr>
+                        <th> View </th>
                         <th>ID</th>
                         <th>License Plate</th>
                         <th>Make</th>
@@ -37,6 +39,7 @@ class Vehicles extends React.Component {
                     <tbody>
                     {this.state.vehicles.map(elem => (
                         <tr key={elem.id}>
+                            <td><button> View </button></td>
                             <td>{elem.id}</td>
                             <td>{elem.title}</td>
                             <td>{elem.title}</td>

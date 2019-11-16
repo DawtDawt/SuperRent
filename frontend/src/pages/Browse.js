@@ -12,8 +12,6 @@ class Browse extends React.Component {
             startDate: date
         });
     };
-
-
     render (){
         return (
             <div>
@@ -46,11 +44,11 @@ class Browse extends React.Component {
                     </select>
                     &nbsp;
                     <select id = "Start Date">
-                        <option value = "All Branches">Any Start Date</option>
+                        <option value = "Start Date">Any Start Date</option>
                     </select>
                     &nbsp;
                     <select id = "End Date">
-                        <option value = "All Branches">Any End Date</option>
+                        <option value = "End Date">Any End Date</option>
 
                     </select>
                     &nbsp;
