@@ -15,25 +15,43 @@ app.use(express.urlencoded({
 // @ all returns are returned in json.stringy()
 
 // View the number of available vehicles
+// requires: vtname, location, fromDate, toDate, fromTime, toTime
 // @return result.rows
-app.post('/vehicle', query.getVehicle);
+app.post('/vehicle/get', query.getVehicle);
+
+// Get reservation information based off confNo
+// requires: confNo
+// @return result.rows[0] if found, error if not found
+app.get('/reserve/get', query.getReserve);
 
 // Make a reservation
+// requires: vtname, location, fromDate, toDate, fromTime, toTime
 // @return confNo
-app.post('/reserve', query.reserve);
+app.post('/reserve/create', query.createReserve);
 
 // View the information about the customer
-// @return result.row[0] if found, empty object if not found
-app.get('/customer', query.getCustomer);
+// requires: dlicense
+// @return result.row[0] if found, error if not found
+app.get('/customer/get', query.getCustomer);
 
 // Create a new customer profile
+// requires: dlicense, cellphone, name, address
+// @return dlicense
 app.post('/customer/create', query.createCustomer);
 
+// Get a rent based of rid
+// requires: rid
+// @return result.rows[0] if found, error if not found
+app.get('/rent/get', query.getRent);
+
 // Rent a vehicle
+// requires: vlicense, dlicense, fromDate, toDate, fromTime, toTime, odometer, cardName, expDate, confNo
 // @return rid
-app.post('/rent', query.rent);
+app.post('/rent/create', query.createRent);
 
 // Return a vehicle
+// rid, date, time, odometer, fulltank, value
+// @return rid
 app.post('/return', query.returnVehicle);
 
 // Rental/Return Report

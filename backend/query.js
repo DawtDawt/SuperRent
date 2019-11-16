@@ -42,7 +42,7 @@ function getVehicle(request, response) {
         .then(result => {
             return response.json({
                 data: result.rows
-            })
+            });
         })
         .catch(error => {
             return response.status(404).send({
@@ -52,7 +52,26 @@ function getVehicle(request, response) {
         });
 }
 
-function reserve(request, response) {
+function getReserve(request, response) {
+    const confNo = request.query.confNo;
+    return pool.query(`SELECT * FROM reservation WHERE confNo = $1`, [confNo])
+        .then(result => {
+            if (result.rows.length === 0) {
+                return Promise.reject("No such reservation found");
+            }
+            return response.json({
+                data: result.rows[0]
+            });
+        })
+        .catch(error => {
+            return response.signal(404).send({
+                error: error,
+                message: "Problem Getting Reservation"
+            });
+        })
+}
+
+function createReserve(request, response) {
     // assume all params are valid strings
     const vtname = request.body.vtname;
     const location = request.body.location;
@@ -73,15 +92,15 @@ function reserve(request, response) {
                 [vtname, location, fromDate, toDate, fromTime, toTime]);
         })
         .then(result => {
-            // result = confNo
+            // data = confNo
             return response.json({
                 data: result
-            })
+            });
         })
         .catch(error => {
             return response.status(404).send({
                 error: error,
-                message: "Problem Making Reservation"
+                message: "Problem Creating Reservation"
             });
         })
 }
@@ -94,14 +113,15 @@ function getCustomer(request, response) {
                 return Promise.reject("Customer Not Found");
             }
             return response.json({
+                // data = tuple
                 data: result.rows[0]
-            })
+            });
         })
         .catch(error => {
             return response.signal(404).send({
                 error: error,
                 message: "Problem Getting Customer Information"
-            })
+            });
         })
 }
 
@@ -111,16 +131,43 @@ function createCustomer(request, response) {
     const name = request.body.name;
     const address = request.body.address;
     // check if current customer already exists
-    return pool.query(`INSERT INTO customer VALUES($1, $2, $3, $4)`, [dlicense, cellphone, name, address])
+    return pool.query(`INSERT INTO customer VALUES($1, $2, $3, $4) RETURNING dlicense`,
+        [dlicense, cellphone, name, address])
+        .then(result => {
+            // data = dlicense
+            return response.json({
+                data: result
+            });
+        })
         .catch(error => {
-            return response.signal(404).send({
+            return response.status(404).send({
                 error: error,
-                message: "Problem Creating New Customer"
-            })
+                message: "Problem Creating Customer"
+            });
         })
 }
 
-function rent(request, response) {
+function getRent(request, response) {
+    const rid = request.query.rid;
+    return pool.query(`SELECT * FROM rent WHERE rid = $1`, [rid])
+        .then(result => {
+            if (result.rows.length === 0) {
+                return Promise.reject("Rent Not Found");
+            }
+            return response.json({
+                // data = tuple
+                data: result.rows[0]
+            });
+        })
+        .catch(error => {
+            return response.signal(404).send({
+                error: error,
+                message: "Problem Getting Rent Record"
+            });
+        })
+}
+
+function createRent(request, response) {
     const vlicense = request.body.vlicense;
     const dlicense = request.body.dlicense;
     const fromDate = request.body.fromDate;
@@ -136,14 +183,15 @@ function rent(request, response) {
         [vlicense, dlicense, fromDate, toDate, fromTime, toTime, odometer, cardName, expDate, confNo])
         .then(result => {
             return response.json({
+                // data = rid
                 data: result
-            })
+            });
         })
         .catch(error => {
             return response.signal(404).send({
                 error: error,
                 message: "Problem Creating New Rental Record"
-            })
+            });
         })
 }
 
@@ -154,7 +202,21 @@ function returnVehicle(request, response) {
     const odometer = request.body.odometer;
     const fulltank = request.body.fulltank;
     const value = request.body.value;
-    return pool.query(``)
+    return pool.query(`INSERT INTO return
+                    VALUES ($1, $2, $3, $4, $5, $6) RETURNING rid`,
+        [rid, date, time, odometer, fulltank, value])
+        .then(result => {
+            // data = rid
+            return response.json({
+                data: result
+            });
+        })
+        .catch(error => {
+            return response.status(404).send({
+                error: error,
+                message: "Problem Creating Return Record"
+            });
+        })
 }
 
 function getTable(request, response) {
@@ -193,10 +255,12 @@ function updateData(request, response) {
 
 module.exports = {
     getVehicle,
-    reserve,
+    getReserve,
+    createReserve,
     getCustomer,
     createCustomer,
-    rent,
+    getRent,
+    createRent,
     returnVehicle,
     getReport,
     getTable,
