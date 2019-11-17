@@ -1,6 +1,7 @@
 import React from 'react';
+import {Link} from "react-router-dom";
 
-class Navbar extends React.Component {
+class ClerkNavbar extends React.Component {
     constructor(props) {
         super(props);
         this.state = {};
@@ -9,7 +10,7 @@ class Navbar extends React.Component {
     render() {
         return (
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
-                <a className="navbar-brand" href="/">SuperRent</a>
+                <Link className="navbar-brand" to={"/"}>SuperRent</Link>
                 <button className="navbar-toggler" type="button" data-toggle="collapse"
                         data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                         aria-label="Toggle navigation">
@@ -18,11 +19,10 @@ class Navbar extends React.Component {
 
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul className="navbar-nav mr-auto">
-                        <li className="nav-item active">
-                            <a className="nav-link" href="/vehicles">Vehicles<span className="sr-only">(current)</span></a>
+                        <li className="nav-item">
+                            <a className="nav-link" href="#">Rent</a>
                         </li>
                         <li className="nav-item">
-                            <a className="nav-link" href="/Browse">Browse</a>
                         </li>
                         <li className="nav-item dropdown">
                             <a className="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink"
@@ -30,9 +30,12 @@ class Navbar extends React.Component {
                                 Clerk
                             </a>
                             <div className="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                <a className="dropdown-item" href="/Generate Report">Generate Report</a>
-                                <a className="dropdown-item" href="/Rent">Renting a vehicle</a>
-                                <a className="dropdown-item" href="/Return">Returning vehicle</a>
+                                <a className="dropdown-item" href="#">Customers</a>
+                                <a className="dropdown-item" href="#">Rentals</a>
+                                <a className="dropdown-item" href="#">Returns</a>
+                                <a className="dropdown-item" href="#">Reservations</a>
+                                <a className="dropdown-item" href="#">Vehicles</a>
+                                <a className="dropdown-item" href="#">VehicleTypes</a>
                             </div>
                         </li>
                     </ul>
@@ -43,4 +46,4 @@ class Navbar extends React.Component {
 
 }
 
-export default Navbar;
+export default ClerkNavbar;
