@@ -18,32 +18,15 @@ CREATE TABLE Customer (
 );
 
 CREATE TABLE Reservation (
-    confNo BIGINT PRIMARY KEY,
+    confno BIGSERIAL PRIMARY KEY,
     vtname VARCHAR(50),
     dlicense VARCHAR(50),
-    fromDate DATE,
-    toDate DATE,
-    fromTime TIME,
-    toTime TIME,
+    fromdate DATE,
+    todate DATE,
+    fromtime TIME,
+    totime TIME,
     FOREIGN KEY (vtname) REFERENCES VehicleType(vtname),
     FOREIGN KEY (dlicense) REFERENCES Customer(dlicense)
-);
-
-CREATE TABLE Rental(
-    rid BIGINT PRIMARY KEY,
-    vlicense BIGINT,
-    dlicense VARCHAR(50),
-    fromDate DATE,
-    toDate DATE,
-    fromTime TIME,
-    toTime TIME,
-    odometer INT,
-    cardName VARCHAR(50),
-    cardNo BIGINT,
-    ExpDate DATE,
-    confNo BIGINT,
-    FOREIGN KEY (dlicense) REFERENCES Customer(dlicense),
-    FOREIGN KEY (confNo) REFERENCES Reservation(confNo)
 );
 
 CREATE TABLE Vehicle (
@@ -58,6 +41,24 @@ CREATE TABLE Vehicle (
     location VARCHAR(50),
     city VARCHAR(50),
     FOREIGN KEY (vtname) REFERENCES VehicleType(vtname)
+);
+
+CREATE TABLE Rental(
+    rid BIGSERIAL PRIMARY KEY,
+    vlicense VARCHAR(6),
+    dlicense VARCHAR(50),
+    fromdate DATE,
+    todate DATE,
+    fromtime TIME,
+    totime TIME,
+    odometer INT,
+    cardname VARCHAR(50),
+    cardno BIGINT,
+    expdate DATE,
+    confno BIGINT,
+    FOREIGN KEY (vlicense) REFERENCES Vehicle(vlicense),
+    FOREIGN KEY (dlicense) REFERENCES Customer(dlicense),
+    FOREIGN KEY (confno) REFERENCES Reservation(confno)
 );
 
 CREATE TABLE Return (
