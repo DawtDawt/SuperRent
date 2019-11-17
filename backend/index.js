@@ -3,42 +3,81 @@ const app = express();
 const port = 8080;
 const query = require("./query");
 
-express.urlencoded({
+// init body-parser for post
+app.use(express.json());
+app.use(express.urlencoded({
     extended: true,
-});
+}));
 
+app.get('/', (request, response) => {
+    response.status(200).send('ok');
+});
 
 // Endpoints
 
+// @ all returns are returned in json.stringy()
+
 // View the number of available vehicles
-app.get('/vehicle/:vtname/:location/:fromTime/:toTime/:fromDate/:toDate', query.getVehicle);
+// requires: vtname, location, city, fromdate, todate, fromtime, totime
+// @return data: tuples
+app.get('/vehicle/get', query.getVehicle);
+
+// Get reservation information based off confno
+// requires: confno
+// @return data: singular tuple if found, error if not found
+app.get('/reserve/get', query.getReserve);
 
 // Make a reservation
-app.post('/reserve', query.reserve);
+// requires: vtname, dlicense, location, city, fromdate, todate, fromtime, totime
+// @return data: confno
+app.post('/reserve/create', query.createReserve);
+
+// View the information about the customer
+// requires: dlicense
+// @return data: tuple if found, error if not found
+app.get('/customer/get', query.getCustomer);
 
 // Create a new customer profile
+// requires: dlicense, cellphone, name, address
+// @return data: dlicense
 app.post('/customer/create', query.createCustomer);
 
+// Get a rent based of rid
+// requires: rid
+// @return data: tuple if found, error if not found
+app.get('/rent/get', query.getRent);
+
 // Rent a vehicle
-app.post('/rent', query.rent);
+// requires: vlicense, dlicense, fromdate, todate, fromtime, totime, odometer, cardname, expdate, confno
+// @return data: rid
+app.post('/rent/create', query.createRent);
 
 // Return a vehicle
-app.post('/return', query.returnVehicle);
+// rid, date, time, odometer, fulltank, value
+// @return data: rid
+app.post('/return/create', query.createReturn);
 
-// Rental/Return Report
-app.get('/report/', query.getReport);
+// Daily Rental Report
+// requires: date
+// @return data: {vehicle, perCategory, perBranch, perCompany}, where vehicle, perCategory, perBranch: tuples
+app.get('/report/rental', query.getDailyRental);
 
-// View table named :tableName
-app.get('/table/:tableName', query.getTable);
+// Daily Rental Report By Branch
+// requires: date, location, city
+// @return result.rows
+app.get('/report/rental/branch', query.getDailyBranchRental);
 
-// Insert tuple
-app.post('/add', query.addData);
+// Daily Return Report
+// requires: date
+// @return data: {vehicle, perCategory, revenuePerCategory, perBranch, revenuePerBranch, revenueTotal},
+// where vehicle, perCategory, revenuePerCategory, perBranch, revenuePerBranch: tuples
+app.get('/report/return', query.getDailyReturn);
 
-// Delete tuple
-app.post('/remove', query.removeData);
-
-// Update tuple
-app.post('/update', query.updateData);
+// Daily Return Report
+// requires: date, location, city
+// @return data: {vehicle, perCategory, revenuePerCategory, perBranch, revenuePerBranch, revenueTotal},
+// where vehicle, perCategory, revenuePerCategory, perBranch, revenuePerBranch: tuples
+app.get('/report/return/branch', query.getDailyBranchReturn);
 
 app.listen(port, () => {
     console.log(`App running on port ${port}`);
