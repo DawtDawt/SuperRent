@@ -28,7 +28,7 @@ class Reserve extends React.Component {
     };
         return (
             <React.Fragment>
-                <CustomerNavbar/>
+                <CustomerNavbar activeLink={"reserve"}/>
                 <div className={"wrapper"} style={style}>
                     <ReserveForm props={this.props}/>
                 </div>

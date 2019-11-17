@@ -142,7 +142,7 @@ class ReserveForm extends React.Component {
                         </DropdownButton>
                     </ButtonGroup>
                 </Form.Group>
-                <Button size={"lg"} onClick={this.handleSubmit} style={{margin: "10px"}}>Search</Button>
+                <Button size={"lg"} onClick={this.handleSubmit} style={{margin: "10px 0 0 0"}}>Search</Button>
             </React.Fragment>
         )
     }
