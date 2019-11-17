@@ -9,65 +9,75 @@ app.use(express.urlencoded({
     extended: true,
 }));
 
+app.get('/', (request, response) => {
+    response.status(200).send('ok');
+});
 
 // Endpoints
 
 // @ all returns are returned in json.stringy()
 
 // View the number of available vehicles
-// requires: vtname, location, fromDate, toDate, fromTime, toTime
-// @return result.rows
-app.post('/vehicle/get', query.getVehicle);
+// requires: vtname, location, city, fromdate, todate, fromtime, totime
+// @return data: tuples
+app.get('/vehicle/get', query.getVehicle);
 
-// Get reservation information based off confNo
-// requires: confNo
-// @return result.rows[0] if found, error if not found
+// Get reservation information based off confno
+// requires: confno
+// @return data: singular tuple if found, error if not found
 app.get('/reserve/get', query.getReserve);
 
 // Make a reservation
-// requires: vtname, location, fromDate, toDate, fromTime, toTime
-// @return confNo
+// requires: vtname, dlicense, location, city, fromdate, todate, fromtime, totime
+// @return data: confno
 app.post('/reserve/create', query.createReserve);
 
 // View the information about the customer
 // requires: dlicense
-// @return result.row[0] if found, error if not found
+// @return data: tuple if found, error if not found
 app.get('/customer/get', query.getCustomer);
 
 // Create a new customer profile
 // requires: dlicense, cellphone, name, address
-// @return dlicense
+// @return data: dlicense
 app.post('/customer/create', query.createCustomer);
 
 // Get a rent based of rid
 // requires: rid
-// @return result.rows[0] if found, error if not found
+// @return data: tuple if found, error if not found
 app.get('/rent/get', query.getRent);
 
 // Rent a vehicle
-// requires: vlicense, dlicense, fromDate, toDate, fromTime, toTime, odometer, cardName, expDate, confNo
-// @return rid
+// requires: vlicense, dlicense, fromdate, todate, fromtime, totime, odometer, cardname, expdate, confno
+// @return data: rid
 app.post('/rent/create', query.createRent);
 
 // Return a vehicle
 // rid, date, time, odometer, fulltank, value
-// @return rid
-app.post('/return', query.returnVehicle);
+// @return data: rid
+app.post('/return/create', query.createReturn);
 
-// Rental/Return Report
-app.get('/report/', query.getReport);
+// Daily Rental Report
+// requires: date
+// @return data: {vehicle, perCategory, perBranch, perCompany}, where vehicle, perCategory, perBranch: tuples
+app.get('/report/rental', query.getDailyRental);
 
-// View table named :tableName
-app.get('/table/:tableName', query.getTable);
+// Daily Rental Report By Branch
+// requires: date, location, city
+// @return result.rows
+app.get('/report/rental/branch', query.getDailyBranchRental);
 
-// Insert tuple
-app.post('/add', query.addData);
+// Daily Return Report
+// requires: date
+// @return data: {vehicle, perCategory, revenuePerCategory, perBranch, revenuePerBranch, revenueTotal},
+// where vehicle, perCategory, revenuePerCategory, perBranch, revenuePerBranch: tuples
+app.get('/report/return', query.getDailyReturn);
 
-// Delete tuple
-app.post('/remove', query.removeData);
-
-// Update tuple
-app.post('/update', query.updateData);
+// Daily Return Report
+// requires: date, location, city
+// @return data: {vehicle, perCategory, revenuePerCategory, perBranch, revenuePerBranch, revenueTotal},
+// where vehicle, perCategory, revenuePerCategory, perBranch, revenuePerBranch: tuples
+app.get('/report/return/branch', query.getDailyBranchReturn);
 
 app.listen(port, () => {
     console.log(`App running on port ${port}`);

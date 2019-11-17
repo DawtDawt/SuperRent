@@ -12,33 +12,46 @@ const pool = new Pool({
 
 
 // abstracted queries
-const vehiclesQuery = `SELECT * FROM vehicle WHERE vtname LIKE $1 AND location LIKE $2 AND NOT EXISTS
-    (SELECT * FROM rent r WHERE (r.fromDate < $3 AND $3 < r.toDate) OR (r.fromDate < $4 AND $4 < r.toDate) OR
-    (r.fromDate = $4 AND r.fromTime < $6) OR (r.toDate = $3 AND $5 < r.toTime))`;
+const vehicleRentQuery = `SELECT * FROM vehicle WHERE vtname LIKE $1 AND location LIKE $2 AND city LIKE $3 AND NOT EXISTS
+    (SELECT * FROM rental r WHERE (r.fromdate < $4 AND $4 < r.todate) OR (r.fromdate < $5 AND $5 < r.todate) OR
+    (r.fromdate = $5 AND r.fromtime < $7) OR (r.todate = $4 AND $6 < r.totime))`;
+const vehicleReservationQuery = `SELECT * FROM reservation WHERE vtname LIKE $1 AND NOT EXISTS
+    (SELECT * FROM reservation r WHERE (r.fromdate < $2 AND $2 < r.todate) OR (r.fromdate < $3 AND $3 < r.todate) OR
+    (r.fromdate = $3 AND r.fromtime < $5) OR (r.todate = $2 AND $4 < r.totime))`;
 
 
 function getVehicle(request, response) {
-    // assume fromDate, toDate, fromTime, toTime are all empty or all valid strings
-    let vtname = request.body.vtname;
-    let location = request.body.location;
-    let fromDate = request.body.fromDate;
-    let toDate = request.body.toDate;
-    let fromTime = request.body.fromTime;
-    let toTime = request.body.toTime;
-    if (typeof vtname === "object") {
-        vtname = '%';
+    // assume fromdate, todate, fromtime, totime are all empty or all valid strings
+    let vtname = '%';
+    let location = '%';
+    let city = '%';
+    let fromdate = '9999-01-01';
+    let todate = '9999-02-01';
+    let fromtime = '10:00:00';
+    let totime = '12:00:00';
+    if (request.query.hasOwnProperty("vtname")) {
+        vtname = request.query.vtname;
     }
-    if (typeof location === "object") {
-        location = '%';
+    if (request.query.hasOwnProperty("location")) {
+        vtname = request.query.location;
     }
-    if (typeof fromDate === "object") {
-        fromDate = '9999-01-01';
-        toDate = '9999-02-01';
-        fromTime = '10:00:00';
-        toTime = '12:00:00';
+    if (request.query.hasOwnProperty("city")) {
+        vtname = request.query.city;
     }
-    // query: SELECT vehicles fulfilling type, location, and NOT in Rent during time interval
-    return pool.query(vehiclesQuery, [vtname, location, fromDate, toDate, fromTime, toTime])
+    if (request.query.hasOwnProperty("fromdate")) {
+        vtname = request.query.fromdate;
+    }
+    if (request.query.hasOwnProperty("todate")) {
+        vtname = request.query.todate;
+    }
+    if (request.query.hasOwnProperty("fromtime")) {
+        vtname = request.query.fromtime;
+    }
+    if (request.query.hasOwnProperty("totime")) {
+        vtname = request.query.totime;
+    }
+    // query: SELECT vehicle fulfilling type, location, and NOT in Rent during time interval
+    return pool.query(vehicleRentQuery, [vtname, location, city, fromdate, todate, fromtime, totime])
         .then(result => {
             return response.json({
                 data: result.rows
@@ -47,14 +60,14 @@ function getVehicle(request, response) {
         .catch(error => {
             return response.status(404).send({
                 error: error,
-                message: "Problem Getting Vehicles"
+                message: "Problem Getting vehicle"
             });
         });
 }
 
 function getReserve(request, response) {
-    const confNo = request.query.confNo;
-    return pool.query(`SELECT * FROM reservation WHERE confNo = $1`, [confNo])
+    const confno = Number(request.query.confno);
+    return pool.query(`SELECT * FROM reservation WHERE confno = $1`, [confno])
         .then(result => {
             if (result.rows.length === 0) {
                 return Promise.reject("No such reservation found");
@@ -64,37 +77,47 @@ function getReserve(request, response) {
             });
         })
         .catch(error => {
-            return response.signal(404).send({
+            return response.send({
                 error: error,
                 message: "Problem Getting Reservation"
             });
-        })
+        });
 }
 
 function createReserve(request, response) {
     // assume all params are valid strings
     const vtname = request.body.vtname;
+    const dlicense = request.body.dlicense;
     const location = request.body.location;
-    const fromDate = request.body.fromDate;
-    const toDate = request.body.toDate;
-    const fromTime = request.body.fromTime;
-    const toTime = request.body.toTime;
+    const city = request.body.city;
+    const fromdate = request.body.fromdate;
+    const todate = request.body.todate;
+    const fromtime = request.body.fromtime;
+    const totime = request.body.totime;
     // query: check if such vehicle is available
-    return pool.query(vehiclesQuery, [vtname, location, fromDate, toDate, fromTime, toTime])
+    let rentResult;
+    return pool.query(vehicleRentQuery, [vtname, location, city, fromdate, todate, fromtime, totime])
         .then(result => {
             // throws error if no reservation slot is available
             if (result.rows.length === 0) {
                 return Promise.reject("No such vehicle available");
             }
-            // perform actual reservation, returning confNo
+            rentResult = result;
+            return pool.query(vehicleReservationQuery, [vtname, fromdate, todate, fromtime, totime]);
+        })
+        .then(reserveResult => {
+            if (rentResult.rows.length <= reserveResult.rows.length) {
+                return Promise.reject("No such vehicle available");
+            }
+            // perform actual reservation, returning confno
             return pool.query(`INSERT INTO reservation(vtname, dlicense, fromdate, todate, fromtime, totime)
-                        VALUES ($1, $2, $3, $4, $5, %6) RETURNING confNo`,
-                [vtname, location, fromDate, toDate, fromTime, toTime]);
+                        VALUES ($1, $2, $3, $4, $5, $6) RETURNING confno`,
+                [vtname, dlicense, fromdate, todate, fromtime, totime]);
         })
         .then(result => {
-            // data = confNo
+            // data = confno
             return response.json({
-                data: result
+                data: result.rows[0].confno
             });
         })
         .catch(error => {
@@ -102,7 +125,7 @@ function createReserve(request, response) {
                 error: error,
                 message: "Problem Creating Reservation"
             });
-        })
+        });
 }
 
 function getCustomer(request, response) {
@@ -118,16 +141,16 @@ function getCustomer(request, response) {
             });
         })
         .catch(error => {
-            return response.signal(404).send({
+            return response.send({
                 error: error,
                 message: "Problem Getting Customer Information"
             });
-        })
+        });
 }
 
 function createCustomer(request, response) {
     const dlicense = request.body.dlicense;
-    const cellphone = request.body.cellphone;
+    const cellphone = Number(request.body.cellphone);
     const name = request.body.name;
     const address = request.body.address;
     // check if current customer already exists
@@ -136,7 +159,7 @@ function createCustomer(request, response) {
         .then(result => {
             // data = dlicense
             return response.json({
-                data: result
+                data: result.rows[0].dlicense
             });
         })
         .catch(error => {
@@ -144,12 +167,12 @@ function createCustomer(request, response) {
                 error: error,
                 message: "Problem Creating Customer"
             });
-        })
+        });
 }
 
 function getRent(request, response) {
-    const rid = request.query.rid;
-    return pool.query(`SELECT * FROM rent WHERE rid = $1`, [rid])
+    const rid = Number(request.query.rid);
+    return pool.query(`SELECT * FROM rental WHERE rid = $1`, [rid])
         .then(result => {
             if (result.rows.length === 0) {
                 return Promise.reject("Rent Not Found");
@@ -160,55 +183,67 @@ function getRent(request, response) {
             });
         })
         .catch(error => {
-            return response.signal(404).send({
+            return response.send({
                 error: error,
                 message: "Problem Getting Rent Record"
             });
-        })
+        });
 }
 
 function createRent(request, response) {
     const vlicense = request.body.vlicense;
     const dlicense = request.body.dlicense;
-    const fromDate = request.body.fromDate;
-    const toDate = request.body.toDate;
-    const fromTime = request.body.fromTime;
-    const toTime = request.body.toTime;
+    const fromdate = request.body.fromdate;
+    const todate = request.body.todate;
+    const fromtime = request.body.fromtime;
+    const totime = request.body.totime;
     const odometer = request.body.odometer;
-    const cardName = request.body.cardName;
-    const expDate = request.body.expDate;
-    const confNo = request.body.confNo;
+    const cardname = request.body.cardname;
+    const cardno = Number(request.body.cardno);
+    const expdate = request.body.expdate;
+    const confno = Number(request.body.confno);
+    let finalResult;
     return pool.query(`INSERT INTO rental(vlicense, dlicense, fromdate, todate, fromtime, totime, odometer, cardname, cardno, expdate, confno)
         VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING rid`,
-        [vlicense, dlicense, fromDate, toDate, fromTime, toTime, odometer, cardName, expDate, confNo])
+        [vlicense, dlicense, fromdate, todate, fromtime, totime, odometer, cardname, cardno, expdate, confno])
         .then(result => {
+            finalResult = result;
+            return pool.query(`UPDATE vehicle SET status = $1 WHERE vlicense = $2`, ['rented', vlicense]);
+        })
+        .then(() => {
             return response.json({
                 // data = rid
-                data: result
+                data: finalResult.rows[0].rid
             });
         })
         .catch(error => {
-            return response.signal(404).send({
+            return response.send({
                 error: error,
                 message: "Problem Creating New Rental Record"
             });
-        })
+        });
 }
 
-function returnVehicle(request, response) {
+function createReturn(request, response) {
     const rid = request.body.rid;
     const date = request.body.date;
     const time = request.body.time;
-    const odometer = request.body.odometer;
-    const fulltank = request.body.fulltank;
-    const value = request.body.value;
-    return pool.query(`INSERT INTO return
+    const odometer = Number(request.body.odometer);
+    const fulltank = Boolean(request.body.fulltank);
+    const value = Number(request.body.value);
+    let finalResult;
+    return pool.query(`INSERT INTO return(rid, date, time, odometer, fulltank, value)
                     VALUES ($1, $2, $3, $4, $5, $6) RETURNING rid`,
         [rid, date, time, odometer, fulltank, value])
         .then(result => {
+            finalResult = result;
+            return pool.query(`UPDATE vehicle SET status = $1, odometer = $2 WHERE vlicense = (SELECT vlicense FROM rental WHERE rid = $3)`,
+                ['available', odometer, rid]);
+        })
+        .then(() => {
             // data = rid
             return response.json({
-                data: result
+                data: finalResult.rows[0].rid
             });
         })
         .catch(error => {
@@ -216,41 +251,201 @@ function returnVehicle(request, response) {
                 error: error,
                 message: "Problem Creating Return Record"
             });
-        })
-}
-
-function getTable(request, response) {
-    // TODO
-    // this is only an example of how to call SQL statements using node-postgres
-    const tableKind = request.params.tableName; // Ex: vehicle
-    pool.query(`SELECT * FROM ${tableKind}`, (error, result) => {
-        if (error) {
-            return response.status(404).send({
-                error: error,
-                message: "Table Not Found"
-            });
-        }
-        // sends response containing the table rows back to client
-        return response.json({
-            data: result.rows
         });
-    });
 }
 
-function getReport(request, response) {
-    // TODO
+function getDailyRental(request, response) {
+    const date = request.query.date;
+    let vehicleResult;
+    let categoryResult;
+    return pool.query(`SELECT v.vtname, v.location, v.city FROM vehicle v, rental r
+                    WHERE v.vlicense = r.vlicense AND r.fromdate = $1
+                    GROUP BY v.city, v.location, v.vtname`, [date])
+        .then(result => {
+            vehicleResult = result;
+            return pool.query(`SELECT v.vtname, COUNT(*) AS RentalPerVehicleType FROM vehicle v, rental r
+                    WHERE v.vlicense = r.vlicense AND r.fromdate = $1
+                    GROUP BY v.vtname`, [date]);
+        })
+        .then(result => {
+            categoryResult = result;
+            return pool.query(`SELECT v.location, v.city, COUNT(*) AS RentalPerBranch FROM vehicle v, rental r
+                    WHERE v.vlicense = r.vlicense AND r.fromdate = $1
+                    GROUP BY v.city, v.location`, [date]);
+        })
+        .then(branchResult => {
+            return response.json({
+                data: {
+                    vehicle: vehicleResult.rows,
+                    perCategory: categoryResult.rows,
+                    perBranch: branchResult.rows,
+                    perCompany: vehicleResult.rows.length
+                }
+            });
+        })
+        .catch(error => {
+            return response.send({
+                error: error,
+                message: "Problem Getting Daily Rental"
+            });
+        });
 }
 
-function addData(request, response) {
-    // TODO
+function getDailyBranchRental(request, response) {
+    const date = request.query.date;
+    const location = request.query.location;
+    const city = request.query.city;
+    let vehicleResult;
+    let categoryResult;
+    return pool.query(`SELECT v.vtname, v.location, v.city FROM vehicle v, rental r
+                    WHERE v.vlicense = r.vlicense AND r.fromdate = $1 AND v.location = $2 AND v.city = $3
+                    GROUP BY v.city, v.location, v.vtname`, [date, location, city])
+        .then(result => {
+            vehicleResult = result;
+            return pool.query(`SELECT v.vtname, COUNT(*) AS RentalPerVehicleType FROM vehicle v, rental r
+                    WHERE v.vlicense = r.vlicense AND r.fromdate = $1 AND v.location = $2 AND v.city = $3
+                    GROUP BY v.vtname`, [date, location, city]);
+        })
+        .then(result => {
+            categoryResult = result;
+            return pool.query(`SELECT v.location, v.city, COUNT(*) AS RentalPerBranch FROM vehicle v, rental r
+                    WHERE v.vlicense = r.vlicense AND r.fromdate = $1 AND v.location = $2 AND v.city = $3
+                    GROUP BY v.city, v.location`, [date, location, city]);
+        })
+        .then(branchResult => {
+            return response.json({
+                data: {
+                    vehicle: vehicleResult.rows,
+                    perCategory: categoryResult.rows,
+                    perBranch: branchResult.rows,
+                    perCompany: vehicleResult.rows.length
+                }
+            });
+        })
+        .catch(error => {
+            return response.send({
+                error: error,
+                message: "Problem Getting Daily Rental By Branch"
+            });
+        });
 }
 
-function removeData(request, response) {
-    // TODO
+function getDailyReturn(request, response) {
+    const date = request.query.date;
+    let vehicleResult;
+    let categoryResult;
+    let revenuePerCategory;
+    let branchResult;
+    return pool.query(`SELECT v.vtname, v.location, v.city
+                            FROM vehicle v, rental r1, return r2
+                            WHERE v.vlicense = r1.vlicense AND r1.rid = r2.rid AND r2.date = $1
+                            GROUP BY v.city, v.location, v.vtname`, [date])
+        .then(result => {
+            vehicleResult = result;
+            return pool.query(`SELECT v.vtname, COUNT(*)
+                            FROM vehicle v, rental r1, return r2
+                            WHERE v.vlicense = r1.vlicense AND r1.rid = r2.rid AND r2.date = $1
+                            GROUP BY v.vtname`, [date]);
+        })
+        .then(result => {
+            categoryResult = result;
+            return pool.query(`SELECT v.vtname, SUM(r2.value)
+                            FROM vehicle v, rental r1, return r2
+                            WHERE v.vlicense = r1.vlicense AND r1.rid = r2.rid AND r2.date = $1
+                            GROUP BY v.vtname`, [date]);
+        })
+        .then(result => {
+            revenuePerCategory = result;
+            return pool.query(`SELECT v.location, v.city , COUNT(*)
+                            FROM vehicle v, rental r1, return r2
+                            WHERE v.vlicense = r1.vlicense AND r1.rid = r2.rid AND r2.date = $1
+                            GROUP BY v.city, v.location`, [date]);
+        })
+        .then(result => {
+            branchResult = result;
+            return pool.query(`SELECT v.location, v.city , SUM(r2.value)
+                            FROM vehicle v, rental r1, return r2
+                            WHERE v.vlicense = r1.vlicense AND r1.rid = r2.rid AND r2.date = $1
+                            GROUP BY v.city, v.location`, [date]);
+        })
+        .then(revenuePerBranch => {
+            return response.json({
+                data: {
+                    vehicle: vehicleResult.rows,
+                    perCategory: categoryResult.rows,
+                    revenuePerCategory: revenuePerCategory.rows,
+                    perBranch: branchResult.rows,
+                    revenuePerBranch: revenuePerBranch.rows,
+                    perCompany: vehicleResult.rows.length
+                }
+            });
+        })
+        .catch(error => {
+            return response.send({
+                error: error,
+                message: "Problem Getting Daily Return"
+            });
+        });
 }
 
-function updateData(request, response) {
-    // TODO
+function getDailyBranchReturn(request, response) {
+    const date = request.query.date;
+    const location = request.query.location;
+    const city = request.query.city;
+    let vehicleResult;
+    let categoryResult;
+    let revenuePerCategory;
+    let branchResult;
+    return pool.query(`SELECT v.vtname, v.location, v.city
+                            FROM vehicle v, rental r1, return r2
+                            WHERE v.vlicense = r1.vlicense AND r1.rid = r2.rid AND r2.date = $1 AND v.location = $2 AND v.city = $3
+                            GROUP BY v.city, v.location, v.vtname`, [date, location, city])
+        .then(result => {
+            vehicleResult = result;
+            return pool.query(`SELECT v.vtname, COUNT(*)
+                            FROM vehicle v, rental r1, return r2
+                            WHERE v.vlicense = r1.vlicense AND r1.rid = r2.rid AND r2.date = $1 AND v.location = $2 AND v.city = $3
+                            GROUP BY v.vtname`, [date, location, city]);
+        })
+        .then(result => {
+            categoryResult = result;
+            return pool.query(`SELECT v.vtname, SUM(r2.value)
+                            FROM vehicle v, rental r1, return r2
+                            WHERE v.vlicense = r1.vlicense AND r1.rid = r2.rid AND r2.date = $1 AND v.location = $2 AND v.city = $3
+                            GROUP BY v.vtname`, [date, location, city]);
+        })
+        .then(result => {
+            revenuePerCategory = result;
+            return pool.query(`SELECT v.location, v.city , COUNT(*)
+                            FROM vehicle v, rental r1, return r2
+                            WHERE v.vlicense = r1.vlicense AND r1.rid = r2.rid AND r2.date = $1 AND v.location = $2 AND v.city = $3
+                            GROUP BY v.city, v.location`, [date, location, city]);
+        })
+        .then(result => {
+            branchResult = result;
+            return pool.query(`SELECT v.location, v.city , SUM(r2.value)
+                            FROM vehicle v, rental r1, return r2
+                            WHERE v.vlicense = r1.vlicense AND r1.rid = r2.rid AND r2.date = $1 AND v.location = $2 AND v.city = $3
+                            GROUP BY v.city, v.location`, [date, location, city]);
+        })
+        .then(revenuePerBranch => {
+            return response.json({
+                data: {
+                    vehicle: vehicleResult.rows,
+                    perCategory: categoryResult.rows,
+                    revenuePerCategory: revenuePerCategory.rows,
+                    perBranch: branchResult.rows,
+                    revenuePerBranch: revenuePerBranch.rows,
+                    perCompany: vehicleResult.rows.length
+                }
+            });
+        })
+        .catch(error => {
+            return response.send({
+                error: error,
+                message: "Problem Getting Daily Return By Branch"
+            });
+        });
 }
 
 module.exports = {
@@ -261,10 +456,9 @@ module.exports = {
     createCustomer,
     getRent,
     createRent,
-    returnVehicle,
-    getReport,
-    getTable,
-    addData,
-    removeData,
-    updateData
+    createReturn,
+    getDailyRental,
+    getDailyBranchRental,
+    getDailyReturn,
+    getDailyBranchReturn,
 };

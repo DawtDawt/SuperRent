@@ -1,16 +1,17 @@
 CREATE TABLE Rental(
     rid SERIAL PRIMARY KEY,
-    vlicense BIGINT,
+    vlicense VARCHAR(6),
     dlicense VARCHAR(50),
-    fromDate DATE,
-    toDate DATE,
-    fromTime TIME,
-    toTime TIME,
+    fromdate DATE,
+    todate DATE,
+    fromtime TIME,
+    totime TIME,
     odometer INT,
-    cardName VARCHAR(50),
-    cardNo BIGINT,
-    expDate DATE,
-    confNo BIGINT,
+    cardname VARCHAR(50),
+    cardno BIGINT,
+    expdate DATE,
+    confno BIGINT,
+    FOREIGN KEY (vlicense) REFERENCES Vehicle(vlicense),
     FOREIGN KEY (dlicense) REFERENCES Customer(dlicense),
-    FOREIGN KEY (confNo) REFERENCES Reservation(confNo)
+    FOREIGN KEY (confno) REFERENCES Reservation(confno)
 );
