@@ -1,5 +1,6 @@
 import React from 'react';
 import {Link} from "react-router-dom";
+import {Button} from "react-bootstrap";
 
 class Homepage extends React.Component {
     constructor(props) {
@@ -20,10 +21,10 @@ class Homepage extends React.Component {
                 </div>
                 <div>
                     <Link to="/reserve">
-                        <button className={`btn btn-primary btn-lg`} style={btnStyle}>Customer</button>
+                        <Button variant={"primary"} size={"lg"} style={btnStyle}>Customer</Button>
                     </Link>
                     <Link to="/rent">
-                        <button className={`btn btn-primary btn-lg`} style={btnStyle}>Clerk</button>
+                        <Button variant={"primary"} size={"lg"} style={btnStyle}>Clerk</Button>
                     </Link>
                 </div>
             </div>
