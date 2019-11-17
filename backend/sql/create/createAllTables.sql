@@ -55,7 +55,7 @@ CREATE TABLE Rental(
     cardname VARCHAR(50),
     cardno BIGINT,
     expdate DATE,
-    confno BIGINT,
+    confno BIGINT UNIQUE,
     FOREIGN KEY (vlicense) REFERENCES Vehicle(vlicense),
     FOREIGN KEY (dlicense) REFERENCES Customer(dlicense),
     FOREIGN KEY (confno) REFERENCES Reservation(confno)
