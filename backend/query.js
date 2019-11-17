@@ -58,7 +58,7 @@ function getVehicle(request, response) {
             });
         })
         .catch(error => {
-            return response.status(404).send({
+            return response.signal(404).send({
                 error: error,
                 message: "Problem Getting vehicle"
             });
@@ -77,7 +77,7 @@ function getReserve(request, response) {
             });
         })
         .catch(error => {
-            return response.send({
+            return response.signal(404).send({
                 error: error,
                 message: "Problem Getting Reservation"
             });
@@ -121,7 +121,7 @@ function createReserve(request, response) {
             });
         })
         .catch(error => {
-            return response.status(404).send({
+            return response.signal(404).send({
                 error: error,
                 message: "Problem Creating Reservation"
             });
@@ -141,7 +141,7 @@ function getCustomer(request, response) {
             });
         })
         .catch(error => {
-            return response.send({
+            return response.signal(404).send({
                 error: error,
                 message: "Problem Getting Customer Information"
             });
@@ -163,7 +163,7 @@ function createCustomer(request, response) {
             });
         })
         .catch(error => {
-            return response.status(404).send({
+            return response.signal(404).send({
                 error: error,
                 message: "Problem Creating Customer"
             });
@@ -183,7 +183,7 @@ function getRent(request, response) {
             });
         })
         .catch(error => {
-            return response.send({
+            return response.signal(404).send({
                 error: error,
                 message: "Problem Getting Rent Record"
             });
@@ -217,7 +217,7 @@ function createRent(request, response) {
             });
         })
         .catch(error => {
-            return response.send({
+            return response.signal(404).send({
                 error: error,
                 message: "Problem Creating New Rental Record"
             });
@@ -284,7 +284,7 @@ function getDailyRental(request, response) {
             });
         })
         .catch(error => {
-            return response.send({
+            return response.signal(404).send({
                 error: error,
                 message: "Problem Getting Daily Rental"
             });
@@ -323,7 +323,7 @@ function getDailyBranchRental(request, response) {
             });
         })
         .catch(error => {
-            return response.send({
+            return response.signal(404).send({
                 error: error,
                 message: "Problem Getting Daily Rental By Branch"
             });
@@ -381,7 +381,7 @@ function getDailyReturn(request, response) {
             });
         })
         .catch(error => {
-            return response.send({
+            return response.signal(404).send({
                 error: error,
                 message: "Problem Getting Daily Return"
             });
@@ -441,7 +441,7 @@ function getDailyBranchReturn(request, response) {
             });
         })
         .catch(error => {
-            return response.send({
+            return response.signal(404).send({
                 error: error,
                 message: "Problem Getting Daily Return By Branch"
             });
