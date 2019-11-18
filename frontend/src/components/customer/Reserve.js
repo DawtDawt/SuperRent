@@ -1,6 +1,7 @@
 import React from 'react';
 import CustomerNavbar from "./CustomerNavbar";
 import ReserveForm from "./ReserveForm";
+import VehicleFilters from "./VehicleFilters";
 
 class Reserve extends React.Component {
     constructor(props) {
@@ -25,12 +26,23 @@ class Reserve extends React.Component {
             background: "#FFFFFF",
             boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
             transition: "all 0.3s cubic-bezier(.25,.8,.25,1)"
-    };
+        };
+
+        const flexStyle = {
+            minWidth: "80vw",
+            display: "flex",
+            flexDirection: "row",
+            flexWrap: "wrap",
+            justifyContent: "center"
+        };
+
         return (
             <React.Fragment>
                 <CustomerNavbar activeLink={"reserve"}/>
                 <div className={"wrapper"} style={style}>
-                    <ReserveForm props={this.props}/>
+                    <div style={flexStyle}>
+                        <ReserveForm/>
+                    </div>
                 </div>
             </React.Fragment>
         )

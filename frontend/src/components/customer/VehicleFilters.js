@@ -1,7 +1,7 @@
 import React from 'react';
-import {Accordion, Button, ButtonGroup, DropdownButton, DropdownItem, Form} from "react-bootstrap";
+import {Button, ButtonGroup, DropdownButton, DropdownItem} from "react-bootstrap";
 import {DateRangePicker} from 'react-dates';
-import Card from "react-bootstrap/Card";
+import Dropdown from "react-bootstrap/Dropdown";
 
 
 class VehicleFilters extends React.Component {
@@ -14,6 +14,8 @@ class VehicleFilters extends React.Component {
     }
 
     componentDidMount() {
+        document.getElementById("startDate").placeholder = "Any Date";
+        document.getElementById("endDate").placeholder = "Any Date";
         fetch("http://localhost:8080/table/branch")
             .then(response => {
                 return response.json();
@@ -24,8 +26,6 @@ class VehicleFilters extends React.Component {
             })
             .catch(console.log);
 
-        // temp branch data to replicate API call to /table/branch
-        // this.setState({branchSelection: ['Vancouver', 'Richmond', 'Burnaby']});
     }
 
     generateTimes = () => {
@@ -56,20 +56,115 @@ class VehicleFilters extends React.Component {
     };
 
     render() {
+        const btnStyle = {
+            margin: "5px",
+            width: "165px",
+            height: "50px",
+        };
+        const timeStyle = {
+            width: "180px",
+            margin: "5px"
+        };
+        const dropdownStyle = {
+            maxHeight: "205px",
+            width: "180px",
+            overflowY: "scroll",
+        };
+        const flexStyle = {
+            minWidth: "85vw",
+            display: "flex", flexDirection: "row",
+            flexWrap: "wrap",
+            justifyContent: "center"
+        };
         return (
             <React.Fragment>
-                <Accordion>
-                    <Card>
-                        <Card.Header>
-                            <Accordion.Toggle as={Button} variant="link" eventKey="0">
-                                Filters
-                            </Accordion.Toggle>
-                        </Card.Header>
-                        <Accordion.Collapse eventKey="0">
-                            <Card.Body>Hello! I'm the filters</Card.Body>
-                        </Accordion.Collapse>
-                    </Card>
-                </Accordion>
+                <div style={flexStyle}>
+                    <div>
+                    <DropdownButton title={"Any City"} size={"lg"} id={"city"} style={btnStyle}
+                                    as={ButtonGroup} drop={'down'}>
+                        <div style={dropdownStyle}>
+                            <DropdownItem key={"-1"} value={"any"} as={"button"}> Any City
+                            </DropdownItem>
+                            <Dropdown.Divider/>
+                            {this.state.branchSelection.map((elem, idx) => {
+                                return <DropdownItem key={idx} value={elem.location} as={"button"}
+                                                     className={"city"}
+                                                     onClick={this.handleChange}
+                                                     style={btnStyle}>{elem.location}</DropdownItem>;
+                            })}
+                        </div>
+                    </DropdownButton>
+                    <DropdownButton title={"Any Location"} size={"lg"} id={"location"} style={btnStyle}
+                                    as={ButtonGroup} drop={'down'}>
+                        <div style={dropdownStyle}>
+                            <DropdownItem key={"-1"} value={"any"} as={"button"}> Any Location
+                            </DropdownItem>
+                            <Dropdown.Divider/>
+                            {this.state.branchSelection.map((elem, idx) => {
+                                return <DropdownItem key={idx} value={elem.location} as={"button"}
+                                                     className={"location"}
+                                                     onClick={this.handleChange}
+                                                     style={btnStyle}>{elem.location}</DropdownItem>;
+                            })}
+                        </div>
+                    </DropdownButton>
+                    <DropdownButton title={"Any Car Type"} size={"lg"} id={"vehicleType"} style={btnStyle}
+                                    as={ButtonGroup}>
+                        <div style={dropdownStyle}>
+                            <DropdownItem key={"-1"} value={"any"} as={"button"}> Any Car Type
+                            </DropdownItem>
+                            <Dropdown.Divider/>
+                            {this.state.vehicleTypeSelection.map((elem, idx) => {
+                                return <DropdownItem key={idx} value={elem} as={"button"} className={"vehicleType"}
+                                                     onClick={this.handleChange}>{elem}</DropdownItem>;
+                            })}
+                        </div>
+                    </DropdownButton>
+                    <DateRangePicker
+                        startDate={this.state.startDate} // momentPropTypes.momentObj or null,
+                        startDateId="startDate" // PropTypes.string.isRequired,
+                        endDate={this.state.endDate} // momentPropTypes.momentObj or null,
+                        endDateId="endDate" // PropTypes.string.isRequired,
+                        onDatesChange={({startDate, endDate}) => this.setState({
+                            startDate,
+                            endDate
+                        })} // PropTypes.func.isRequired,
+                        focusedInput={this.state.focusedInput} // PropTypes.oneOf([START_DATE, END_DATE]) or null,
+                        onFocusChange={focusedInput => this.setState({focusedInput})} // PropTypes.func.isRequired,
+                    />
+                    <DropdownButton title={"Any Start Time"}
+                                    value={this.state.fromTime}
+                                    size={"lg"}
+                                    as={ButtonGroup} id={"fromTime"} style={timeStyle}>
+                        <div style={dropdownStyle}>
+                            <DropdownItem key={"-1"} value={"any"} as={"button"}> Any Start Time</DropdownItem>
+                            <Dropdown.Divider/>
+                            {this.generateTimes().map((elem, idx) => {
+                                return <DropdownItem key={idx} value={elem} as={"button"}
+                                                     onClick={this.handleChange}
+                                                     className={"fromTime"}>{elem}</DropdownItem>;
+                            })}
+                        </div>
+                    </DropdownButton>
+                    <DropdownButton title={"Any End Time"}
+                                    value={this.state.toTime}
+                                    size={"lg"}
+                                    as={ButtonGroup} id={"toTime"} style={timeStyle}>
+                        <div style={dropdownStyle}>
+                            <DropdownItem key={"-1"} value={"any"} as={"button"}> Any End Time</DropdownItem>
+                            <Dropdown.Divider/>
+                            {this.generateTimes().map((elem, idx) => {
+                                return <DropdownItem key={idx} value={elem} as={"button"}
+                                                     onClick={this.handleChange}
+                                                     className={"toTime"}>{elem}</DropdownItem>;
+                            })}
+                        </div>
+                    </DropdownButton>
+                    </div>
+                </div>
+                <div>
+                    <Button size={"lg"} onClick={this.handleSubmit} style={{margin: "10px 0 0 0"}}>Search</Button>
+                </div>
             </React.Fragment>
         )
     }

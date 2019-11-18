@@ -73,11 +73,12 @@ class ReserveForm extends React.Component {
 
     render() {
         const btnStyle = {
-            width: "200px",
-            // height: "50px",
+            width: "180px",
+            margin: "10px",
         };
         const timeStyle = {
-            width: "160px"
+            width: "200px",
+            margin: "10px"
         };
         const dropdownStyle = {
             maxHeight: "200px",
@@ -86,63 +87,66 @@ class ReserveForm extends React.Component {
         };
         return (
             <React.Fragment>
-                <Form.Group>
-                    <ButtonGroup size={'lg'}>
-                        <DropdownButton title={"Location"} size={"lg"} id={"branch"} style={btnStyle}
-                                        as={ButtonGroup}>
-                            {this.state.branchSelection.map((elem, idx) => {
-                                return <DropdownItem key={idx} value={elem.location} as={"button"} className={"branch"}
+                <div>
+                    <DropdownButton title={"Location"} size={"lg"} id={"branch"} style={btnStyle}
+                                    as={ButtonGroup}>
+                        {this.state.branchSelection.map((elem, idx) => {
+                            return <DropdownItem key={idx} value={elem.location} as={"button"} className={"branch"}
+                                                 onClick={this.handleChange}
+                                                 style={btnStyle}>{elem.location}</DropdownItem>;
+                        })}
+                    </DropdownButton>
+                    <DropdownButton title={"Car Type"} size={"lg"} id={"vehicleType"} style={btnStyle}
+                                    as={ButtonGroup}>
+                        {this.state.vehicleTypeSelection.map((elem, idx) => {
+                            return <DropdownItem key={idx} value={elem} as={"button"} className={"vehicleType"}
+                                                 onClick={this.handleChange}
+                                                 style={btnStyle}>{elem}</DropdownItem>;
+                        })}
+                    </DropdownButton>
+                </div>
+                <DateRangePicker
+                    startDate={this.state.startDate} // momentPropTypes.momentObj or null,
+                    startDateId="startDate" // PropTypes.string.isRequired,
+                    endDate={this.state.endDate} // momentPropTypes.momentObj or null,
+                    endDateId="endDate" // PropTypes.string.isRequired,
+                    onDatesChange={({startDate, endDate}) => this.setState({
+                        startDate,
+                        endDate
+                    })} // PropTypes.func.isRequired,
+                    focusedInput={this.state.focusedInput} // PropTypes.oneOf([START_DATE, END_DATE]) or null,
+                    onFocusChange={focusedInput => this.setState({focusedInput})} // PropTypes.func.isRequired,
+                />
+                <div>
+                    <DropdownButton title={"Start Time"}
+                                    value={this.state.fromTime}
+                                    size={"lg"}
+                                    as={ButtonGroup} id={"fromTime"} style={timeStyle}>
+                        <div style={dropdownStyle}>
+                            {this.generateTimes().map((elem, idx) => {
+                                return <DropdownItem key={idx} value={elem} as={"button"}
                                                      onClick={this.handleChange}
-                                                     style={btnStyle}>{elem.location}</DropdownItem>;
+                                                     className={"fromTime"}>{elem}</DropdownItem>;
                             })}
-                        </DropdownButton>
-                        <DropdownButton title={"Vehicle Type"} size={"lg"} id={"vehicleType"} style={btnStyle}
-                                        as={ButtonGroup}>
-                            {this.state.vehicleTypeSelection.map((elem, idx) => {
-                                return <DropdownItem key={idx} value={elem} as={"button"} className={"vehicleType"}
+                        </div>
+                    </DropdownButton>
+                    <DropdownButton title={"End Time"}
+                                    value={this.state.toTime}
+                                    size={"lg"}
+                                    as={ButtonGroup} id={"toTime"} style={timeStyle}>
+                        <div style={dropdownStyle}>
+                            {this.generateTimes().map((elem, idx) => {
+                                return <DropdownItem key={idx} value={elem} as={"button"}
                                                      onClick={this.handleChange}
-                                                     style={btnStyle}>{elem}</DropdownItem>;
+                                                     className={"toTime"}>{elem}</DropdownItem>;
                             })}
-                        </DropdownButton>
-                        <DateRangePicker
-                            startDate={this.state.startDate} // momentPropTypes.momentObj or null,
-                            startDateId="startDate" // PropTypes.string.isRequired,
-                            endDate={this.state.endDate} // momentPropTypes.momentObj or null,
-                            endDateId="endDate" // PropTypes.string.isRequired,
-                            onDatesChange={({startDate, endDate}) => this.setState({
-                                startDate,
-                                endDate
-                            })} // PropTypes.func.isRequired,
-                            focusedInput={this.state.focusedInput} // PropTypes.oneOf([START_DATE, END_DATE]) or null,
-                            onFocusChange={focusedInput => this.setState({focusedInput})} // PropTypes.func.isRequired,
-                        />
-                        <DropdownButton title={"Start Time"}
-                                        value={this.state.fromTime}
-                                        size={"lg"}
-                                        as={ButtonGroup} id={"fromTime"} style={timeStyle}>
-                            <div style={dropdownStyle}>
-                                {this.generateTimes().map((elem, idx) => {
-                                    return <DropdownItem key={idx} value={elem} as={"button"}
-                                                         onClick={this.handleChange}
-                                                         className={"fromTime"}>{elem}</DropdownItem>;
-                                })}
-                            </div>
-                        </DropdownButton>
-                        <DropdownButton title={"End Time"}
-                                        value={this.state.toTime}
-                                        size={"lg"}
-                                        as={ButtonGroup} id={"toTime"} style={timeStyle}>
-                            <div style={dropdownStyle}>
-                                {this.generateTimes().map((elem, idx) => {
-                                    return <DropdownItem key={idx} value={elem} as={"button"}
-                                                         onClick={this.handleChange}
-                                                         className={"toTime"}>{elem}</DropdownItem>;
-                                })}
-                            </div>
-                        </DropdownButton>
-                    </ButtonGroup>
-                </Form.Group>
-                <Button size={"lg"} onClick={this.handleSubmit} style={{margin: "10px 0 0 0"}}>Search</Button>
+                        </div>
+                    </DropdownButton>
+                </div>
+
+                <div>
+                    <Button size={"lg"} onClick={this.handleSubmit} style={{margin: "10px 0 0 0"}}>Search</Button>
+                </div>
             </React.Fragment>
         )
     }

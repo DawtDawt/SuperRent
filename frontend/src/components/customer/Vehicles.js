@@ -19,7 +19,7 @@ class Vehicles extends React.Component {
 
     render() {
         const style = {
-            padding: "60px 30px",
+            padding: "60px 0px",
             border: "1px solid transparent",
             borderRadius: "35px",
             background: "#FFFFFF",
@@ -27,16 +27,11 @@ class Vehicles extends React.Component {
             transition: "all 0.3s cubic-bezier(.25,.8,.25,1)"
         };
 
-        const vehicleFilterStyle = {
-            width: "300px"
-        };
         return (
             <React.Fragment>
                 <CustomerNavbar activeLink={"vehicles"}/>
-                <div style={vehicleFilterStyle}>
-                    <VehicleFilters />
-                </div>
                 <div className={"wrapper"} style={style}>
+                        <VehicleFilters/>
                 </div>
             </React.Fragment>
         )
