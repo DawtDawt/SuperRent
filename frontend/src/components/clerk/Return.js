@@ -1,10 +1,10 @@
 import React from 'react';
 import ClerkNavbar from "./ClerkNavbar";
+import ReturnForm from "./ReturnForm";
 import RentForm from "./RentForm";
-import VehicleFilters from "../customer/VehicleFilters";
-import CustomerNavbar from "../customer/CustomerNavbar";
 
-class Rent extends React.Component {
+
+class Return extends React.Component {
     constructor(props) {
         super(props);
         this.state = {vehicles: []};
@@ -36,12 +36,13 @@ class Rent extends React.Component {
             flexWrap: "wrap",
             justifyContent: "center"
         };
+
         return (
             <React.Fragment>
-                <ClerkNavbar activeLink={"rent"}/>
+                <ClerkNavbar activeLink={"return"}/>
                 <div className={"wrapper"} style={style}>
                     <div style={flexStyle}>
-                        <RentForm/>
+                        <ReturnForm/>
                     </div>
                 </div>
             </React.Fragment>
@@ -50,4 +51,4 @@ class Rent extends React.Component {
 }
 
 
-export default Rent;
+export default Return;
