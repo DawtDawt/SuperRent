@@ -9,25 +9,22 @@ class ClerkNavbar extends React.Component {
         this.state = {};
     }
 
-
     render() {
-
         const activeLinkStyle = {
             color: "#f7f7f7"
         };
-
         let navLinks;
         if (this.props.activeLink === "rent") {
             navLinks = <React.Fragment>
                 <Nav.Link href="/rent" style={activeLinkStyle}>Rent</Nav.Link>
                 <Nav.Link href="/return">Return</Nav.Link>
-                <Nav.Link href="/vehicles"> Report</Nav.Link>
+                <Nav.Link href="#"> Report</Nav.Link>
             </React.Fragment>
         } else {
             navLinks = <React.Fragment>
                 <Nav.Link href="/rent">Rent</Nav.Link>
                 <Nav.Link href="/return">Return</Nav.Link>
-                <Nav.Link href="/vehicles" style={activeLinkStyle}>Report</Nav.Link>
+                <Nav.Link href="#" style={activeLinkStyle}>Report</Nav.Link>
             </React.Fragment>
         }
         return (

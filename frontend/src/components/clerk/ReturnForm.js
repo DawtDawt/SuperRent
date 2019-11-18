@@ -14,7 +14,7 @@ class ReturnForm extends React.Component {
 
 render (){
     return (
-        <Button size={"lg"} onClick={this.handleSubmit} style={{margin: "0px"}}>Generate Receipt</Button>
+        <Button size={"lg"} onClick={this.handleSubmit} style={{margin: "0px"}}>Return Customer Vehicles</Button>
     )
 }
 
