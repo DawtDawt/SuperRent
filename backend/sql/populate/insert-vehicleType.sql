@@ -8,7 +8,7 @@ VALUES
 
 INSERT INTO VehicleType
 VALUES
-    ('Mid-Size', 'ELECTRIC', 400, 50, 30, 20, 10, 10, 0.5);
+    ('Mid-size', 'ELECTRIC', 400, 50, 30, 20, 10, 10, 0.5);
 
 INSERT INTO VehicleType
 VALUES

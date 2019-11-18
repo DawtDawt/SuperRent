@@ -27,8 +27,8 @@ VALUES
 
 INSERT INTO Vehicle
 VALUES
-    ('ABC005', 'Ford', 'F-Type', 2014, 'black', 1000,
-        'available', 'SUV', 'Kingsway', 'Burnaby');
+    ('ABC005', 'Jaguar', 'F-Type', 2014, 'black', 1000,
+        'available', 'Mid-size', 'Kingsway', 'Burnaby');
 INSERT INTO Vehicle
 VALUES
     ('ABC006', 'Tesla', 'Model X', 2019, 'white', 1000,

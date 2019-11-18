@@ -1,7 +1,6 @@
 import React from 'react';
 import CustomerNavbar from "./CustomerNavbar";
 import ReserveForm from "./ReserveForm";
-import VehicleFilters from "./VehicleFilters";
 
 class Reserve extends React.Component {
     constructor(props) {
@@ -18,9 +17,33 @@ class Reserve extends React.Component {
             .catch(console.log);
     }
 
+    handleSubmit = (state) => {
+        if (state.location && state.startDate && state.endDate && state.fromtime && state.totime && state.vtname) {
+            const query = this.getQuery(state);
+            console.log(query);
+        }
+    };
+
+    getQuery = (state) => {
+        const body = {
+            city: state.location.split(" - ")[0],
+            location: state.location.split(" - ")[1],
+            fromdate: state.startDate.format("YYYY-MM-DD"),
+            todate: state.endDate.format("YYYY-MM-DD"),
+            fromtime: state.fromtime,
+            totime: state.totime,
+            vtname: state.vtname
+        };
+
+        const query = Object.keys(body).map(function (key) {
+            return key + '=' + encodeURIComponent(body[key]);
+        }).join('&');
+        return query;
+    };
+
     render() {
         const style = {
-            padding: "60px 30px",
+            padding: "60px 0px",
             border: "1px solid transparent",
             borderRadius: "35px",
             background: "#FFFFFF",
@@ -28,21 +51,11 @@ class Reserve extends React.Component {
             transition: "all 0.3s cubic-bezier(.25,.8,.25,1)"
         };
 
-        const flexStyle = {
-            minWidth: "80vw",
-            display: "flex",
-            flexDirection: "row",
-            flexWrap: "wrap",
-            justifyContent: "center"
-        };
-
         return (
             <React.Fragment>
                 <CustomerNavbar activeLink={"reserve"}/>
                 <div className={"wrapper"} style={style}>
-                    <div style={flexStyle}>
-                        <ReserveForm/>
-                    </div>
+                    <ReserveForm handleSubmit={this.handleSubmit}/>
                 </div>
             </React.Fragment>
         )
