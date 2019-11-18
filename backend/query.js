@@ -485,7 +485,7 @@ function getTable (request, response) {
         .then(result => {
             const capitalizedTableName = tableName.charAt(0).toUpperCase() + tableName.slice(1);
             if (result.rows.length === 0) {
-                return Promise.reject(`${captializedTableName} Not Found`);
+                return Promise.reject(`${capitalizedTableName} Table Not Found`);
             }
             return response.json({
                 // data = tuple
