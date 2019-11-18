@@ -56,11 +56,13 @@ app.get('/rent/get', query.getRent);
 
 // Rent a vehicle
 // requires: vlicense, dlicense, fromdate, todate, fromtime, totime, odometer, cardname, expdate, confno
+// requirement: a valid confno from reservation
 // @return data: rid
 app.post('/rent/create', query.createRent);
 
 // Return a vehicle
-// rid, date, time, odometer, fulltank, value
+// require: id, date, time, odometer, fulltank, value
+// requirement: a valid rid from rental
 // @return data: rid
 app.post('/return/create', query.createReturn);
 

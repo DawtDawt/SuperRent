@@ -14,10 +14,18 @@ const pool = new Pool({
 // abstracted queries
 const vehicleRentQuery = `SELECT * FROM vehicle WHERE vtname LIKE $1 AND location LIKE $2 AND city LIKE $3 AND NOT EXISTS
     (SELECT * FROM rental r WHERE (r.fromdate < $4 AND $4 < r.todate) OR (r.fromdate < $5 AND $5 < r.todate) OR
-    (r.fromdate = $5 AND r.fromtime < $7) OR (r.todate = $4 AND $6 < r.totime))`;
-const vehicleReservationQuery = `SELECT * FROM reservation WHERE vtname LIKE $1 AND NOT EXISTS
-    (SELECT * FROM reservation r WHERE (r.fromdate < $2 AND $2 < r.todate) OR (r.fromdate < $3 AND $3 < r.todate) OR
-    (r.fromdate = $3 AND r.fromtime < $5) OR (r.todate = $2 AND $4 < r.totime))`;
+                                  (r.fromdate = $4 AND r.todate = $5 AND r.fromdate <> r.todate) OR
+                                  (r.todate = $4 AND $6 < r.totime AND r.todate <> r.fromdate) OR
+                                  (r.fromdate = $5 AND r.fromtime < $7 AND r.todate <> r.fromdate) OR
+                                  (r.fromdate = $4 AND r.todate = $5 AND r.fromdate = r.todate AND r.fromtime <= $6 AND $6 <= r.totime) OR
+                                  (r.fromdate = $4 AND r.todate = $5 AND r.fromdate = r.todate AND r.fromtime <= $7 AND $7 <= r.totime))`;
+const vehicleReservationQuery = `SELECT * FROM reservation r WHERE r.vtname LIKE $1 AND
+                                 ((r.fromdate < $2 AND $2 < r.todate) OR (r.fromdate < $3 AND $3 < r.todate) OR
+                                  (r.fromdate = $2 AND r.todate = $3 AND r.fromdate <> r.todate) OR
+                                  (r.todate = $2 AND $4 < r.totime AND r.todate <> r.fromdate) OR
+                                  (r.fromdate = $3 AND r.fromtime < $5 AND r.todate <> r.fromdate) OR
+                                  (r.fromdate = $2 AND r.todate = $3 AND r.fromdate = r.todate AND r.fromtime <= $4 AND $4 <= r.totime) OR
+                                  (r.fromdate = $2 AND r.todate = $3 AND r.fromdate = r.todate AND r.fromtime <= $5 AND $5 <= r.totime))`;
 
 
 function getVehicle(request, response) {
@@ -33,32 +41,52 @@ function getVehicle(request, response) {
         vtname = request.query.vtname;
     }
     if (request.query.hasOwnProperty("location")) {
-        vtname = request.query.location;
+        location = request.query.location;
     }
     if (request.query.hasOwnProperty("city")) {
-        vtname = request.query.city;
+        city = request.query.city;
     }
     if (request.query.hasOwnProperty("fromdate")) {
-        vtname = request.query.fromdate;
+        fromdate = request.query.fromdate;
     }
     if (request.query.hasOwnProperty("todate")) {
-        vtname = request.query.todate;
+        todate = request.query.todate;
     }
     if (request.query.hasOwnProperty("fromtime")) {
-        vtname = request.query.fromtime;
+        fromtime = request.query.fromtime;
     }
     if (request.query.hasOwnProperty("totime")) {
-        vtname = request.query.totime;
+        totime = request.query.totime;
     }
+    let finalResult;
+    console.log("got here");
     // query: SELECT vehicle fulfilling type, location, and NOT in Rent during time interval
     return pool.query(vehicleRentQuery, [vtname, location, city, fromdate, todate, fromtime, totime])
         .then(result => {
+            console.log("got here");
+            console.log(result.rows[0]);
+            // throws error if no reservation slot is available
+            if (result.rows.length === 0) {
+                return Promise.reject("No such vehicle available");
+            }
+            finalResult = result;
+            return pool.query(vehicleReservationQuery, [vtname, fromdate, todate, fromtime, totime]);
+        })
+        .then(reserveResult => {
+            console.log("got here");
+            if (finalResult.rows.length <= reserveResult.rows.length) {
+                return Promise.reject("No such vehicle available");
+            }
+            console.log("got here 4");
+            return Promise.resolve();
+        })
+        .then(() => {
             return response.json({
-                data: result.rows
+                data: finalResult.rows
             });
         })
         .catch(error => {
-            return response.signal(404).send({
+            return response.send({
                 error: error,
                 message: "Problem Getting vehicle"
             });
@@ -77,7 +105,7 @@ function getReserve(request, response) {
             });
         })
         .catch(error => {
-            return response.signal(404).send({
+            return response.send({
                 error: error,
                 message: "Problem Getting Reservation"
             });
@@ -106,6 +134,9 @@ function createReserve(request, response) {
             return pool.query(vehicleReservationQuery, [vtname, fromdate, todate, fromtime, totime]);
         })
         .then(reserveResult => {
+            console.log("got here 3");
+            console.log(reserveResult.rows);
+            console.log(rentResult.rows);
             if (rentResult.rows.length <= reserveResult.rows.length) {
                 return Promise.reject("No such vehicle available");
             }
@@ -121,7 +152,7 @@ function createReserve(request, response) {
             });
         })
         .catch(error => {
-            return response.signal(404).send({
+            return response.send({
                 error: error,
                 message: "Problem Creating Reservation"
             });
@@ -141,7 +172,7 @@ function getCustomer(request, response) {
             });
         })
         .catch(error => {
-            return response.signal(404).send({
+            return response.send({
                 error: error,
                 message: "Problem Getting Customer Information"
             });
@@ -163,7 +194,7 @@ function createCustomer(request, response) {
             });
         })
         .catch(error => {
-            return response.signal(404).send({
+            return response.send({
                 error: error,
                 message: "Problem Creating Customer"
             });
@@ -183,7 +214,7 @@ function getRent(request, response) {
             });
         })
         .catch(error => {
-            return response.signal(404).send({
+            return response.send({
                 error: error,
                 message: "Problem Getting Rent Record"
             });
@@ -217,7 +248,7 @@ function createRent(request, response) {
             });
         })
         .catch(error => {
-            return response.signal(404).send({
+            return response.send({
                 error: error,
                 message: "Problem Creating New Rental Record"
             });
@@ -284,7 +315,7 @@ function getDailyRental(request, response) {
             });
         })
         .catch(error => {
-            return response.signal(404).send({
+            return response.send({
                 error: error,
                 message: "Problem Getting Daily Rental"
             });
@@ -323,7 +354,7 @@ function getDailyBranchRental(request, response) {
             });
         })
         .catch(error => {
-            return response.signal(404).send({
+            return response.send({
                 error: error,
                 message: "Problem Getting Daily Rental By Branch"
             });
@@ -381,7 +412,7 @@ function getDailyReturn(request, response) {
             });
         })
         .catch(error => {
-            return response.signal(404).send({
+            return response.send({
                 error: error,
                 message: "Problem Getting Daily Return"
             });
@@ -441,7 +472,7 @@ function getDailyBranchReturn(request, response) {
             });
         })
         .catch(error => {
-            return response.signal(404).send({
+            return response.send({
                 error: error,
                 message: "Problem Getting Daily Return By Branch"
             });
