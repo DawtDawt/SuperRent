@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {Button, Table} from "react-bootstrap";
+import {Link, Route} from "react-router-dom";
+import ReserveVehicle from "./ReserveVehicle";
 
 class ReserveTable extends React.Component {
     constructor(props) {
@@ -8,7 +10,7 @@ class ReserveTable extends React.Component {
         this.state = {
             didMount: false,
             collapse: false,
-            vehicleTypes: [],
+            vtnames: [],
             "img-Economy": "https://www.avis.ca/content/dam/cars/l/2016/chevrolet/2016-chevrolet-spark-ev-hatchback-black.png",
             "img-Compact": "https://www.avis.ca/content/dam/cars/l/2016/chevrolet/2016-chevrolet-sonic-lt-at-sedan-side-view-black.png",
             "img-Standard": "https://www.avis.ca/content/dam/cars/l/2016/hyundai/2016-hyundai-sonata-limited-sedan-venetian-red.png",
@@ -18,10 +20,6 @@ class ReserveTable extends React.Component {
             "img-Mid-size": "https://www.avis.ca//content/dam/cars/l/2018/hyundai/2018-hyundai-elantra-limited-sedan-black.png",
         };
     }
-
-    handleSubmit = (state) => {
-
-    };
 
     fadeIn() {
         setTimeout(() => {
@@ -101,13 +99,21 @@ class ReserveTable extends React.Component {
                 {numAvailable}
                 <Table hover style={tableStyle}>
                     <tbody>
-                    {this.props.vehicleTypes.map((vehicleType, idx) => {
+                    {this.props.vtnames.map((vtname, idx) => {
                         return (
                             <tr key={idx} className={`fade-in reserveTable`}>
                                 <td style={{width: "30%"}}>
-                                    <img src={this.state["img-" + vehicleType]} height={"100px"}/></td>
-                                <td style={{width: "30%"}} className={"align-middle"}><h4>{vehicleType}</h4></td>
-                                <td style={{width: "30%"}} className={"align-middle"}><Button variant={"success"} size={"lg"}>Reserve</Button>
+                                    <img src={this.state["img-" + vtname]} height={"100px"}/>
+                                </td>
+                                <td style={{width: "30%"}} className={"align-middle"}>
+                                    <h4>{vtname}</h4>
+                                </td>
+                                <td style={{width: "30%"}} className={"align-middle"}>
+                                    <a href={"/customer/reserve"}>
+                                        <Button variant={"success"} size={"lg"} onClick={this.handleClick}>
+                                            Reserve
+                                        </Button>
+                                    </a>
                                 </td>
                             </tr>
                         )

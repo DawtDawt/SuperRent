@@ -46,7 +46,13 @@ class ReserveSearchConsole extends React.Component {
                         this.setState({vehicleTypes});
                         ReactDOM.render(<ReserveTable ref={this.ReserveTable}
                                                       vehicles={this.state.vehicles}
-                                                      vehicleTypes={vehicleTypes}/>, document.getElementById("reserve-result"));
+                                                      vtnames={vehicleTypes}
+                                                      location={this.state["reserve-location"]}
+                                                      fromdate={this.state["reserve-fromdate"]}
+                                                      todate={this.state["reserve-todate"]}
+                                                      fromtime={this.state["reserve-fromtime"]}
+                                                      totime={this.state["reserve-totime"]}
+                        />, document.getElementById("reserve-result"));
                         this.ReserveTable.current.fadeIn();
                     }
                 })
@@ -59,7 +65,7 @@ class ReserveSearchConsole extends React.Component {
         const btnName = event.target.className.split(" ")[0];
         document.getElementById(btnName).innerText = event.target.value;
         document.getElementById(btnName).className = document.getElementById(btnName).className.split(" ").filter((elem) => {
-           return elem !== "btn-outline-primary";
+            return elem !== "btn-outline-primary";
         }).join(" ");
         document.getElementById(btnName).className = document.getElementById(btnName).className.concat(" btn-primary");
         this.setState({[btnName]: event.target.value});
