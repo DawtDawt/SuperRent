@@ -1,0 +1,3 @@
+INSERT INTO Return
+VALUES
+    (450, '2019-10-30', '3:00PM', 3000, TRUE, 2000);
