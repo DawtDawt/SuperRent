@@ -6,6 +6,7 @@ import Homepage from "./components/Homepage";
 import Rent from "./components/clerk/Rent";
 import Reserve from "./components/customer/Reserve";
 import Return from "./components/clerk/Return";
+import Report from "./components/clerk/Report";
 
 function App() {
     return (
@@ -16,6 +17,7 @@ function App() {
                 <Route exact path={"/vehicles"} component={Vehicles}/>
                 <Route exact path={"/rent"} component={Rent}/>
                 <Route exact path={"/return"} component={Return}/>
+                <Route exact path={"/report"} component={Report}/>
             </Switch>
         </React.Fragment>
     );
