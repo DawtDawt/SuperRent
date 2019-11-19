@@ -1,7 +1,7 @@
 import React from 'react';
 import ClerkNavbar from "./ClerkNavbar";
 import RentForm from "./RentForm";
-import VehicleFilters from "../customer/VehicleFilters";
+import ReserveSearchConsole from "../customer/ReserveSearchConsole";
 import CustomerNavbar from "../customer/CustomerNavbar";
 
 class Rent extends React.Component {

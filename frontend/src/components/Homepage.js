@@ -20,7 +20,7 @@ class Homepage extends React.Component {
                     <h1>I am a...</h1>
                 </div>
                 <div>
-                    <Link to="/reserve">
+                    <Link to="/customer">
                         <Button variant={"primary"} size={"lg"} style={btnStyle}>Customer</Button>
                     </Link>
                     <Link to="/rent">
