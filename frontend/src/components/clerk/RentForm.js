@@ -79,12 +79,7 @@ class RentForm extends React.Component {
                         <Button size={"lg"} onClick={this.handleSubmit} style={{margin: "0px"}}>Generate Receipt</Button>
                     </ButtonGroup>
                 </Form.Group>
-
             </React.Fragment>
-
-
-
-
         )
     }
 

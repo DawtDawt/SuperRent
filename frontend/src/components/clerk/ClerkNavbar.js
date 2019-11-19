@@ -18,14 +18,22 @@ class ClerkNavbar extends React.Component {
             navLinks = <React.Fragment>
                 <Nav.Link href="/rent" style={activeLinkStyle}>Rent</Nav.Link>
                 <Nav.Link href="/return">Return</Nav.Link>
-                <Nav.Link href="#"> Report</Nav.Link>
+                <Nav.Link href="/"> Report</Nav.Link>
             </React.Fragment>
         } else {
-            navLinks = <React.Fragment>
-                <Nav.Link href="/rent">Rent</Nav.Link>
-                <Nav.Link href="/return">Return</Nav.Link>
-                <Nav.Link href="#" style={activeLinkStyle}>Report</Nav.Link>
-            </React.Fragment>
+            if (this.props.activeLink === "return") {
+                navLinks = <React.Fragment>
+                    <Nav.Link href="/rent">Rent</Nav.Link>
+                    <Nav.Link href="/return" style={activeLinkStyle}>Return</Nav.Link>
+                    <Nav.Link href="/">Report</Nav.Link>
+                </React.Fragment>
+            } else {
+                navLinks = <React.Fragment>
+                    <Nav.Link href="/rent">Rent</Nav.Link>
+                    <Nav.Link href="/return">Return</Nav.Link>
+                    <Nav.Link href="/" style={activeLinkStyle}>Report</Nav.Link>
+                </React.Fragment>
+            }
         }
         return (
             <Navbar bg={"dark"} variant={"dark"}>

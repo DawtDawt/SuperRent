@@ -3,6 +3,7 @@ import ClerkNavbar from "./ClerkNavbar";
 import RentForm from "./RentForm";
 import VehicleFilters from "../customer/VehicleFilters";
 import CustomerNavbar from "../customer/CustomerNavbar";
+import ReturnForm from "./ReturnForm";
 
 class Rent extends React.Component {
     constructor(props) {

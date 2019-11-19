@@ -1,23 +1,21 @@
 import React from 'react';
 import ClerkNavbar from "./ClerkNavbar";
 import ReturnForm from "./ReturnForm";
-import RentForm from "./RentForm";
-
 
 class Return extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {vehicles: []};
-    }
-
-    componentDidMount() {
-        fetch('https://jsonplaceholder.typicode.com/todos')
-            .then(response => response.json())
-            .then(data => {
-                this.setState({vehicles: data});
-            })
-            .catch(console.log);
-    }
+    // constructor(props) {
+    //     super(props);
+    //     this.state = {vehicles: []};
+    // }
+    //
+    // componentDidMount() {
+    //     fetch('https://jsonplaceholder.typicode.com/todos')
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             this.setState({vehicles: data});
+    //         })
+    //         .catch(console.log);
+    // }
 
     render() {
         const style = {
@@ -36,7 +34,6 @@ class Return extends React.Component {
             flexWrap: "wrap",
             justifyContent: "center"
         };
-
         return (
             <React.Fragment>
                 <ClerkNavbar activeLink={"return"}/>
