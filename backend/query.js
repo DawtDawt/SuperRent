@@ -12,8 +12,8 @@ const pool = new Pool({
 
 
 // abstracted queries
-const vehicleRentQuery = `SELECT * FROM vehicle WHERE vtname LIKE $1 AND location LIKE $2 AND city LIKE $3 AND NOT EXISTS
-    (SELECT * FROM rental r WHERE (r.fromdate < $4 AND $4 < r.todate) OR (r.fromdate < $5 AND $5 < r.todate) OR
+const vehicleRentQuery = `SELECT * FROM vehicle WHERE vtname LIKE $1 AND location LIKE $2 AND city LIKE $3 AND vlicense NOT IN
+    (SELECT r.vlicense FROM rental r WHERE (r.fromdate < $4 AND $4 < r.todate) OR (r.fromdate < $5 AND $5 < r.todate) OR
                                   (r.fromdate = $4 AND r.todate = $5 AND r.fromdate <> r.todate) OR
                                   (r.todate = $4 AND $6 < r.totime AND r.todate <> r.fromdate) OR
                                   (r.fromdate = $5 AND r.fromtime < $7 AND r.todate <> r.fromdate) OR
