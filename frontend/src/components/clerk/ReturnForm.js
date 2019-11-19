@@ -12,7 +12,7 @@ class ReturnForm extends React.Component {
     }
 
     componentDidMount() {
-        fetch("http://localhost:8080/table/customer")
+        fetch("http://localhost:8080/table/rental")
             .then(response => {
                 return response.json();
             })
