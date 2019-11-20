@@ -55,7 +55,6 @@ class Clerk extends React.Component {
             .catch(console.log);
     }
 
-
     render() {
         const style = {
             margin: "100px",
