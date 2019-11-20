@@ -2,3 +2,4 @@
 .DS_Store
 backend/.idea
 frontend/.idea
+/package-lock.json

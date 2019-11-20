@@ -1,22 +1,44 @@
 .App {
-  text-align: center;
+    text-align: center;
 }
 
 .App-logo {
-  height: 40vmin;
+    height: 40vmin;
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+    background-color: #282c34;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
 }
 
 .App-link {
-  color: #09d3ac;
+    color: #09d3ac;
 }
+
+
+/*.CalendarDay__selected_span {*/
+/*    background: #82e0aa;*/
+/*    color: white;*/
+/*    border: 1px solid blue;*/
+/*}*/
+
+/*.CalendarDay__selected {*/
+/*    background: blue;*/
+/*    color: white;*/
+/*}*/
+
+/*.CalendarDay__selected:hover {*/
+/*    background: orange;*/
+/*    color: white;*/
+/*}*/
+
+/*.CalendarDay__hovered_span:hover,*/
+/*.CalendarDay__hovered_span {*/
+/*    background: brown;*/
+/*}*/

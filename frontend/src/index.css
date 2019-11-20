@@ -5,9 +5,48 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: #F8F8F8;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+.wrapper {
+  text-align: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: 10px;
+}
+
+.DateRangePicker {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+  "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+  sans-serif;
+  font-weight: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  width: 286px;
+  margin: 5px 10px;
+}
+
+.DateRangePickerInput {
+  border: 1px solid #007bff;
+}
+
+.DateInput_input {
+  font-weight: normal;
+  text-align: center;
+  color: #007bff;
+}
+
+.fade-in {
+  opacity: 0;
+}
+.fade-in.visible {
+  transition: opacity 0.4s ease-in;
+  opacity: 1;
 }

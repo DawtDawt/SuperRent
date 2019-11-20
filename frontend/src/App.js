@@ -1,24 +1,22 @@
 import React from 'react';
 import './App.css';
-import { Route, Switch } from 'react-router-dom'
-import Vehicles from "./pages/Vehicles";
-import Generate from "./pages/Generate";
-import Browse from "./pages/Browse";
-import Navbar from "./Navbar";
-import Rent from "./pages/Rent";
-import Return from "./pages/Return";
+import {BrowserRouter, Route, Switch} from 'react-router-dom'
+import Homepage from "./components/Homepage";
+import Rent from "./components/clerk/Rent";
+import Customer from "./components/customer/Customer";
+import ReserveVehicle from "./components/customer/ReserveVehicle";
+import ReserveSuccess from "./components/customer/ReserveSuccess";
 
 function App() {
     return (
         <React.Fragment>
-            <Navbar/>
-            <Switch>
-                <Route exact path={"/vehicles"} component={Vehicles}/>
-                <Route exact path={"/Generate Report"} component={Generate}/>
-                <Route exact path={"/Browse"} component={Browse}/>
-                <Route exact path={"/Rent"} component={Rent}/>
-                <Route exact path={"/Return"} component={Return}/>
-            </Switch>
+                <Switch>
+                    <Route exact path={"/"} component={Homepage}/>
+                    <Route exact path={"/customer"} component={Customer}/>
+                    <Route exact path={"/customer/reserve/:city/:location/:fromdate/:todate/:fromtime/:totime/:vtname"} component={ReserveVehicle}/>
+                    <Route exact path={"/customer/reserve/success/:city/:location/:fromdate/:todate/:fromtime/:totime/:vtname/:confNo"} component={ReserveSuccess}/>
+                    <Route exact path={"/rent"} component={Rent}/>
+                </Switch>
         </React.Fragment>
     );
 }
