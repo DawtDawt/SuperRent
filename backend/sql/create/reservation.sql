@@ -1,7 +1,9 @@
 CREATE TABLE Reservation (
-    confno SERIAL PRIMARY KEY,
+    confno BIGSERIAL PRIMARY KEY,
     vtname VARCHAR(50),
     dlicense VARCHAR(50),
+    location VARCHAR(50),
+    city VARCHAR(50),
     fromdate DATE,
     todate DATE,
     fromtime TIME,

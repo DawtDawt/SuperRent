@@ -107,7 +107,8 @@ class ReserveVehicle extends React.Component {
         });
         const content = await response.json();
         if (content.error) {
-            alert(content.error);
+            alert("Another reservation has already been made with this driver's license. Please try again.");
+            console.log(content.error);
             throw Error(content.error);
         } else {
             return (content.data);

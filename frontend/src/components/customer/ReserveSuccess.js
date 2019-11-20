@@ -62,7 +62,7 @@ class ReserveSuccess extends React.Component {
                         </div>
                         <div>
                             <Link to="/customer">
-                                <Button variant={"primary"} size={"lg"} style={btnStyle}>Go Back to home page</Button>
+                                <Button variant={"primary"} size={"lg"} style={btnStyle}>Go back to home page</Button>
                             </Link>
                         </div>
                     </div>
