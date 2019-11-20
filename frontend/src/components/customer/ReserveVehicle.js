@@ -151,7 +151,7 @@ class ReserveVehicle extends React.Component {
                             </div>
                         </div>
                         <div className={"col-sm"} style={centerStyle}>
-                            <img src={this.state["img-" + vtname]} height={"100px"}/>
+                            <img src={this.state["img-" + vtname]} alt={"vehicleType"} height={"100px"}/>
                             <h5>{vtname}</h5>
                         </div>
                     </div>
@@ -188,9 +188,11 @@ class ReserveVehicle extends React.Component {
                                     <Form.Label>Driver's License</Form.Label>
                                     <Form.Control type="text" placeholder="Enter Driver's License"/>
                                 </Form.Group>
-                                <Button variant="primary" type="button" onClick={this.returningCustomer}>
-                                    Reserve
-                                </Button>
+                                <Form.Group>
+                                    <Button variant="primary" type="button" onClick={this.returningCustomer}>
+                                        Reserve
+                                    </Button>
+                                </Form.Group>
                             </Form>
                         </div>
                     </div>

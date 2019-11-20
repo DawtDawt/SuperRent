@@ -4,9 +4,7 @@ import {Table} from "react-bootstrap";
 class BrowseTable extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            collapse: false,
-        };
+        this.state = {};
     }
 
     fadeIn() {

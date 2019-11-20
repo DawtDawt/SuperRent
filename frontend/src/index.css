@@ -43,6 +43,27 @@ code {
   color: #007bff;
 }
 
+.SingleDatePicker {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+  "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+  sans-serif;
+  font-weight: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.SingleDatePickerInput {
+  border: 1px solid #007bff;
+}
+
+.DateInput_input {
+  font-weight: normal;
+  text-align: center;
+  color: #007bff;
+}
+
+
+
 .fade-in {
   opacity: 0;
 }

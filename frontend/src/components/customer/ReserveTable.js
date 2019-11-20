@@ -1,8 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {Button, Table} from "react-bootstrap";
-import {Link, Route} from "react-router-dom";
-import ReserveVehicle from "./ReserveVehicle";
 import moment from "moment";
 
 class ReserveTable extends React.Component {
@@ -95,7 +93,7 @@ class ReserveTable extends React.Component {
         if (this.props.vehicles.length > 0) {
             numAvailable =
                 <h5>
-                    <a href={"#"} onClick={this.renderVehicleDetails}>{this.props.vehicles.length} Vehicle(s)
+                    <a href={"#table"} onClick={this.renderVehicleDetails}>{this.props.vehicles.length} Vehicle(s)
                         available</a>
                 </h5>;
         } else {
@@ -111,7 +109,7 @@ class ReserveTable extends React.Component {
                         return (
                             <tr key={idx} className={`fade-in reserveTable`}>
                                 <td style={{width: "30%"}}>
-                                    <img src={this.state["img-" + vtname]} height={"100px"}/>
+                                    <img src={this.state["img-" + vtname]} alt={"vehicleType"} height={"100px"}/>
                                 </td>
                                 <td style={{width: "30%"}} className={"align-middle"}>
                                     <h4>{vtname}</h4>

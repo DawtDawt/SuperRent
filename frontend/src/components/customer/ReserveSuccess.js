@@ -2,7 +2,6 @@ import React from 'react';
 import {Link} from "react-router-dom";
 import {Button} from "react-bootstrap";
 import CustomerNavbar from "./CustomerNavbar";
-import Form from "react-bootstrap/Form";
 
 class ReserveSuccess extends React.Component {
     constructor(props) {
@@ -33,11 +32,6 @@ class ReserveSuccess extends React.Component {
             verticalAlign: "center",
         };
 
-        const rowStyle = {
-            margin: "30px",
-            textAlign: "left",
-        };
-
         const {city, location, fromdate, todate, fromtime, totime, vtname, confNo} = this.props.match.params;
 
         return (
@@ -56,7 +50,7 @@ class ReserveSuccess extends React.Component {
                                     Number: {confNo}</h5>
                             </div>
                             <div className={"col-sm"} style={{textAlign: "center"}}>
-                                <img src={this.state["img-" + vtname]} height={"100px"}/>
+                                <img src={this.state["img-" + vtname]} alt={"vehicleType"} height={"100px"}/>
                                 <h5>{vtname}</h5>
                             </div>
                         </div>

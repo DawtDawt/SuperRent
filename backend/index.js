@@ -82,7 +82,7 @@ app.get('/report/rental/branch', query.getDailyBranchRental);
 // where vehicle, perCategory, revenuePerCategory, perBranch, revenuePerBranch: tuples
 app.get('/report/return', query.getDailyReturn);
 
-// Daily Return Report
+// Daily Return Report By Branch
 // requires: date, location, city
 // @return data: {vehicle, perCategory, revenuePerCategory, perBranch, revenuePerBranch, revenueTotal},
 // where vehicle, perCategory, revenuePerCategory, perBranch, revenuePerBranch: tuples

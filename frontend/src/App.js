@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import {BrowserRouter, Route, Switch} from 'react-router-dom'
+import {Route, Switch} from 'react-router-dom'
 import Homepage from "./components/Homepage";
 import Customer from "./components/customer/Customer";
 import Clerk from "./components/clerk/Clerk";

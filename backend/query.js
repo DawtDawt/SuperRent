@@ -485,9 +485,9 @@ function getTable (request, response) {
     return pool.query(`SELECT * FROM ${tableName}`)
         .then(result => {
             const capitalizedTableName = tableName.charAt(0).toUpperCase() + tableName.slice(1);
-            if (result.rows.length === 0) {
-                return Promise.reject(`${capitalizedTableName} Table Not Found`);
-            }
+            // if (result.rows.length === 0) {
+            //     return Promise.reject(`${capitalizedTableName} Table Not Found`);
+            // }
             return response.json({
                 // data = tuple
                 data: result.rows

@@ -1,127 +1,70 @@
 import React from 'react';
 import {Button, ButtonGroup, DropdownButton, DropdownItem} from "react-bootstrap";
-import {DateRangePicker} from 'react-dates';
+import ReturnTable from "./ReturnTable";
 import ReactDOM from "react-dom";
-
-
+import moment from "moment";
 
 class ReturnSearchConsole extends React.Component {
     constructor(props) {
         super(props);
         this.state = {};
-        this.ReserveTable = React.createRef();
+        this.ResultTable = React.createRef();
     }
 
-    // handleSubmit = (state) => {
-    //     if (state["reserve-location"] && state["reserve-startDate"] && state["reserve-endDate"] && state["reserve-fromtime"] && state["reserve-totime"]) {
-    //         const query = this.getQuery();
-    //         this.getResults(query);
-    //     }
-    //
-    // };
+    handleSubmit = async (event) => {
+        if (this.state.rentID) {
+            try {
+                const body = {
+                    rid: this.state.rentID,
+                    date: moment().format("YYYY-MM-DD"),
+                    time: moment().format("LT"),
+                    odometer: 1300,
+                    fulltank: true,
+                    value: this.calculateCost()
+                };
+                const response = await fetch("http://localhost:8080/return/create", {
+                    method: "POST",
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(body)
+                });
 
+                const content = await response.json();
 
-    handleSubmit = (event) => {
-        event.preventDefault();
-        // Check if all forms have been filed
-        if (this.isFormFilled()) {
-            console.log('form')
-        } else {
+                if (content.error) {
+                    alert(content.error);
+                    console.log(content.error);
+                    throw Error(content.error);
+                }
+
+                ReactDOM.render(<ReturnTable ref={this.ReportTable}
+                                             rentDetail={body}/>, document.getElementById("return-result"));
+            } catch (e) {
+                console.log(e);
+            }
 
         }
     };
 
+    // TODO or should this be done in backend?
+    // Calculates the cost of the rental based on rid
+    calculateCost() {
+        return 0;
+    }
 
     handleChange = (event) => {
-        const btnName = event.target.className.split(" ")[0];
-        document.getElementById(btnName).innerText = event.target.value;
-        document.getElementById(btnName).className = document.getElementById(btnName).className.concat(" btn-success");
-        this.setState({[btnName]: event.target.value});
+        document.getElementById("rentID").innerText = event.target.value;
+        document.getElementById("rentID").className = document.getElementById("rentID").className.concat(" btn-success");
+        document.getElementById("rentID").className = document.getElementById("rentID").className.split(" ").filter((elem) => {
+            return elem !== "btn-outline-primary";
+        }).join(" ");
+        this.setState({rentID: event.target.value});
         console.log(event.target.value);
     };
 
-
-
-
-    // getResults(query) {
-    //     const vehicleTypes = [];
-    //     fetch("http://localhost:8080/vehicle/get/?" + query)
-    //         .then(response => {
-    //             return response.json();
-    //         })
-    //         .then(data => {
-    //             if (data.error) {
-    //                 console.log(data.error);
-    //                 this.setState({vehicles: []});
-    //             } else {
-    //                 this.setState({vehicles: data.data});
-    //                 data.data.forEach((car) => {
-    //                     if (!vehicleTypes.includes(car.vtname)) {
-    //                         vehicleTypes.push(car.vtname);
-    //                     }
-    //                 });
-    //                 vehicleTypes.sort();
-    //                 this.setState({vehicleTypes});
-    //             }
-    //             ReactDOM.render(<ReserveTable ref={this.ReserveTable}
-    //                                           vehicles={this.state.vehicles}
-    //                                           vtnames={vehicleTypes}
-    //                                           location={this.state["reserve-location"]}
-    //                                           fromdate={this.state["reserve-fromdate"]}
-    //                                           todate={this.state["reserve-todate"]}
-    //                                           fromtime={this.state["reserve-fromtime"]}
-    //                                           totime={this.state["reserve-totime"]}
-    //             />, document.getElementById("reserve-result"));
-    //             this.ReserveTable.current.fadeIn();
-    //         })
-    //         .catch(console.log);
-    // }
-
-    // getQuery = () => {
-    //     const body = {};
-    //     body["city"] = this.state["reserve-location"].split(" - ")[0];
-    //     body["location"] = this.state["reserve-location"].split(" - ")[1];
-    //     body["fromdate"] = this.state["reserve-startDate"].format("YYYY-MM-DD");
-    //     body["todate"] = this.state["reserve-endDate"].format("YYYY-MM-DD");
-    //     body["fromtime"] = this.state["reserve-fromtime"];
-    //     body["totime"] = this.state["reserve-totime"];
-    //
-    //     const query = Object.keys(body).map(function (key) {
-    //         return key + '=' + encodeURIComponent(body[key]);
-    //     }).join('&');
-    //     return query;
-    // };
-
-    // handleChange = (event) => {
-    //     const btnName = event.target.className.split(" ")[0];
-    //     document.getElementById(btnName).innerText = event.target.value;
-    //     document.getElementById(btnName).className = document.getElementById(btnName).className.split(" ").filter((elem) => {
-    //         return elem !== "btn-outline-primary";
-    //     }).join(" ");
-    //     document.getElementById(btnName).className = document.getElementById(btnName).className.concat(" btn-primary");
-    //     this.setState({[btnName]: event.target.value});
-    //     setTimeout(() => {
-    //         if (this.state["reserve-location"]
-    //             && this.state["reserve-startDate"]
-    //             && this.state["reserve-endDate"]
-    //             && this.state["reserve-fromtime"]
-    //             && this.state["reserve-totime"]) {
-    //             document.getElementById("searchBtn").disabled = false;
-    //             document.getElementById("searchBtn").onclick = () => {
-    //                 this.handleSubmit(this.state);
-    //             };
-    //         }
-    //     }, 200);
-    // };
-
-
-
-    render(){
-        const btnStyle = {
-            width: "300px",
-            // height: "50px",
-            margin: "000px",
-        };
+    render() {
 
         const locationStyle = {
             margin: "5px",
@@ -129,142 +72,43 @@ class ReturnSearchConsole extends React.Component {
         };
 
         const dropdownStyle = {
-            maxHeight: "200px",
-            width: "160px",
+            width: "350px",
             overflowY: "scroll"
         };
 
         const locationDropdownStyle = {
-            maxHeight: "205px",
-            width: "300px",
+            maxHeight: "350px",
             overflowY: "scroll",
         };
 
-        const flexStyle = {
-            margin: "20px 0 0 0",
-            minWidth: "100%",
-            display: "flex", flexDirection: "row",
-            flexWrap: "wrap",
-            justifyContent: "center"
+        const consoleStyle = {
+            margin: "20px",
+            padding: "20px",
+            textAlign: "center"
         };
 
         return (
             <React.Fragment>
-                <div style={flexStyle}>
-                    <DropdownButton title={"Customer"} size={"lg"} id={"rental-recipt"} style={locationStyle}
+                <div style={consoleStyle}>
+                    <DropdownButton title={"Rent ID"} size={"lg"} id={"rentID"} style={locationStyle}
                                     as={ButtonGroup}
                                     variant={"outline-primary"}
                                     drop={'down'}>
                         <div style={dropdownStyle}>
-                            {this.props.RentSelection.map((elem, idx) => {
-                                return <DropdownItem key={idx} value={elem} as={"button"}
+                            {this.props.rentIDSelection.map((elem, idx) => {
+                                return <DropdownItem key={idx} value={elem.confno} as={"button"}
                                                      className={"reserve-location"}
                                                      onClick={this.handleChange}
-                                                     style={locationDropdownStyle}>{elem}</DropdownItem>;
+                                                     style={locationDropdownStyle}>{elem.confno}</DropdownItem>;
                             })}
                         </div>
                     </DropdownButton>
-                    <Button size={"lg"} onClick={this.handleSubmit} style={{margin: "0px"}}>Generate Receipt</Button>
+                    <Button size={"lg"} onClick={this.handleSubmit}>Return Vehicle</Button>
                 </div>
-
-
+                <div id={"return-result"}></div>
             </React.Fragment>
         )
     }
-
-
-
-    // render() {
-    //     const timeStyle = {
-    //         width: "180px",
-    //         margin: "5px"
-    //     };
-    //     const dropdownStyle = {
-    //         maxHeight: "205px",
-    //         // width: "300px",
-    //         overflowY: "scroll",
-    //     };
-    //     const locationStyle = {
-    //         margin: "5px",
-    //         width: "350px",
-    //     };
-    //     const locationDropdownStyle = {
-    //         maxHeight: "205px",
-    //         width: "300px",
-    //         overflowY: "scroll",
-    //     };
-    //     const flexStyle = {
-    //         margin: "20px 0 0 0",
-    //         minWidth: "100%",
-    //         display: "flex", flexDirection: "row",
-    //         flexWrap: "wrap",
-    //         justifyContent: "center"
-    //     };
-    //     return (
-    //         <React.Fragment>
-    //             <div style={flexStyle}>
-    //                 <DropdownButton title={"Location"} size={"lg"} id={"reserve-location"} style={locationStyle}
-    //                                 as={ButtonGroup}
-    //                                 variant={"outline-primary"}
-    //                                 drop={'down'}>
-    //                     <div style={dropdownStyle}>
-    //                         {this.props.branchSelection.map((elem, idx) => {
-    //                             return <DropdownItem key={idx} value={elem} as={"button"}
-    //                                                  className={"reserve-location"}
-    //                                                  onClick={this.handleChange}
-    //                                                  style={locationDropdownStyle}>{elem}</DropdownItem>;
-    //                         })}
-    //                     </div>
-    //                 </DropdownButton>
-    //                 <DateRangePicker
-    //                     startDate={this.state["reserve-startDate"]} // momentPropTypes.momentObj or null,
-    //                     startDateId="reserve-startDate" // PropTypes.string.isRequired,
-    //                     endDate={this.state["reserve-endDate"]} // momentPropTypes.momentObj or null,
-    //                     endDateId="reserve-endDate" // PropTypes.string.isRequired,
-    //                     onDatesChange={({startDate, endDate}) => this.setState({
-    //                         "reserve-startDate": startDate,
-    //                         "reserve-endDate": endDate
-    //                     })} // PropTypes.func.isRequired,
-    //                     focusedInput={this.state.focusedInput} // PropTypes.oneOf([START_DATE, END_DATE]) or null,
-    //                     onFocusChange={focusedInput => this.setState({focusedInput})} // PropTypes.func.isRequired,
-    //                 />
-    //                 <div>
-    //                     <DropdownButton title={"Start Time"}
-    //                                     value={this.state["reserve-fromtime"]}
-    //                                     size={"lg"}
-    //                                     variant={"outline-primary"}
-    //                                     as={ButtonGroup} id={"reserve-fromtime"} style={timeStyle}>
-    //                         <div style={dropdownStyle}>
-    //                             {this.props.times.map((elem, idx) => {
-    //                                 return <DropdownItem key={idx} value={elem} as={"button"}
-    //                                                      onClick={this.handleChange}
-    //                                                      className={"reserve-fromtime"}>{elem}</DropdownItem>;
-    //                             })}
-    //                         </div>
-    //                     </DropdownButton>
-    //                     <DropdownButton title={"End Time"}
-    //                                     value={this.state["reserve-totime"]}
-    //                                     size={"lg"}
-    //                                     variant={"outline-primary"}
-    //                                     as={ButtonGroup} id={"reserve-totime"} style={timeStyle}>
-    //                         <div style={dropdownStyle}>
-    //                             {this.props.times.map((elem, idx) => {
-    //                                 return <DropdownItem key={idx} value={elem} as={"button"}
-    //                                                      onClick={this.handleChange}
-    //                                                      className={"reserve-totime"}>{elem}</DropdownItem>;
-    //                             })}
-    //                         </div>
-    //                     </DropdownButton>
-    //                 </div>
-    //             </div>
-    //             <div>
-    //                 <Button size={"lg"} id={"searchBtn"} onClick={() => this.handleSubmit(this.state)}
-    //                         style={{margin: "10px 0"}} disabled>Search</Button>
-    //             </div>
-    //             <div id="reserve-result"></div>
-    //         </React.Fragment>
-    //     )
-    // }
 }
 
 

@@ -10,23 +10,49 @@ class Clerk extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            CustomerSelection: [],
-            RentSelection: [],
-            BranchSelection: [],
+            confNoSelection: [],
+            rentIDSelection: [],
+            branchSelection: [],
         };
     }
 
     componentDidMount() {
-        fetch("http://localhost:8080/table/customer")
+        // Get reservation confirmation numbers
+        fetch("http://localhost:8080/table/reservation")
             .then(response => {
                 return response.json();
             })
             .then(data => {
                 console.log(data.data);
-                this.setState({CustomerSelection: data.data});
+                this.setState({confNoSelection: data.data});
             })
             .catch(console.log);
 
+        // Get rent IDs
+        fetch("http://localhost:8080/table/rental")
+            .then(response => {return response.json()})
+            .then(data => {
+                console.log(data.data);
+                this.setState({rentIDSelection: data.data});
+            })
+            .catch(console.log);
+
+        // Get branch locations
+        fetch("http://localhost:8080/table/vehicle")
+            .then(response => {
+                return response.json();
+            })
+            .then(data => {
+                const branches = [];
+                data.data.forEach((car) => {
+                    const branchName = car.city + " - " + car.location;
+                    if (!branches.includes(branchName)) {
+                        branches.push(branchName);
+                    }
+                });
+                this.setState({branchSelection: branches});
+            })
+            .catch(console.log);
     }
 
 
@@ -47,13 +73,13 @@ class Clerk extends React.Component {
                 <div style={style}>
                     <Tabs justify defaultActiveKey="Rent" id="uncontrolled-tab-example">
                         <Tab eventKey="Rent" title="Rent">
-                            <RentSearchConsole CustomerSelection={this.state.CustomerSelection}/>
+                            <RentSearchConsole confNoSelection={this.state.confNoSelection}/>
                         </Tab>
                         <Tab eventKey="Return" title="Return">
-                            <ReturnSearchConsole RentSelection={this.state.RentSelection}/>
+                            <ReturnSearchConsole rentIDSelection={this.state.rentIDSelection}/>
                         </Tab>
                         <Tab eventKey="Report" title="Report">
-                            <ReportSearchConsole BranchSelection={this.state.BranchSelection}/>
+                            <ReportSearchConsole branchSelection={this.state.branchSelection}/>
                         </Tab>
                     </Tabs>
                 </div>
