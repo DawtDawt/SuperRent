@@ -1,5 +1,5 @@
 CREATE TABLE Rental(
-    rid SERIAL PRIMARY KEY,
+    rid BIGSERIAL PRIMARY KEY,
     vlicense VARCHAR(6),
     dlicense VARCHAR(50),
     fromdate DATE,
