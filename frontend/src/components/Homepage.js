@@ -23,7 +23,7 @@ class Homepage extends React.Component {
                     <Link to="/customer">
                         <Button variant={"primary"} size={"lg"} style={btnStyle}>Customer</Button>
                     </Link>
-                    <Link to="/rent">
+                    <Link to="/clerk">
                         <Button variant={"primary"} size={"lg"} style={btnStyle}>Clerk</Button>
                     </Link>
                 </div>
