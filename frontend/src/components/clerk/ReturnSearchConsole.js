@@ -151,20 +151,20 @@ class ReturnSearchConsole extends React.Component {
         return (
             <React.Fragment>
                 <div style={flexStyle}>
-                    <DropdownButton title={"Customer"} size={"lg"} id={"rental-recipt"} style={locationStyle}
+                    <DropdownButton title={"Customer"} size={"lg"} id={"return-action"} style={locationStyle}
                                     as={ButtonGroup}
                                     variant={"outline-primary"}
                                     drop={'down'}>
                         <div style={dropdownStyle}>
                             {this.props.RentSelection.map((elem, idx) => {
                                 return <DropdownItem key={idx} value={elem} as={"button"}
-                                                     className={"reserve-location"}
+                                                     className={"customer-return"}
                                                      onClick={this.handleChange}
                                                      style={locationDropdownStyle}>{elem}</DropdownItem>;
                             })}
                         </div>
                     </DropdownButton>
-                    <Button size={"lg"} onClick={this.handleSubmit} style={{margin: "0px"}}>Generate Receipt</Button>
+                    <Button size={"lg"} onClick={this.handleSubmit} style={{margin: "0px"}}>Return customer vehicle</Button>
                 </div>
 
 
