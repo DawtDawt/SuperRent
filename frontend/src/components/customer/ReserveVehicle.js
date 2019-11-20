@@ -1,6 +1,5 @@
 import React from 'react';
 import {Button} from "react-bootstrap";
-import {useParams} from "react-router-dom";
 import CustomerNavbar from "./CustomerNavbar";
 import Form from "react-bootstrap/Form";
 
@@ -18,20 +17,77 @@ class ReserveVehicle extends React.Component {
         };
     }
 
-    handleNewCustomerClick = () => {
-        // Register customer
+    newCustomer = async () => {
+        try {
+            // Register customer
+            const newDlicense = await this.register();
+            // Reserve
+            const confNo = await this.reserve(newDlicense);
+            const {city, location, fromdate, todate, fromtime, totime, vtname} = this.props.match.params;
+            window.location.href = `/customer/reserve/success/${city}/${location}/${fromdate}/${todate}/${fromtime}/${totime}/${vtname}/${confNo}`;
+        } catch (e) {
+            console.log(e);
+        }
 
-        // Reserve
-        const {city, location, fromdate, todate, fromtime, totime, vtname} = this.props.match.params;
-        const dlicense = document.getElementById("new-customer-dlicense").value;
-        console.log(dlicense);
     };
 
-    handleReturningCustomerClick = async () => {
+    returningCustomer = async () => {
+        try {
+            const dlicense = document.getElementById("returning-customer-dlicense").value;
+            const confNo = await this.reserve(dlicense);
+            const {city, location, fromdate, todate, fromtime, totime, vtname} = this.props.match.params;
+            window.location.href = `/customer/reserve/success/${city}/${location}/${fromdate}/${todate}/${fromtime}/${totime}/${vtname}/${confNo}`;
+        } catch (e) {
+            console.log(e);
+        }
+
+    };
+
+    register = async () => {
+        const name = document.getElementById("name").value;
+        const cellphone = document.getElementById("cellphone").value;
+        const address = document.getElementById("address").value;
+        const dlicense = document.getElementById("new-customer-dlicense").value;
+
+        [name, cellphone, address, dlicense].forEach((elem) => {
+            if (!elem) {
+                alert("Missing required rental information.");
+                throw Error("Missing required rental information.");
+            }
+        });
+
+        const response = await fetch("http://localhost:8080/customer/create", {
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name,
+                cellphone,
+                address,
+                dlicense,
+            })
+        });
+
+        const content = await response.json();
+        if (content.error) {
+            alert("Customer already exists");
+            throw Error(content.error);
+        } else {
+            return dlicense;
+        }
+
+    };
+
+    reserve = async (dlicense) => {
         const {city, location, fromdate, todate, fromtime, totime, vtname} = this.props.match.params;
-        const dlicense = document.getElementById("returning-customer-dlicense").value;
-        console.log(dlicense);
-        // TODO
+        [city, location, fromdate, todate, fromtime, totime, vtname, dlicense].forEach((elem) => {
+            if (!elem) {
+                alert("Missing required rental information.");
+                throw Error("Missing required rental information.")
+            }
+        });
         const response = await fetch("http://localhost:8080/reserve/create", {
             method: 'POST',
             headers: {
@@ -50,33 +106,37 @@ class ReserveVehicle extends React.Component {
             })
         });
         const content = await response.json();
+        if (content.error) {
+            alert(content.error);
+            throw Error(content.error);
+        } else {
+            return (content.data);
+        }
     };
 
 
     render() {
         const style = {
-            margin: "100px",
-            padding: "30px 20px",
+            margin: "30px 100px",
             border: "1px solid transparent",
             borderRadius: "35px",
             background: "#FFFFFF",
             boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
             transition: "all 0.3s cubic-bezier(.25,.8,.25,1)"
         };
-        const textStyle = {
+        const centerStyle = {
             textAlign: "center"
         };
         const customerFormStyle = {
-            margin: "40px 0 0 0",
+            margin: "30px 20px",
             textAlign: "left"
         };
         const vertLineStyle = {
-            margin: "10px 30px",
+            margin: "0px 30px",
             borderLeft: "1px solid grey",
-            height: "500px"
+            height: "420px"
         };
         const {city, location, fromdate, todate, fromtime, totime, vtname} = this.props.match.params;
-        console.log(this.props.match.params);
 
         return (
             <React.Fragment>
@@ -90,7 +150,7 @@ class ReserveVehicle extends React.Component {
                                 <h5>From {fromdate} {fromtime} <br/> To {todate} {totime}</h5>
                             </div>
                         </div>
-                        <div className={"col-sm"} style={textStyle}>
+                        <div className={"col-sm"} style={centerStyle}>
                             <img src={this.state["img-" + vtname]} height={"100px"}/>
                             <h5>{vtname}</h5>
                         </div>
@@ -107,19 +167,15 @@ class ReserveVehicle extends React.Component {
                                     <Form.Label>Cellphone</Form.Label>
                                     <Form.Control type="tel" placeholder="Enter Cellphone"/>
                                 </Form.Group>
-                                <Form.Group controlId="new-customer-dlicense">
-                                    <Form.Label>Driver's License</Form.Label>
-                                    <Form.Control type="text" placeholder="Enter Driver's license"/>
-                                </Form.Group>
-                                <Form.Group controlId="cellphone">
-                                    <Form.Label>Cellphone</Form.Label>
-                                    <Form.Control type="tel" placeholder="Enter Cellphone"/>
-                                </Form.Group>
                                 <Form.Group controlId="address">
                                     <Form.Label>Address</Form.Label>
                                     <Form.Control type="tel" placeholder="Enter Address"/>
                                 </Form.Group>
-                                <Button variant="primary" type="button" onClick={this.handleNewCustomerClick}>
+                                <Form.Group controlId="new-customer-dlicense">
+                                    <Form.Label>Driver's License</Form.Label>
+                                    <Form.Control type="text" placeholder="Enter Driver's license"/>
+                                </Form.Group>
+                                <Button variant="primary" type="button" onClick={this.newCustomer}>
                                     Register & Reserve
                                 </Button>
                             </Form>
@@ -132,7 +188,7 @@ class ReserveVehicle extends React.Component {
                                     <Form.Label>Driver's License</Form.Label>
                                     <Form.Control type="text" placeholder="Enter Driver's License"/>
                                 </Form.Group>
-                                <Button variant="primary" type="button" onClick={this.handleReturningCustomerClick}>
+                                <Button variant="primary" type="button" onClick={this.returningCustomer}>
                                     Reserve
                                 </Button>
                             </Form>

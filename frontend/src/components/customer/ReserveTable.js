@@ -3,12 +3,12 @@ import ReactDOM from 'react-dom';
 import {Button, Table} from "react-bootstrap";
 import {Link, Route} from "react-router-dom";
 import ReserveVehicle from "./ReserveVehicle";
+import moment from "moment";
 
 class ReserveTable extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            didMount: false,
             collapse: false,
             vtnames: [],
             "img-Economy": "https://www.avis.ca/content/dam/cars/l/2016/chevrolet/2016-chevrolet-spark-ev-hatchback-black.png",
@@ -28,6 +28,18 @@ class ReserveTable extends React.Component {
             });
         }, 0);
     }
+
+    handleClick = (event) => {
+        // Get data
+        const vtname = event.target.id.split("-")[0];
+        const city = document.getElementById("reserve-location").innerText.split(" - ")[0];
+        const location = document.getElementById("reserve-location").innerText.split(" - ")[1];
+        const fromdate = moment(document.getElementById("reserve-startDate").value).format("YYYY-MM-DD");
+        const todate = moment(document.getElementById("reserve-endDate").value).format("YYYY-MM-DD");
+        const fromtime = document.getElementById("reserve-fromtime").innerText;
+        const totime = document.getElementById("reserve-totime").innerText;
+        window.location.href = `/customer/reserve/${city}/${location}/${fromdate}/${todate}/${fromtime}/${totime}/${vtname}`;
+    };
 
     renderVehicleDetails = () => {
         const tableStyle = {
@@ -72,10 +84,6 @@ class ReserveTable extends React.Component {
     };
 
     render() {
-        setTimeout(() => {
-            this.setState({didMount: true})
-        }, 0);
-        const classes = this.state.open ? 'basket' : 'basket hide';
         const divStyle = {
             margin: "20px 0",
         };
@@ -87,7 +95,7 @@ class ReserveTable extends React.Component {
         if (this.props.vehicles.length > 0) {
             numAvailable =
                 <h5>
-                    <a href={"#t"} onClick={this.renderVehicleDetails}>{this.props.vehicles.length} Vehicle(s)
+                    <a href={"#"} onClick={this.renderVehicleDetails}>{this.props.vehicles.length} Vehicle(s)
                         available</a>
                 </h5>;
         } else {
@@ -109,11 +117,9 @@ class ReserveTable extends React.Component {
                                     <h4>{vtname}</h4>
                                 </td>
                                 <td style={{width: "30%"}} className={"align-middle"}>
-                                    <a href={"/customer/reserve"}>
-                                        <Button variant={"success"} size={"lg"} onClick={this.handleClick}>
-                                            Reserve
-                                        </Button>
-                                    </a>
+                                    <Button variant={"success"} size={"lg"} id={`${vtname}-btn`} onClick={this.handleClick}>
+                                        Reserve
+                                    </Button>
                                 </td>
                             </tr>
                         )

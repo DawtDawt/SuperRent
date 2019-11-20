@@ -14,51 +14,59 @@ class ReserveSearchConsole extends React.Component {
 
     handleSubmit = (state) => {
         if (state["reserve-location"] && state["reserve-startDate"] && state["reserve-endDate"] && state["reserve-fromtime"] && state["reserve-totime"]) {
-            const body = {};
-            body["city"] = state["reserve-location"].split(" - ")[0];
-            body["location"] = state["reserve-location"].split(" - ")[1];
-            body["fromdate"] = state["reserve-startDate"].format("YYYY-MM-DD");
-            body["todate"] = state["reserve-endDate"].format("YYYY-MM-DD");
-            body["fromtime"] = state["reserve-fromtime"];
-            body["totime"] = state["reserve-totime"];
-
-            const query = Object.keys(body).map(function (key) {
-                return key + '=' + encodeURIComponent(body[key]);
-            }).join('&');
-
-            fetch("http://localhost:8080/vehicle/get/?" + query)
-                .then(response => {
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.error) {
-                        console.log(data.error);
-                        this.setState({vehicles: []});
-                    } else {
-                        this.setState({vehicles: data.data});
-                        const vehicleTypes = [];
-                        data.data.forEach((car) => {
-                            if (!vehicleTypes.includes(car.vtname)) {
-                                vehicleTypes.push(car.vtname);
-                            }
-                        });
-                        vehicleTypes.sort();
-                        this.setState({vehicleTypes});
-                        ReactDOM.render(<ReserveTable ref={this.ReserveTable}
-                                                      vehicles={this.state.vehicles}
-                                                      vtnames={vehicleTypes}
-                                                      location={this.state["reserve-location"]}
-                                                      fromdate={this.state["reserve-fromdate"]}
-                                                      todate={this.state["reserve-todate"]}
-                                                      fromtime={this.state["reserve-fromtime"]}
-                                                      totime={this.state["reserve-totime"]}
-                        />, document.getElementById("reserve-result"));
-                        this.ReserveTable.current.fadeIn();
-                    }
-                })
-                .catch(console.log);
+            const query = this.getQuery();
+            this.getResults(query);
         }
 
+    };
+
+    getResults(query) {
+        const vehicleTypes = [];
+        fetch("http://localhost:8080/vehicle/get/?" + query)
+            .then(response => {
+                return response.json();
+            })
+            .then(data => {
+                if (data.error) {
+                    console.log(data.error);
+                    this.setState({vehicles: []});
+                } else {
+                    this.setState({vehicles: data.data});
+                    data.data.forEach((car) => {
+                        if (!vehicleTypes.includes(car.vtname)) {
+                            vehicleTypes.push(car.vtname);
+                        }
+                    });
+                    vehicleTypes.sort();
+                    this.setState({vehicleTypes});
+                }
+                ReactDOM.render(<ReserveTable ref={this.ReserveTable}
+                                              vehicles={this.state.vehicles}
+                                              vtnames={vehicleTypes}
+                                              location={this.state["reserve-location"]}
+                                              fromdate={this.state["reserve-fromdate"]}
+                                              todate={this.state["reserve-todate"]}
+                                              fromtime={this.state["reserve-fromtime"]}
+                                              totime={this.state["reserve-totime"]}
+                />, document.getElementById("reserve-result"));
+                this.ReserveTable.current.fadeIn();
+            })
+            .catch(console.log);
+    }
+
+    getQuery = () => {
+        const body = {};
+        body["city"] = this.state["reserve-location"].split(" - ")[0];
+        body["location"] = this.state["reserve-location"].split(" - ")[1];
+        body["fromdate"] = this.state["reserve-startDate"].format("YYYY-MM-DD");
+        body["todate"] = this.state["reserve-endDate"].format("YYYY-MM-DD");
+        body["fromtime"] = this.state["reserve-fromtime"];
+        body["totime"] = this.state["reserve-totime"];
+
+        const query = Object.keys(body).map(function (key) {
+            return key + '=' + encodeURIComponent(body[key]);
+        }).join('&');
+        return query;
     };
 
     handleChange = (event) => {

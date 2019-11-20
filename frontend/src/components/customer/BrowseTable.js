@@ -9,10 +9,6 @@ class BrowseTable extends React.Component {
         };
     }
 
-    handleSubmit = (state) => {
-
-    };
-
     fadeIn() {
         setTimeout(() => {
             Array.from(document.getElementsByClassName("reserveTable")).forEach((elem) => {
