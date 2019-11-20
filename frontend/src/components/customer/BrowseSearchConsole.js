@@ -187,7 +187,7 @@ class BrowseSearchConsole extends React.Component {
                         </DropdownButton>
                     </div>
                 </div>
-                <div>
+                <div style={{textAlign: "center"}}>
                     <Button size={"lg"} onClick={() => this.handleSubmit(this.state)}
                             style={{margin: "10px 0"}}>Search</Button>
                 </div>

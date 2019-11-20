@@ -174,7 +174,7 @@ class ReserveSearchConsole extends React.Component {
                         </DropdownButton>
                     </div>
                 </div>
-                <div>
+                <div style={{textAlign: "center"}}>
                     <Button size={"lg"} id={"searchBtn"} onClick={() => this.handleSubmit(this.state)}
                             style={{margin: "10px 0"}} disabled>Search</Button>
                 </div>
