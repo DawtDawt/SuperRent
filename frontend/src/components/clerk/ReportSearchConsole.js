@@ -157,7 +157,7 @@ class ReportSearchConsole extends React.Component {
         return (
             <React.Fragment>
                 <div style={flexStyle}>
-                    <DropdownButton title={"Location"} size={"lg"} id={"rental-recipt"} style={locationStyle}
+                    <DropdownButton title={"Location"} size={"lg"} id={"branch-location"} style={locationStyle}
                                     as={ButtonGroup}
                                     variant={"outline-primary"}
                                     drop={'down'}>
@@ -166,7 +166,7 @@ class ReportSearchConsole extends React.Component {
                             </DropdownItem>
                             {this.props.BranchSelection.map((elem, idx) => {
                                 return <DropdownItem key={idx} value={elem} as={"button"}
-                                                     className={"reserve-location"}
+                                                     className={"branch-selection"}
                                                      onClick={this.handleChange}
                                                      style={locationDropdownStyle}>{elem}</DropdownItem>;
                             })}

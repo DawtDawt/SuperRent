@@ -16,18 +16,26 @@ class Clerk extends React.Component {
         };
     }
 
+
     componentDidMount() {
-        fetch("http://localhost:8080/table/customer")
+        fetch("http://localhost:8080/table/reservation")
             .then(response => {
                 return response.json();
             })
             .then(data => {
-                console.log(data.data);
-                this.setState({CustomerSelection: data.data});
+                const customers = [];
+                data.data.forEach((person) => {
+                    const personLicense = person.dlicense;
+                    if (!customers.includes(personLicense)) {
+                        customers.push(personLicense);
+                    }
+                });
+                this.setState({CustomerSelection: customers});
             })
             .catch(console.log);
-
     }
+
+
 
 
     render() {

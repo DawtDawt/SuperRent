@@ -9,7 +9,6 @@ class RentSearchConsole extends React.Component {
     constructor(props) {
         super(props);
         this.state = {};
-        this.ReserveTable = React.createRef();
     }
 
     // handleSubmit = (state) => {
@@ -151,14 +150,14 @@ class RentSearchConsole extends React.Component {
         return (
             <React.Fragment>
                 <div style={flexStyle}>
-                    <DropdownButton title={"Customer"} size={"lg"} id={"rental-recipt"} style={locationStyle}
+                    <DropdownButton title={"Customer"} size={"lg"} id={"rental-receipt"} style={locationStyle}
                                     as={ButtonGroup}
                                     variant={"outline-primary"}
                                     drop={'down'}>
                         <div style={dropdownStyle}>
                             {this.props.CustomerSelection.map((elem, idx) => {
                                 return <DropdownItem key={idx} value={elem} as={"button"}
-                                                     className={"reserve-location"}
+                                                     className={"customer-selection"}
                                                      onClick={this.handleChange}
                                                      style={locationDropdownStyle}>{elem}</DropdownItem>;
                             })}
