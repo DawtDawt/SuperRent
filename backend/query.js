@@ -143,9 +143,9 @@ function createReserve(request, response) {
                 return Promise.reject("No such vehicle available");
             }
             // perform actual reservation, returning confno
-            return pool.query(`INSERT INTO reservation(vtname, dlicense, fromdate, todate, fromtime, totime)
-                        VALUES ($1, $2, $3, $4, $5, $6) RETURNING confno`,
-                [vtname, dlicense, fromdate, todate, fromtime, totime]);
+            return pool.query(`INSERT INTO reservation(vtname, dlicense, location, city, fromdate, todate, fromtime, totime)
+                        VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING confno;`,
+                [vtname, dlicense, location, city, fromdate, todate, fromtime, totime]);
         })
         .then(result => {
             // data = confno
