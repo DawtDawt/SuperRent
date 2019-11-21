@@ -7,6 +7,8 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Spinner from "react-bootstrap/Spinner";
+import {createReturn} from "../Fetch";
+
 
 class ReturnSearchConsole extends React.Component {
     constructor(props) {
@@ -15,7 +17,7 @@ class ReturnSearchConsole extends React.Component {
     }
 
     handleSubmit = async (event) => {
-
+        const response = await createReturn(this.state.rid,moment().format("YYYY-MM-DD"),moment().format("LT"),this.state.odometer,false,0);
         // temp rendering for testing
         ReactDOM.render(
             <div style={{margin: "30px"}}>
@@ -28,10 +30,10 @@ class ReturnSearchConsole extends React.Component {
         setTimeout(() => {
             ReactDOM.render(<ReturnTable ref={this.ReportTable}
                                          rentDetail={{
-                                             rid: this.state.rentID,
+                                             rid: response.data,
                                              date: moment().format("YYYY-MM-DD"),
                                              time: moment().format("LT"),
-                                             odometer: 1300,
+                                             odometer: this.state.odometer,
                                              fulltank: true,
                                              value: 0
                                          }}/>, document.getElementById("return-result"));
@@ -39,9 +41,18 @@ class ReturnSearchConsole extends React.Component {
     };
 
     handleChange = (event) => {
-        this.setState({rentID: event.target.value});
+        this.setState({ [event.target.name]: event.target.value });
+        console.log(event.target.name);
         console.log(event.target.value);
     };
+
+    handleCheck = () => {
+
+        this.setState({
+            isChecked: !this.state.isChecked,
+        });
+    };
+
 
     render() {
         const consoleStyle = {
@@ -66,7 +77,7 @@ class ReturnSearchConsole extends React.Component {
                                     Rent ID
                                 </Form.Label>
                                 <Col sm="8">
-                                    <Form.Control type="number" placeholder="Enter Rent ID"
+                                    <Form.Control type="number" placeholder="Enter Rent ID" name = "rid"
                                                   onChange={this.handleChange}/>
                                 </Col>
                             </Form.Group>
@@ -75,12 +86,12 @@ class ReturnSearchConsole extends React.Component {
                                     Odometer
                                 </Form.Label>
                                 <Col sm="8">
-                                    <Form.Control type="number" placeholder="Enter Odometer"
+                                    <Form.Control type="number" placeholder="Enter Odometer" name = "odometer"
                                                   onChange={this.handleChange}/>
                                 </Col>
                             </Form.Group>
                             <Form.Group controlId="fulltank">
-                                <Form.Check type="checkbox" label="Full Tank" />
+                                <Form.Check type="checkbox" label="Full Tank" checked={this.state.isChecked} name ="fulltank" onChange={this.handleCheck}/>
                             </Form.Group>
                         </Form>
                     </div>
