@@ -2,7 +2,7 @@ import React from 'react';
 import {Button} from "react-bootstrap";
 import CustomerNavbar from "./CustomerNavbar";
 import Form from "react-bootstrap/Form";
-import {createCustomer} from "../Fetch";
+import {createCustomer, createReserve} from "../Fetch";
 
 class ReserveVehicle extends React.Component {
     constructor(props) {
@@ -36,6 +36,8 @@ class ReserveVehicle extends React.Component {
         try {
             const dlicense = document.getElementById("returning-customer-dlicense").value;
             const confNo = await this.reserve(dlicense);
+            console.log("continuing");
+            console.log(confNo);
             const {city, location, fromdate, todate, fromtime, totime, vtname} = this.props.match.params;
             window.location.href = `/customer/reserve/success/${city}/${location}/${fromdate}/${todate}/${fromtime}/${totime}/${vtname}/${confNo}`;
         } catch (e) {
@@ -49,7 +51,7 @@ class ReserveVehicle extends React.Component {
         const address = document.getElementById("address").value;
         const dlicense = document.getElementById("new-customer-dlicense").value;
 
-        return createCustomer(name, cellphone, address, dlicense);
+        return await createCustomer(name, cellphone, address, dlicense);
         /*[name, cellphone, address, dlicense].forEach((elem) => {
             if (!elem) {
                 alert("Missing required rental information.");
@@ -83,7 +85,9 @@ class ReserveVehicle extends React.Component {
 
     reserve = async (dlicense) => {
         const {city, location, fromdate, todate, fromtime, totime, vtname} = this.props.match.params;
-        [city, location, fromdate, todate, fromtime, totime, vtname, dlicense].forEach((elem) => {
+
+        return await createReserve(vtname, dlicense, location, city, fromdate, todate, fromtime, totime);
+        /*[city, location, fromdate, todate, fromtime, totime, vtname, dlicense].forEach((elem) => {
             if (!elem) {
                 alert("Missing required rental information.");
                 throw Error("Missing required rental information.")
@@ -108,12 +112,17 @@ class ReserveVehicle extends React.Component {
         });
         const content = await response.json();
         if (content.error) {
+            if (content.error.code === "23503") {
+                alert("No customer were found under the given driver's license.");
+                console.log(content.error);
+                throw Error(content.error);
+            }
             alert("Another reservation has already been made with this driver's license. Please try again.");
             console.log(content.error);
             throw Error(content.error);
         } else {
             return (content.data);
-        }
+        }*/
     };
 
 

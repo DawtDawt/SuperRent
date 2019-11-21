@@ -17,6 +17,10 @@ class BrowseSearchConsole extends React.Component {
 
     handleSubmit = (state) => {
         const body = this.getBody(state);
+        /*fetch("http://localhost:8080/vehicle/get/?" + body)
+            .then(response => {
+                return response.json();
+            })*/
         getVehicle(body)
             .then(data => {
                 if (data.error) {
