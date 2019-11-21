@@ -239,6 +239,11 @@ async function createReturn(rid, date, time, odometer, fulltank, value) {
 
     const content = await response.json();
     if (content.error) {
+        if (content.error.code === "23503") {
+            alert("No rental record were found under the given rid.");
+            console.log(content.error);
+            throw Error(content.error);
+        }
         console.log(content.error);
         alert("New Untracked Error In createReturn.");
         throw Error(content.error);
