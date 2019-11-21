@@ -3,6 +3,7 @@ import {Button, ButtonGroup, DropdownButton, DropdownItem} from "react-bootstrap
 import {SingleDatePicker} from "react-dates";
 import ReactDOM from "react-dom";
 import ReportTable from "./ReportTable";
+import Spinner from "react-bootstrap/Spinner";
 
 class ReportSearchConsole extends React.Component {
     constructor(props) {
@@ -10,7 +11,6 @@ class ReportSearchConsole extends React.Component {
         this.state = {
             optionSelection: ['Rental', 'Return'],
         };
-        this.ReportTable = React.createRef();
     }
 
     handleSubmit = async (event) => {
@@ -37,53 +37,60 @@ class ReportSearchConsole extends React.Component {
             const content = await response.json();
             console.log(content);
 
-            // ReactDOM.render(<ReportTable ref={this.ReportTable}
+            // ReactDOM.render(<ReportTable
             //                              report={content.data}
             //                              action={reportType}/>, document.getElementById("report-result"));
-            this.ReportTable.current.fadeIn();
         }
 
-        // temp data to testing convenience
-        ReactDOM.render(<ReportTable ref={this.ReportTable}
-                                     action={"Return"}
-                                         report={{
-                                             "vehicle": [
-                                                 {
-                                                     "vtname": "SUV",
-                                                     "location": "UBC",
-                                                     "city": "Vancouver"
-                                                 }
-                                             ],
-                                             "perCategory": [
-                                                 {
-                                                     "vtname": "SUV",
-                                                     "count": "1"
-                                                 }
-                                             ],
-                                             "revenuePerCategory": [
-                                                 {
-                                                     "vtname": "SUV",
-                                                     "sum": "2000"
-                                                 }
-                                             ],
-                                             "perBranch": [
-                                                 {
-                                                     "location": "UBC",
-                                                     "city": "Vancouver",
-                                                     "count": "1"
-                                                 }
-                                             ],
-                                             "revenuePerBranch": [
-                                                 {
-                                                     "location": "UBC",
-                                                     "city": "Vancouver",
-                                                     "sum": "2000"
-                                                 }
-                                             ],
-                                             "perCompany": 1
-                                         }}/>, document.getElementById("report-result"));
+        ReactDOM.render(
+            <div style={{margin: "30px"}}>
+                <Spinner animation="border" role="status">
+                    <span className="sr-only">Loading...</span>
+                </Spinner>
+            </div>
+            , document.getElementById("report-result"));
 
-
+        setTimeout(() => {
+            // temp data to testing convenience
+            ReactDOM.render(<ReportTable
+                action={"Return"}
+                report={{
+                    "vehicle": [
+                        {
+                            "vtname": "SUV",
+                            "location": "UBC",
+                            "city": "Vancouver"
+                        }
+                    ],
+                    "perCategory": [
+                        {
+                            "vtname": "SUV",
+                            "count": "1"
+                        }
+                    ],
+                    "revenuePerCategory": [
+                        {
+                            "vtname": "SUV",
+                            "sum": "2000"
+                        }
+                    ],
+                    "perBranch": [
+                        {
+                            "location": "UBC",
+                            "city": "Vancouver",
+                            "count": "1"
+                        }
+                    ],
+                    "revenuePerBranch": [
+                        {
+                            "location": "UBC",
+                            "city": "Vancouver",
+                            "sum": "2000"
+                        }
+                    ],
+                    "perCompany": 1
+                }}/>, document.getElementById("report-result"));
+        },500);
     };
 
     encodeQuery(query) {
@@ -127,7 +134,6 @@ class ReportSearchConsole extends React.Component {
 
         const consoleStyle = {
             margin: "20px",
-            padding: "20px",
             textAlign: "center"
         };
 
@@ -173,8 +179,8 @@ class ReportSearchConsole extends React.Component {
                         </div>
                     </DropdownButton>
                     <Button size={"lg"} onClick={this.handleSubmit}>Generate Report</Button>
+                    <div id={"report-result"}></div>
                 </div>
-                <div id={"report-result"}></div>
             </React.Fragment>
         )
     }

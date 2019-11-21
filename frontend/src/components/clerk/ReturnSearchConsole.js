@@ -1,8 +1,12 @@
 import React from 'react';
-import {Button, ButtonGroup, DropdownButton, DropdownItem} from "react-bootstrap";
+import {Button} from "react-bootstrap";
 import ReturnTable from "./ReturnTable";
 import ReactDOM from "react-dom";
 import moment from "moment";
+import Form from "react-bootstrap/Form";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import Spinner from "react-bootstrap/Spinner";
 
 class ReturnSearchConsole extends React.Component {
     constructor(props) {
@@ -12,40 +16,59 @@ class ReturnSearchConsole extends React.Component {
     }
 
     handleSubmit = async (event) => {
-        if (this.state.rentID) {
-            try {
-                const body = {
-                    rid: this.state.rentID,
-                    date: moment().format("YYYY-MM-DD"),
-                    time: moment().format("LT"),
-                    odometer: 1300,
-                    fulltank: true,
-                    value: this.calculateCost()
-                };
-                const response = await fetch("http://localhost:8080/return/create", {
-                    method: "POST",
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(body)
-                });
+        // if (this.state.rentID) {
+        //     try {
+        //         const body = {
+        //             rid: this.state.rentID,
+        //             date: moment().format("YYYY-MM-DD"),
+        //             time: moment().format("LT"),
+        //             odometer: 1300,
+        //             fulltank: true,
+        //             value: this.calculateCost()
+        //         };
+        //         const response = await fetch("http://localhost:8080/return/create", {
+        //             method: "POST",
+        //             headers: {
+        //                 'Accept': 'application/json',
+        //                 'Content-Type': 'application/json'
+        //             },
+        //             body: JSON.stringify(body)
+        //         });
+        //
+        //         const content = await response.json();
+        //
+        //         if (content.error) {
+        //             alert(content.error);
+        //             console.log(content.error);
+        //             throw Error(content.error);
+        //         }
+        //
+        //         ReactDOM.render(<ReturnTable ref={this.ReportTable}
+        //                                      rentDetail={body}/>, document.getElementById("return-result"));
+        //     } catch (e) {
+        //         console.log(e);
+        //     }
+        // }
+        // temp rendering for testing
+        ReactDOM.render(
+            <div style={{margin: "30px"}}>
+                <Spinner animation="border" role="status">
+                    <span className="sr-only">Loading...</span>
+                </Spinner>
+            </div>,
+            document.getElementById("return-result"));
 
-                const content = await response.json();
-
-                if (content.error) {
-                    alert(content.error);
-                    console.log(content.error);
-                    throw Error(content.error);
-                }
-
-                ReactDOM.render(<ReturnTable ref={this.ReportTable}
-                                             rentDetail={body}/>, document.getElementById("return-result"));
-            } catch (e) {
-                console.log(e);
-            }
-
-        }
+        setTimeout(() => {
+            ReactDOM.render(<ReturnTable ref={this.ReportTable}
+                                         rentDetail={{
+                                             rid: this.state.rentID,
+                                             date: moment().format("YYYY-MM-DD"),
+                                             time: moment().format("LT"),
+                                             odometer: 1300,
+                                             fulltank: true,
+                                             value: this.calculateCost()
+                                         }}/>, document.getElementById("return-result"));
+        }, 500);
     };
 
     // TODO or should this be done in backend?
@@ -55,57 +78,42 @@ class ReturnSearchConsole extends React.Component {
     }
 
     handleChange = (event) => {
-        document.getElementById("rentID").innerText = event.target.value;
-        document.getElementById("rentID").className = document.getElementById("rentID").className.concat(" btn-success");
-        document.getElementById("rentID").className = document.getElementById("rentID").className.split(" ").filter((elem) => {
-            return elem !== "btn-outline-primary";
-        }).join(" ");
         this.setState({rentID: event.target.value});
         console.log(event.target.value);
     };
 
     render() {
-
-        const locationStyle = {
-            margin: "5px",
-            width: "350px",
-        };
-
-        const dropdownStyle = {
-            width: "350px",
-            overflowY: "scroll"
-        };
-
-        const locationDropdownStyle = {
-            maxHeight: "350px",
-            overflowY: "scroll",
-        };
-
         const consoleStyle = {
             margin: "20px",
-            padding: "20px",
             textAlign: "center"
+        };
+
+        const returnStyle = {
+            maxWidth: "300px",
+            textAlign: "right",
+            margin: "auto",
+            padding: "0"
         };
 
         return (
             <React.Fragment>
                 <div style={consoleStyle}>
-                    <DropdownButton title={"Rent ID"} size={"lg"} id={"rentID"} style={locationStyle}
-                                    as={ButtonGroup}
-                                    variant={"outline-primary"}
-                                    drop={'down'}>
-                        <div style={dropdownStyle}>
-                            {this.props.rentIDSelection.map((elem, idx) => {
-                                return <DropdownItem key={idx} value={elem.confno} as={"button"}
-                                                     className={"reserve-location"}
-                                                     onClick={this.handleChange}
-                                                     style={locationDropdownStyle}>{elem.confno}</DropdownItem>;
-                            })}
-                        </div>
-                    </DropdownButton>
+                    <div style={returnStyle}>
+                        <Form>
+                            <Form.Group as={Row} controlId="rentID">
+                                <Form.Label column sm="4">
+                                    Rent ID
+                                </Form.Label>
+                                <Col sm="8">
+                                    <Form.Control type="number" placeholder="Enter Rent ID"
+                                                  onChange={this.handleChange}/>
+                                </Col>
+                            </Form.Group>
+                        </Form>
+                    </div>
                     <Button size={"lg"} onClick={this.handleSubmit}>Return Vehicle</Button>
+                    <div id={"return-result"}></div>
                 </div>
-                <div id={"return-result"}></div>
             </React.Fragment>
         )
     }

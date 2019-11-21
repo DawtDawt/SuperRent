@@ -3,6 +3,7 @@ import {Button, ButtonGroup, Dropdown, DropdownButton, DropdownItem} from "react
 import {DateRangePicker} from 'react-dates';
 import ReactDOM from "react-dom";
 import BrowseTable from "./BrowseTable";
+import Spinner from "react-bootstrap/Spinner";
 
 
 class BrowseSearchConsole extends React.Component {
@@ -11,7 +12,6 @@ class BrowseSearchConsole extends React.Component {
         this.state = {
             vtnameSelection: ['Economy', 'Compact', 'Mid-size', 'Standard', 'Full-size', 'SUV', 'Truck'],
         };
-        this.ReserveTable = React.createRef();
     }
 
     handleSubmit = (state) => {
@@ -27,9 +27,23 @@ class BrowseSearchConsole extends React.Component {
                 } else {
                     this.setState({vehicles: data.data});
                 }
-                ReactDOM.render(<BrowseTable ref={this.ReserveTable}
-                                             vehicles={this.state.vehicles}/>, document.getElementById("browse-result"));
-                this.ReserveTable.current.fadeIn();
+
+                ReactDOM.render(
+                    <div>
+                        <div style={{margin: "20px"}}>
+                            <Spinner animation="border" role="status">
+                                <span className="sr-only">Loading...</span>
+                            </Spinner>
+                        </div>
+                    </div>
+                    , document.getElementById("browse-result"));
+
+                setTimeout(() => {
+                    ReactDOM.render(<BrowseTable vehicles={this.state.vehicles}/>, document.getElementById("browse-result"));
+                }, 200);
+
+
+
             })
             .catch(console.log);
     };

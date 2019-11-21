@@ -1,18 +1,10 @@
 import React from 'react';
-import {Table} from "react-bootstrap";
+import {Fade, Table} from "react-bootstrap";
 
 class BrowseTable extends React.Component {
     constructor(props) {
         super(props);
         this.state = {};
-    }
-
-    fadeIn() {
-        setTimeout(() => {
-            Array.from(document.getElementsByClassName("reserveTable")).forEach((elem) => {
-                elem.className += " visible";
-            });
-        }, 0);
     }
 
     render() {
@@ -62,9 +54,11 @@ class BrowseTable extends React.Component {
         }
 
         return (
-            <div style={divStyle}>
-                {table}
-            </div>
+            <Fade appear={true} in={true}>
+                <div style={divStyle}>
+                    {table}
+                </div>
+            </Fade>
         )
     }
 }

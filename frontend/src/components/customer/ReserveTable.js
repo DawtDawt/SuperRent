@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Button, Table} from "react-bootstrap";
+import {Button, Fade, Table} from "react-bootstrap";
 import moment from "moment";
 
 class ReserveTable extends React.Component {
@@ -19,17 +19,9 @@ class ReserveTable extends React.Component {
         };
     }
 
-    fadeIn() {
-        setTimeout(() => {
-            Array.from(document.getElementsByClassName("reserveTable")).forEach((elem) => {
-                elem.className += " visible";
-            });
-        }, 0);
-    }
-
     handleClick = (event) => {
         // Get data
-        const vtname = event.target.id.split("-")[0];
+        const vtname = event.target.id.split("--")[0];
         const city = document.getElementById("reserve-location").innerText.split(" - ")[0];
         const location = document.getElementById("reserve-location").innerText.split(" - ")[1];
         const fromdate = moment(document.getElementById("reserve-startDate").value).format("YYYY-MM-DD");
@@ -101,31 +93,34 @@ class ReserveTable extends React.Component {
         }
 
         return (
-            <div style={divStyle}>
-                {numAvailable}
-                <Table hover style={tableStyle}>
-                    <tbody>
-                    {this.props.vtnames.map((vtname, idx) => {
-                        return (
-                            <tr key={idx} className={`fade-in reserveTable`}>
-                                <td style={{width: "30%"}}>
-                                    <img src={this.state["img-" + vtname]} alt={"vehicleType"} height={"100px"}/>
-                                </td>
-                                <td style={{width: "30%"}} className={"align-middle"}>
-                                    <h4>{vtname}</h4>
-                                </td>
-                                <td style={{width: "30%"}} className={"align-middle"}>
-                                    <Button variant={"success"} size={"lg"} id={`${vtname}-btn`} onClick={this.handleClick}>
-                                        Reserve
-                                    </Button>
-                                </td>
-                            </tr>
-                        )
-                    })}
-                    </tbody>
-                </Table>
-                <div id={"vehicleDetail"}></div>
-            </div>
+            <Fade appear={true} in={true}>
+                <div style={divStyle}>
+                    {numAvailable}
+                    <Table hover style={tableStyle}>
+                        <tbody>
+                        {this.props.vtnames.map((vtname, idx) => {
+                            return (
+                                <tr key={idx} className={`reserveTable`}>
+                                    <td style={{width: "30%"}}>
+                                        <img src={this.state["img-" + vtname]} alt={"vehicleType"} height={"100px"}/>
+                                    </td>
+                                    <td style={{width: "30%"}} className={"align-middle"}>
+                                        <h4>{vtname}</h4>
+                                    </td>
+                                    <td style={{width: "30%"}} className={"align-middle"}>
+                                        <Button variant={"success"} size={"lg"} id={`${vtname}--btn`}
+                                                onClick={this.handleClick}>
+                                            Reserve
+                                        </Button>
+                                    </td>
+                                </tr>
+                            )
+                        })}
+                        </tbody>
+                    </Table>
+                    <div id={"vehicleDetail"}></div>
+                </div>
+            </Fade>
         )
     }
 }

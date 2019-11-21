@@ -1,5 +1,5 @@
 import React from 'react';
-import {Table} from "react-bootstrap";
+import {Fade, Table} from "react-bootstrap";
 
 class ReportTable extends React.Component {
     constructor(props) {
@@ -8,14 +8,6 @@ class ReportTable extends React.Component {
             vehicleTypes: ['Economy', 'Compact', 'Mid-size', 'Standard', 'Full-size', 'SUV', 'Truck'],
         };
         console.log(this.props.report);
-    }
-
-    fadeIn() {
-        setTimeout(() => {
-            Array.from(document.getElementsByClassName("reserveTable")).forEach((elem) => {
-                elem.className += " visible";
-            });
-        }, 0);
     }
 
     render() {
@@ -142,9 +134,11 @@ class ReportTable extends React.Component {
         }
 
         return (
-            <div style={divStyle}>
-                {table}
-            </div>
+            <Fade appear={true} in={true}>
+                <div style={divStyle}>
+                    {table}
+                </div>
+            </Fade>
         )
     }
 }

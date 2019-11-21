@@ -23,8 +23,9 @@ class Clerk extends React.Component {
                 return response.json();
             })
             .then(data => {
-                console.log(data.data);
-                this.setState({confNoSelection: data.data});
+                if (!data.error) {
+                    this.setState({confNoSelection: data.data});
+                }
             })
             .catch(console.log);
 
@@ -33,7 +34,9 @@ class Clerk extends React.Component {
             .then(response => {return response.json()})
             .then(data => {
                 console.log(data.data);
-                this.setState({rentIDSelection: data.data});
+                if (!data.error) {
+                    this.setState({rentIDSelection: data.data});
+                }
             })
             .catch(console.log);
 

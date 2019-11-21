@@ -61,13 +61,3 @@ code {
   text-align: center;
   color: #007bff;
 }
-
-
-
-.fade-in {
-  opacity: 0;
-}
-.fade-in.visible {
-  transition: opacity 0.4s ease-in;
-  opacity: 1;
-}
