@@ -14,14 +14,14 @@ const pool = new Pool({
 // abstracted queries
 const vehicleRentQuery = `SELECT * FROM vehicle WHERE vtname LIKE $1 AND location LIKE $2 AND city LIKE $3 AND vlicense NOT IN
     (SELECT r.vlicense FROM rental r WHERE (r.fromdate < $4 AND $4 < r.todate) OR (r.fromdate < $5 AND $5 < r.todate) OR
-                                  (r.fromdate = $4 AND r.todate = $5 AND r.fromdate <> r.todate) OR
+                                  ($4 <= r.fromdate AND r.todate <= $5 AND r.fromdate <> r.todate) OR
                                   (r.todate = $4 AND $6 < r.totime AND r.todate <> r.fromdate) OR
                                   (r.fromdate = $5 AND r.fromtime < $7 AND r.todate <> r.fromdate) OR
                                   (r.fromdate = $4 AND r.todate = $5 AND r.fromdate = r.todate AND r.fromtime <= $6 AND $6 <= r.totime) OR
                                   (r.fromdate = $4 AND r.todate = $5 AND r.fromdate = r.todate AND r.fromtime <= $7 AND $7 <= r.totime))`;
 const vehicleReservationQuery = `SELECT * FROM reservation r WHERE r.vtname LIKE $1 AND location LIKE $2 AND city LIKE $3 AND
                                  ((r.fromdate < $4 AND $4 < r.todate) OR (r.fromdate < $5 AND $5 < r.todate) OR
-                                  (r.fromdate = $4 AND r.todate = $5 AND r.fromdate <> r.todate) OR
+                                  ($4 <= r.fromdate AND r.todate <= $5 AND r.fromdate <> r.todate) OR
                                   (r.todate = $4 AND $6 < r.totime AND r.todate <> r.fromdate) OR
                                   (r.fromdate = $5 AND r.fromtime < $7 AND r.todate <> r.fromdate) OR
                                   (r.fromdate = $4 AND r.todate = $5 AND r.fromdate = r.todate AND r.fromtime <= $6 AND $6 <= r.totime) OR
@@ -59,11 +59,12 @@ function getVehicle(request, response) {
         totime = request.query.totime;
     }
     let finalResult;
+    console.log(vtname, location, city, fromdate, todate, fromtime, totime);
     console.log("starting vehicleRentQuery");
     // query: SELECT vehicle fulfilling type, location, and NOT in Rent during time interval
     return pool.query(vehicleRentQuery, [vtname, location, city, fromdate, todate, fromtime, totime])
         .then(result => {
-            console.log("vehicleRentQuery results are: \n");
+            console.log("vehicleRentQuery results are:");
             console.log(result.rows);
             // throws error if no reservation slot is available
             if (result.rows.length === 0) {
@@ -74,7 +75,7 @@ function getVehicle(request, response) {
             return pool.query(vehicleReservationQuery, [vtname, location, city, fromdate, todate, fromtime, totime]);
         })
         .then(reserveResult => {
-            console.log("vehicleReservationQuery results are: \n");
+            console.log("vehicleReservationQuery results are:");
             console.log(reserveResult.rows);
             if (finalResult.rows.length <= reserveResult.rows.length) {
                 return Promise.reject("No such vehicle available");

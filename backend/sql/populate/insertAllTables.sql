@@ -85,17 +85,17 @@ VALUES
 
 INSERT INTO Reservation(vtname, dlicense, location, city, fromdate, todate, fromtime, totime)
 VALUES
-    ('SUV', '000000', 'UBC', 'Vancouver','2019-10-10', '2019-10-20', '12:00 AM', '3:00 PM'),
-    ('Compact', '000001', 'Kerrisdale', 'Vancouver','2019-10-10', '2019-10-20', '12:00 AM', '3:00 PM'),
-    ('Economy', '000002', 'Richmond Centre', 'Richmond','2019-10-10', '2019-10-31', '12:00 AM', '3:00 PM'),
-    ('Standard', '000003', 'Dunbar', 'Vancouver','2019-10-10', '2019-10-22', '12:00 AM', '3:00 PM'),
-    ('Mid-size', '000004', 'Kingsway','Burnaby','2019-10-10', '2019-10-28', '12:00 AM', '3:00 PM');
+    ('SUV', '000000', 'UBC', 'Vancouver','2019-12-10', '2019-12-20', '12:00 AM', '3:00 PM'),
+    ('Compact', '000001', 'Kerrisdale', 'Vancouver','2019-12-10', '2019-12-20', '12:00 AM', '3:00 PM'),
+    ('Economy', '000002', 'Richmond Centre', 'Richmond','2019-12-10', '2019-12-31', '12:00 AM', '3:00 PM'),
+    ('Standard', '000003', 'Dunbar', 'Vancouver','2019-12-10', '2019-12-22', '12:00 AM', '3:00 PM'),
+    ('Mid-size', '000004', 'Kingsway','Burnaby','2019-12-10', '2019-12-28', '12:00 AM', '3:00 PM');
 
 
 INSERT INTO Rental(vlicense, dlicense, fromdate, todate, fromtime, totime, odometer, cardname, cardno, expdate, confno)
 VALUES
-    ('ABC000', '000000', '2019-10-15', '2019-10-30', '12:00 AM', '3:00PM', 130, 'John Doe', 888812345, '2030-10-10', 1);
+    ('ABC000', '000000', '2019-12-15', '2019-12-30', '12:00 AM', '3:00PM', 130, 'John Doe', 888812345, '2030-10-10', 1);
 
 INSERT INTO Return(rid, date, time, odometer, fulltank, value)
 VALUES
-(1, '2019-10-30', '3:00PM', 3000, TRUE, 2000);
+(1, '2019-12-30', '3:00PM', 3000, TRUE, 2000);

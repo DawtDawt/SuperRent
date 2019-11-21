@@ -41,9 +41,9 @@ class BrowseSearchConsole extends React.Component {
             body["city"] = state["browse-location"].split(" - ")[0];
             body["location"] = state["browse-location"].split(" - ")[1];
         }
-        if (state["browse-startDate"] && state["browse-endDate"]) {
-            body["fromdate"] = state["browse-startDate"].format("YYYY-MM-DD");
-            body["todate"] = state["browse-endDate"].format("YYYY-MM-DD");
+        if (state["browse-startdate"] && state["browse-todate"]) {
+            body["fromdate"] = state["browse-startdate"].format("YYYY-MM-DD");
+            body["todate"] = state["browse-todate"].format("YYYY-MM-DD");
         }
         if (state["browse-fromtime"] && state["browse-totime"]) {
             body["fromtime"] = state["browse-fromtime"];
@@ -122,13 +122,13 @@ class BrowseSearchConsole extends React.Component {
                         </div>
                     </DropdownButton>
                     <DateRangePicker
-                        startDate={this.state["reserve-startDate"]} // momentPropTypes.momentObj or null,
-                        startDateId="reserve-startDate" // PropTypes.string.isRequired,
-                        endDate={this.state["reserve-endDate"]} // momentPropTypes.momentObj or null,
-                        endDateId="reserve-endDate" // PropTypes.string.isRequired,
+                        startDate={this.state["browse-startdate"]} // momentPropTypes.momentObj or null,
+                        startDateId="browse-startdate" // PropTypes.string.isRequired,
+                        endDate={this.state["browse-todate"]} // momentPropTypes.momentObj or null,
+                        endDateId="browse-todate" // PropTypes.string.isRequired,
                         onDatesChange={({startDate, endDate}) => this.setState({
-                            "reserve-startDate": startDate,
-                            "reserve-endDate": endDate
+                            "browse-startdate": startDate,
+                            "browse-todate": endDate
                         })} // PropTypes.func.isRequired,
                         focusedInput={this.state.focusedInput} // PropTypes.oneOf([START_DATE, END_DATE]) or null,
                         onFocusChange={focusedInput => this.setState({focusedInput})} // PropTypes.func.isRequired,

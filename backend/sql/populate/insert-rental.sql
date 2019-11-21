@@ -1,3 +1,3 @@
-INSERT INTO Rental
+INSERT INTO Rental(vlicense, dlicense, fromdate, todate, fromtime, totime, odometer, cardname, cardno, expdate, confno)
 VALUES
-    (450, 'ABC000', '000000', '2019-10-15', '2019-10-30', '12:00 AM', '3:00PM', 130, 'John Doe', 888812345, '2030-10-10', 000000);
+    ('ABC000', '000000', '2019-12-15', '2019-12-30', '12:00 AM', '3:00PM', 130, 'John Doe', 888812345, '2030-10-10', 1);
