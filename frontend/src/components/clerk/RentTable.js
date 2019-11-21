@@ -31,9 +31,7 @@ class RentTable extends React.Component {
                             <h5>Location: </h5>
                             <h5>City: </h5>
                             <h5>Rent Date: </h5>
-                            <h5>Rent Time: </h5>
                             <h5>Return Date: </h5>
-                            <h5>Return Time: </h5>
                             <h5>Odometer: </h5>
                         </div>
                         <div className={"col-sm"} style={{textAlign: "left"}}>
@@ -44,11 +42,9 @@ class RentTable extends React.Component {
                             <h5>{this.props.rentDetail.dlicense}</h5>
                             <h5>{this.props.rentDetail.location}</h5>
                             <h5>{this.props.rentDetail.city}</h5>
-                            <h5>{this.props.rentDetail.fromdate}</h5>
-                            <h5>{this.props.rentDetail.fromtime}</h5>
-                            <h5>{this.props.rentDetail.todate}</h5>
-                            <h5>{this.props.rentDetail.totime}</h5>
-                            <h5>{this.props.rentDetail.odometer}</h5>
+                            <h5>{this.props.rentDetail.fromdate} {this.props.rentDetail.fromtime}</h5>
+                            <h5>{this.props.rentDetail.todate} {this.props.rentDetail.totime}</h5>
+                            <h5>{this.props.rentDetail.odometer} KM</h5>
                         </div>
                     </div>
                 </div>

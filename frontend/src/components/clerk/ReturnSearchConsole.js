@@ -12,43 +12,10 @@ class ReturnSearchConsole extends React.Component {
     constructor(props) {
         super(props);
         this.state = {};
-        this.ResultTable = React.createRef();
     }
 
     handleSubmit = async (event) => {
-        // if (this.state.rentID) {
-        //     try {
-        //         const body = {
-        //             rid: this.state.rentID,
-        //             date: moment().format("YYYY-MM-DD"),
-        //             time: moment().format("LT"),
-        //             odometer: 1300,
-        //             fulltank: true,
-        //             value: this.calculateCost()
-        //         };
-        //         const response = await fetch("http://localhost:8080/return/create", {
-        //             method: "POST",
-        //             headers: {
-        //                 'Accept': 'application/json',
-        //                 'Content-Type': 'application/json'
-        //             },
-        //             body: JSON.stringify(body)
-        //         });
-        //
-        //         const content = await response.json();
-        //
-        //         if (content.error) {
-        //             alert(content.error);
-        //             console.log(content.error);
-        //             throw Error(content.error);
-        //         }
-        //
-        //         ReactDOM.render(<ReturnTable ref={this.ReportTable}
-        //                                      rentDetail={body}/>, document.getElementById("return-result"));
-        //     } catch (e) {
-        //         console.log(e);
-        //     }
-        // }
+
         // temp rendering for testing
         ReactDOM.render(
             <div style={{margin: "30px"}}>
@@ -66,16 +33,10 @@ class ReturnSearchConsole extends React.Component {
                                              time: moment().format("LT"),
                                              odometer: 1300,
                                              fulltank: true,
-                                             value: this.calculateCost()
+                                             value: 0
                                          }}/>, document.getElementById("return-result"));
         }, 500);
     };
-
-    // TODO or should this be done in backend?
-    // Calculates the cost of the rental based on rid
-    calculateCost() {
-        return 0;
-    }
 
     handleChange = (event) => {
         this.setState({rentID: event.target.value});
@@ -90,7 +51,7 @@ class ReturnSearchConsole extends React.Component {
 
         const returnStyle = {
             maxWidth: "300px",
-            textAlign: "right",
+            textAlign: "center",
             margin: "auto",
             padding: "0"
         };
@@ -109,8 +70,21 @@ class ReturnSearchConsole extends React.Component {
                                                   onChange={this.handleChange}/>
                                 </Col>
                             </Form.Group>
+                            <Form.Group as={Row} controlId="odometer">
+                                <Form.Label column sm="4">
+                                    Odometer
+                                </Form.Label>
+                                <Col sm="8">
+                                    <Form.Control type="number" placeholder="Enter Odometer"
+                                                  onChange={this.handleChange}/>
+                                </Col>
+                            </Form.Group>
+                            <Form.Group controlId="fulltank">
+                                <Form.Check type="checkbox" label="Full Tank" />
+                            </Form.Group>
                         </Form>
                     </div>
+
                     <Button size={"lg"} onClick={this.handleSubmit}>Return Vehicle</Button>
                     <div id={"return-result"}></div>
                 </div>

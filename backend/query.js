@@ -301,13 +301,13 @@ function getDailyRental(request, response) {
                     GROUP BY v.city, v.location, v.vtname`, [date])
         .then(result => {
             vehicleResult = result;
-            return pool.query(`SELECT v.vtname, COUNT(*) AS RentalPerVehicleType FROM vehicle v, rental r
+            return pool.query(`SELECT v.vtname, COUNT(*) AS count FROM vehicle v, rental r
                     WHERE v.vlicense = r.vlicense AND r.fromdate = $1
                     GROUP BY v.vtname`, [date]);
         })
         .then(result => {
             categoryResult = result;
-            return pool.query(`SELECT v.location, v.city, COUNT(*) AS RentalPerBranch FROM vehicle v, rental r
+            return pool.query(`SELECT v.location, v.city, COUNT(*) AS count FROM vehicle v, rental r
                     WHERE v.vlicense = r.vlicense AND r.fromdate = $1
                     GROUP BY v.city, v.location`, [date]);
         })
@@ -340,13 +340,13 @@ function getDailyBranchRental(request, response) {
                     GROUP BY v.city, v.location, v.vtname`, [date, location, city])
         .then(result => {
             vehicleResult = result;
-            return pool.query(`SELECT v.vtname, COUNT(*) AS RentalPerVehicleType FROM vehicle v, rental r
+            return pool.query(`SELECT v.vtname, COUNT(*) AS count FROM vehicle v, rental r
                     WHERE v.vlicense = r.vlicense AND r.fromdate = $1 AND v.location = $2 AND v.city = $3
                     GROUP BY v.vtname`, [date, location, city]);
         })
         .then(result => {
             categoryResult = result;
-            return pool.query(`SELECT v.location, v.city, COUNT(*) AS RentalPerBranch FROM vehicle v, rental r
+            return pool.query(`SELECT v.location, v.city, COUNT(*) AS count FROM vehicle v, rental r
                     WHERE v.vlicense = r.vlicense AND r.fromdate = $1 AND v.location = $2 AND v.city = $3
                     GROUP BY v.city, v.location`, [date, location, city]);
         })

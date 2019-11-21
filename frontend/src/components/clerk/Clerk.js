@@ -33,7 +33,6 @@ class Clerk extends React.Component {
         fetch("http://localhost:8080/table/rental")
             .then(response => {return response.json()})
             .then(data => {
-                console.log(data.data);
                 if (!data.error) {
                     this.setState({rentIDSelection: data.data});
                 }

@@ -14,34 +14,8 @@ class ReportSearchConsole extends React.Component {
     }
 
     handleSubmit = async (event) => {
-        let reportLocation = this.state.reportLocation;
-        let reportType = this.state.reportType;
-        let date = this.state.date;
 
-        if (reportLocation && reportType && date) {
-            let query;
-            date = date.format("YYYY-MM-DD");
-            reportType = reportType.toLowerCase();
-            if ((reportLocation) === "All Location") {
-                query = `http://localhost:8080/report/${reportType}?${this.encodeQuery({date})}`;
-            } else {
-                const location = reportLocation.split(" - ")[0];
-                const city = reportLocation.split(" - ")[1];
-                console.log(location);
-                console.log(city);
-                query = `http://localhost:8080/report/${reportType}/branch?${this.encodeQuery({location, city, date})}`;
-            }
-            console.log(query);
-
-            const response = await fetch(query);
-            const content = await response.json();
-            console.log(content);
-
-            // ReactDOM.render(<ReportTable
-            //                              report={content.data}
-            //                              action={reportType}/>, document.getElementById("report-result"));
-        }
-
+        // temp rendering for testing
         ReactDOM.render(
             <div style={{margin: "30px"}}>
                 <Spinner animation="border" role="status">
@@ -53,9 +27,30 @@ class ReportSearchConsole extends React.Component {
         setTimeout(() => {
             // temp data to testing convenience
             ReactDOM.render(<ReportTable
-                action={"Return"}
+                action={"rental"}
+                location={"all"}
                 report={{
                     "vehicle": [
+                        {
+                            "vtname": "Economy",
+                            "location": "Richmond Centre",
+                            "city": "Richmond"
+                        },
+                        {
+                            "vtname": "Standard",
+                            "location": "Dunbar",
+                            "city": "Vancouver"
+                        },
+                        {
+                            "vtname": "Compact",
+                            "location": "Kerrisdale",
+                            "city": "Vancouver"
+                        },
+                        {
+                            "vtname": "SUV",
+                            "location": "Kitsilano",
+                            "city": "Vancouver"
+                        },
                         {
                             "vtname": "SUV",
                             "location": "UBC",
@@ -64,33 +59,52 @@ class ReportSearchConsole extends React.Component {
                     ],
                     "perCategory": [
                         {
-                            "vtname": "SUV",
+                            "vtname": "Compact",
                             "count": "1"
-                        }
-                    ],
-                    "revenuePerCategory": [
+                        },
+                        {
+                            "vtname": "Economy",
+                            "count": "1"
+                        },
                         {
                             "vtname": "SUV",
-                            "sum": "2000"
+                            "count": "6"
+                        },
+                        {
+                            "vtname": "Standard",
+                            "count": "1"
                         }
                     ],
                     "perBranch": [
                         {
-                            "location": "UBC",
+                            "location": "Richmond Centre",
+                            "city": "Richmond",
+                            "count": "1"
+                        },
+                        {
+                            "location": "Dunbar",
                             "city": "Vancouver",
                             "count": "1"
-                        }
-                    ],
-                    "revenuePerBranch": [
+                        },
+                        {
+                            "location": "Kerrisdale",
+                            "city": "Vancouver",
+                            "count": "1"
+                        },
+                        {
+                            "location": "Kitsilano",
+                            "city": "Vancouver",
+                            "count": "1"
+                        },
                         {
                             "location": "UBC",
                             "city": "Vancouver",
-                            "sum": "2000"
+                            "count": "5"
                         }
                     ],
-                    "perCompany": 1
+                    "perCompany": 5
                 }}/>, document.getElementById("report-result"));
-        },500);
+        }, 500);
     };
 
     encodeQuery(query) {
