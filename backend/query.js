@@ -14,14 +14,14 @@ const pool = new Pool({
 // abstracted queries
 const vehicleRentQuery = `SELECT * FROM vehicle WHERE vtname LIKE $1 AND location LIKE $2 AND city LIKE $3 AND vlicense NOT IN
     (SELECT r.vlicense FROM rental r WHERE (r.fromdate < $4 AND $4 < r.todate) OR (r.fromdate < $5 AND $5 < r.todate) OR
-                                  (r.fromdate = $4 AND r.todate = $5 AND r.fromdate <> r.todate) OR
+                                  ($4 <= r.fromdate AND r.todate <= $5 AND r.fromdate <> r.todate) OR
                                   (r.todate = $4 AND $6 < r.totime AND r.todate <> r.fromdate) OR
                                   (r.fromdate = $5 AND r.fromtime < $7 AND r.todate <> r.fromdate) OR
                                   (r.fromdate = $4 AND r.todate = $5 AND r.fromdate = r.todate AND r.fromtime <= $6 AND $6 <= r.totime) OR
                                   (r.fromdate = $4 AND r.todate = $5 AND r.fromdate = r.todate AND r.fromtime <= $7 AND $7 <= r.totime))`;
 const vehicleReservationQuery = `SELECT * FROM reservation r WHERE r.vtname LIKE $1 AND location LIKE $2 AND city LIKE $3 AND
                                  ((r.fromdate < $4 AND $4 < r.todate) OR (r.fromdate < $5 AND $5 < r.todate) OR
-                                  (r.fromdate = $4 AND r.todate = $5 AND r.fromdate <> r.todate) OR
+                                  ($4 <= r.fromdate AND r.todate <= $5 AND r.fromdate <> r.todate) OR
                                   (r.todate = $4 AND $6 < r.totime AND r.todate <> r.fromdate) OR
                                   (r.fromdate = $5 AND r.fromtime < $7 AND r.todate <> r.fromdate) OR
                                   (r.fromdate = $4 AND r.todate = $5 AND r.fromdate = r.todate AND r.fromtime <= $6 AND $6 <= r.totime) OR
@@ -59,25 +59,26 @@ function getVehicle(request, response) {
         totime = request.query.totime;
     }
     let finalResult;
+    console.log(vtname, location, city, fromdate, todate, fromtime, totime);
     console.log("starting vehicleRentQuery");
     // query: SELECT vehicle fulfilling type, location, and NOT in Rent during time interval
     return pool.query(vehicleRentQuery, [vtname, location, city, fromdate, todate, fromtime, totime])
         .then(result => {
-            console.log("vehicleRentQuery results are: \n");
+            console.log("vehicleRentQuery results are:");
             console.log(result.rows);
             // throws error if no reservation slot is available
             if (result.rows.length === 0) {
-                return Promise.reject("No such vehicle available");
+                return Promise.reject({code: 'NOVEH', message: "No such vehicle available for rent."});
             }
             finalResult = result;
             console.log("starting vehicleReservationQuery");
             return pool.query(vehicleReservationQuery, [vtname, location, city, fromdate, todate, fromtime, totime]);
         })
         .then(reserveResult => {
-            console.log("vehicleReservationQuery results are: \n");
+            console.log("vehicleReservationQuery results are:");
             console.log(reserveResult.rows);
             if (finalResult.rows.length <= reserveResult.rows.length) {
-                return Promise.reject("No such vehicle available");
+                return Promise.reject({code: 'RESFULL', message: "All such vehicles are either reserved or rented."});
             }
             console.log("got past vehicleReservationQuery, resolving with: ");
             return Promise.resolve();
@@ -102,7 +103,7 @@ function getReserve(request, response) {
     return pool.query(`SELECT * FROM reservation WHERE confno = $1`, [confno])
         .then(result => {
             if (result.rows.length === 0) {
-                return Promise.reject("No such reservation found");
+                return Promise.reject({code: 'RESMIA', message: "No such reservation found"});
             }
             return response.json({
                 data: result.rows[0]
@@ -132,19 +133,24 @@ function createReserve(request, response) {
         .then(result => {
             // throws error if no reservation slot is available
             if (result.rows.length === 0) {
-                return Promise.reject("No such vehicle available");
+                return Promise.reject({code: 'NOVEH', message: "No such vehicle available for rent."});
             }
             rentResult = result;
             return pool.query(vehicleReservationQuery, [vtname, location, city, fromdate, todate, fromtime, totime]);
         })
         .then(reserveResult => {
             if (rentResult.rows.length <= reserveResult.rows.length) {
-                return Promise.reject("No such vehicle available");
+                return Promise.reject({code: 'RESFULL', message: "All such vehicles are either reserved or rented."});
+            }
+            return pool.query(`SELECT dlicense FROM reservation WHERE dlicense = $1`, [dlicense]);
+        }).then(dlicenseResult => {
+            if (dlicenseResult.rows.length > 0) {
+                return Promise.reject({code: `RESALREXIS`, message: "Only one reservation can be made per customer"});
             }
             // perform actual reservation, returning confno
-            return pool.query(`INSERT INTO reservation(vtname, dlicense, fromdate, todate, fromtime, totime)
-                        VALUES ($1, $2, $3, $4, $5, $6) RETURNING confno`,
-                [vtname, dlicense, fromdate, todate, fromtime, totime]);
+            return pool.query(`INSERT INTO reservation(vtname, dlicense, location, city, fromdate, todate, fromtime, totime)
+                        VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING confno;`,
+                [vtname, dlicense, location, city, fromdate, todate, fromtime, totime]);
         })
         .then(result => {
             // data = confno

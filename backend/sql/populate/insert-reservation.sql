@@ -1,7 +1,7 @@
-INSERT INTO Reservation
+INSERT INTO Reservation(vtname, dlicense, location, city, fromdate, todate, fromtime, totime)
 VALUES
-    (000000 , 'SUV', '000000', '2019-10-10', '2019-10-20', '12:00 AM', '3:00 PM'),
-    (000001 , 'Compact', '000001', '2019-10-10', '2019-10-20', '12:00 AM', '3:00 PM'),
-    (000002 , 'Economy', '000002', '2019-10-10', '2019-10-31', '12:00 AM', '3:00 PM'),
-    (000003 , 'Standard', '000003', '2019-10-10', '2019-10-22', '12:00 AM', '3:00 PM'),
-    (000004 , 'Full-size', '000004', '2019-10-10', '2019-10-28', '12:00 AM', '3:00 PM');
+    ('SUV', '000000', 'UBC', 'Vancouver','2019-12-10', '2019-12-20', '12:00 AM', '3:00 PM'),
+    ('Compact', '000001', 'Kerrisdale', 'Vancouver','2019-12-10', '2019-12-20', '12:00 AM', '3:00 PM'),
+    ('Economy', '000002', 'Richmond Centre', 'Richmond','2019-12-10', '2019-12-31', '12:00 AM', '3:00 PM'),
+    ('Standard', '000003', 'Dunbar', 'Vancouver','2019-12-10', '2019-12-22', '12:00 AM', '3:00 PM'),
+    ('Mid-size', '000004', 'Kingsway','Burnaby','2019-12-10', '2019-12-28', '12:00 AM', '3:00 PM');

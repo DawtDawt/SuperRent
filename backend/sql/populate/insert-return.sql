@@ -1,3 +1,3 @@
-INSERT INTO Return
+INSERT INTO Return(rid, date, time, odometer, fulltank, value)
 VALUES
-    (450, '2019-10-30', '3:00PM', 3000, TRUE, 2000);
+(1, '2019-12-30', '3:00PM', 3000, TRUE, 2000);
