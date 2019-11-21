@@ -3,6 +3,7 @@ import {Button, ButtonGroup, Dropdown, DropdownButton, DropdownItem} from "react
 import {DateRangePicker} from 'react-dates';
 import ReactDOM from "react-dom";
 import BrowseTable from "./BrowseTable";
+import {getVehicle} from "../Fetch";
 
 
 class BrowseSearchConsole extends React.Component {
@@ -15,11 +16,8 @@ class BrowseSearchConsole extends React.Component {
     }
 
     handleSubmit = (state) => {
-        const query = this.getQuery(state);
-        fetch("http://localhost:8080/vehicle/get/?" + query)
-            .then(response => {
-                return response.json();
-            })
+        const body = this.getBody(state);
+        getVehicle(body)
             .then(data => {
                 if (data.error) {
                     console.log(data.error);
@@ -35,7 +33,7 @@ class BrowseSearchConsole extends React.Component {
     };
 
 
-    getQuery = (state) => {
+    getBody = (state) => {
         const body = {};
         if (state["browse-location"]) {
             body["city"] = state["browse-location"].split(" - ")[0];
@@ -52,10 +50,10 @@ class BrowseSearchConsole extends React.Component {
         if (state["browse-vtname"]) {
             body["vtname"] = state["browse-vtname"]
         }
-        const query = Object.keys(body).map(function (key) {
+        /*const query = Object.keys(body).map(function (key) {
             return key + '=' + encodeURIComponent(body[key]);
-        }).join('&');
-        return query;
+        }).join('&');*/
+        return body;
     };
 
     handleAnySelection = (event) => {
