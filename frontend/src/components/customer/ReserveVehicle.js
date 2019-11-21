@@ -2,6 +2,7 @@ import React from 'react';
 import {Button} from "react-bootstrap";
 import CustomerNavbar from "./CustomerNavbar";
 import Form from "react-bootstrap/Form";
+import {createCustomer} from "../Fetch";
 
 class ReserveVehicle extends React.Component {
     constructor(props) {
@@ -48,7 +49,8 @@ class ReserveVehicle extends React.Component {
         const address = document.getElementById("address").value;
         const dlicense = document.getElementById("new-customer-dlicense").value;
 
-        [name, cellphone, address, dlicense].forEach((elem) => {
+        return createCustomer(name, cellphone, address, dlicense);
+        /*[name, cellphone, address, dlicense].forEach((elem) => {
             if (!elem) {
                 alert("Missing required rental information.");
                 throw Error("Missing required rental information.");
@@ -75,7 +77,7 @@ class ReserveVehicle extends React.Component {
             throw Error(content.error);
         } else {
             return dlicense;
-        }
+        }*/
 
     };
 
