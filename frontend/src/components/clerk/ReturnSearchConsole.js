@@ -17,7 +17,7 @@ class ReturnSearchConsole extends React.Component {
     }
 
     handleSubmit = async (event) => {
-        const response = await createReturn(this.state.rid,moment().format("YYYY-MM-DD"),moment().format("LT"),this.state.odometer,false,0);
+        const response = await createReturn(this.state.rid,moment().format("YYYY-MM-DD"),moment().format("LT"),this.state.odometer,this.state.fulltank,0);
         // temp rendering for testing
         ReactDOM.render(
             <div style={{margin: "30px"}}>
@@ -34,7 +34,7 @@ class ReturnSearchConsole extends React.Component {
                                              date: moment().format("YYYY-MM-DD"),
                                              time: moment().format("LT"),
                                              odometer: this.state.odometer,
-                                             fulltank: true,
+                                             fulltank: this.state.fulltank,
                                              value: 0
                                          }}/>, document.getElementById("return-result"));
         }, 500);
@@ -46,7 +46,7 @@ class ReturnSearchConsole extends React.Component {
         console.log(event.target.value);
     };
 
-    handleCheck = () => {
+    handleCheck = (event) => {
 
         this.setState({
             isChecked: !this.state.isChecked,
@@ -91,7 +91,7 @@ class ReturnSearchConsole extends React.Component {
                                 </Col>
                             </Form.Group>
                             <Form.Group controlId="fulltank">
-                                <Form.Check type="checkbox" label="Full Tank" checked={this.state.isChecked} name ="fulltank" onChange={this.handleCheck}/>
+                                <Form.Check type="checkbox" label="Full Tank"  name ="fulltank" />
                             </Form.Group>
                         </Form>
                     </div>
