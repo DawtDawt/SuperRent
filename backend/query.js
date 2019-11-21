@@ -296,9 +296,9 @@ function getDailyRental(request, response) {
     const date = request.query.date;
     let vehicleResult;
     let categoryResult;
-    return pool.query(`SELECT v.vtname, v.location, v.city FROM vehicle v, rental r
+    return pool.query(`SELECT * FROM vehicle v, rental r
                     WHERE v.vlicense = r.vlicense AND r.fromdate = $1
-                    GROUP BY v.city, v.location, v.vtname`, [date])
+                    ORDER BY v.city, v.location, v.vtname`, [date])
         .then(result => {
             vehicleResult = result;
             return pool.query(`SELECT v.vtname, COUNT(*) AS RentalPerVehicleType FROM vehicle v, rental r
@@ -335,9 +335,9 @@ function getDailyBranchRental(request, response) {
     const city = request.query.city;
     let vehicleResult;
     let categoryResult;
-    return pool.query(`SELECT v.vtname, v.location, v.city FROM vehicle v, rental r
+    return pool.query(`SELECT * FROM vehicle v, rental r
                     WHERE v.vlicense = r.vlicense AND r.fromdate = $1 AND v.location = $2 AND v.city = $3
-                    GROUP BY v.city, v.location, v.vtname`, [date, location, city])
+                    ORDER BY v.city, v.location, v.vtname`, [date, location, city])
         .then(result => {
             vehicleResult = result;
             return pool.query(`SELECT v.vtname, COUNT(*) AS RentalPerVehicleType FROM vehicle v, rental r
@@ -374,10 +374,10 @@ function getDailyReturn(request, response) {
     let categoryResult;
     let revenuePerCategory;
     let branchResult;
-    return pool.query(`SELECT v.vtname, v.location, v.city
+    return pool.query(`SELECT *
                             FROM vehicle v, rental r1, return r2
                             WHERE v.vlicense = r1.vlicense AND r1.rid = r2.rid AND r2.date = $1
-                            GROUP BY v.city, v.location, v.vtname`, [date])
+                            ORDER BY v.city, v.location, v.vtname`, [date])
         .then(result => {
             vehicleResult = result;
             return pool.query(`SELECT v.vtname, COUNT(*)
@@ -434,10 +434,10 @@ function getDailyBranchReturn(request, response) {
     let categoryResult;
     let revenuePerCategory;
     let branchResult;
-    return pool.query(`SELECT v.vtname, v.location, v.city
+    return pool.query(`SELECT *
                             FROM vehicle v, rental r1, return r2
                             WHERE v.vlicense = r1.vlicense AND r1.rid = r2.rid AND r2.date = $1 AND v.location = $2 AND v.city = $3
-                            GROUP BY v.city, v.location, v.vtname`, [date, location, city])
+                            ORDER BY v.city, v.location, v.vtname`, [date, location, city])
         .then(result => {
             vehicleResult = result;
             return pool.query(`SELECT v.vtname, COUNT(*)
