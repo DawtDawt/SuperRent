@@ -20,16 +20,17 @@ async function getVehicle(body) {
 }
 
 async function createCustomer(name, cellphone, address, dlicense) {
-    if (typeof name === "undefined") {
+    console.log(name);
+    if (name.length === 0) {
         alert("Missing required customer information: Name.");
         throw Error("Missing required customer information.");
-    } else if (typeof cellphone === "undefined") {
+    } else if (cellphone.length === 0) {
         alert("Missing required customer information: Cellphone.");
         throw Error("Missing required customer information.");
-    } else if (typeof address === "undefined") {
+    } else if (address.length === 0) {
         alert("Missing required customer information: Address.");
         throw Error("Missing required customer information.");
-    } else if (typeof dlicense === "undefined") {
+    } else if (dlicense.length === 0) {
         alert("Missing required customer information: Driver License.");
         throw Error("Missing required customer information.");
     }
@@ -61,7 +62,7 @@ async function createCustomer(name, cellphone, address, dlicense) {
             throw Error(content.error);
         }
         console.log(content.error);
-        alert("New Untracked Error in createCustomer.");
+        alert("New Untracked Error in createCustomer: " + content.error.detail);
         throw Error(content.error);
     } else {
         return content.data;
@@ -69,28 +70,28 @@ async function createCustomer(name, cellphone, address, dlicense) {
 }
 
 async function createReserve(vtname, dlicense, location, city, fromdate, todate, fromtime, totime) {
-    if (typeof vtname === "undefined") {
+    if (vtname.length === 0) {
         alert("Missing required reserve information: Vehicle Type.");
         throw Error("Missing required reserve information.");
-    } else if (typeof dlicense === "undefined") {
+    } else if (dlicense.length === 0) {
         alert("Missing required reserve information: Driver License.");
         throw Error("Missing required reserve information.");
-    } else if (typeof location === "undefined") {
+    } else if (location.length === 0) {
         alert("Missing required reserve information: Location.");
         throw Error("Missing required reserve information.");
-    } else if (typeof city === "undefined") {
+    } else if (city.length === 0) {
         alert("Missing required reserve information: City.");
         throw Error("Missing required reserve information.");
-    } else if (typeof fromdate === "undefined") {
+    } else if (fromdate.length === 0) {
         alert("Missing required reserve information: Start Date.");
         throw Error("Missing required reserve information.");
-    } else if (typeof todate === "undefined") {
+    } else if (todate.length === 0) {
         alert("Missing required reserve information: End Date.");
         throw Error("Missing required reserve information.");
-    } else if (typeof fromtime === "undefined") {
+    } else if (fromtime.length === 0) {
         alert("Missing required reserve information: Start Time.");
         throw Error("Missing required reserve information.");
-    } else if (typeof totime === "undefined") {
+    } else if (totime.length === 0) {
         alert("Missing required reserve information: End Time.");
         throw Error("Missing required reserve information.");
     }
@@ -126,7 +127,7 @@ async function createReserve(vtname, dlicense, location, city, fromdate, todate,
             throw Error(content.error);
         }
         console.log(content.error);
-        alert("New Untracked Error In createReserve.");
+        alert("New Untracked Error In createReserve: " + content.error.detail);
         throw Error(content.error);
     } else {
         return (content.data);
@@ -134,37 +135,37 @@ async function createReserve(vtname, dlicense, location, city, fromdate, todate,
 }
 
 async function createRent(vlicense, dlicense, fromdate, todate, fromtime, totime, odometer, cardname, cardno, expdate, confno) {
-    if (typeof license === "undefined") {
+    if (vlicense.length !== 6) {
         alert("Missing required rental information: Vehicle License.");
         throw Error("Missing required rental information.");
-    } else if (typeof dlicense === "undefined") {
+    } else if (dlicense.length === 0) {
         alert("Missing required rental information: Driver License.");
         throw Error("Missing required rental information.");
-    } else if (typeof fromdate === "undefined") {
+    } else if (fromdate.length === 0) {
         alert("Missing required rental information: Start Date.");
         throw Error("Missing required rental information.");
-    } else if (typeof todate === "undefined") {
+    } else if (todate.length === 0) {
         alert("Missing required rental information: End Date.");
         throw Error("Missing required rental information.");
-    } else if (typeof fromtime === "undefined") {
+    } else if (fromtime.length === 0) {
         alert("Missing required rental information: Start Time.");
         throw Error("Missing required rental information.");
-    } else if (typeof totime === "undefined") {
+    } else if (totime.length === 0) {
         alert("Missing required rental information: End Time.");
         throw Error("Missing required rental information.");
-    } else if (typeof odometer === "undefined") {
+    } else if (odometer.length === 0) {
         alert("Missing required rental information: Odometer.");
         throw Error("Missing required rental information.");
-    } else if (typeof cardname === "undefined") {
+    } else if (cardname.length === 0) {
         alert("Missing required rental information: Card Name.");
         throw Error("Missing required rental information.");
-    } else if (typeof cardno === "undefined") {
+    } else if (cardno.length === 0) {
         alert("Missing required rental information: Card Number.");
         throw Error("Missing required rental information.");
-    } else if (typeof expdate === "undefined") {
+    } else if (expdate.length === 0) {
         alert("Missing required rental information: Expiration Date.");
         throw Error("Missing required rental information.");
-    } else if (typeof confno === "undefined") {
+    } else if (confno.length === 0) {
         alert("Missing required rental information: Confirmation Number.");
         throw Error("Missing required rental information.");
     }
@@ -193,7 +194,7 @@ async function createRent(vlicense, dlicense, fromdate, todate, fromtime, totime
     const content = await response.json();
     if (content.error) {
         console.log(content.error);
-        alert("New Untracked Error In createRent.");
+        alert("New Untracked Error In createRent: " + content.error.detail);
         throw Error(content.error);
     } else {
         return (content.data);
@@ -201,22 +202,22 @@ async function createRent(vlicense, dlicense, fromdate, todate, fromtime, totime
 }
 
 async function createReturn(rid, date, time, odometer, fulltank, value) {
-    if (typeof rid === "undefined") {
+    if (rid.length === 0) {
         alert("Missing required return information: Rent ID.");
         throw Error("Missing required return information.");
-    } else if (typeof date === "undefined") {
+    } else if (date.length === 0) {
         alert("Missing required return information: Return Date.");
         throw Error("Missing required return information.");
-    } else if (typeof time === "undefined") {
+    } else if (time.length === 0) {
         alert("Missing required return information: Return Time.");
         throw Error("Missing required return information.");
-    } else if (typeof odometer === "undefined") {
+    } else if (odometer.length === 0) {
         alert("Missing required return information: Odometer.");
         throw Error("Missing required return information.");
-    } else if (typeof fulltank === "undefined") {
+    } else if (fulltank.length === 0) {
         alert("Missing required return information: Fulltank Boolean.");
         throw Error("Missing required return information.");
-    } else if (typeof value === "undefined") {
+    } else if (value.length === 0) {
         alert("Missing required return information: Value of Return.");
         throw Error("Missing required return information.");
     }
@@ -239,11 +240,6 @@ async function createReturn(rid, date, time, odometer, fulltank, value) {
 
     const content = await response.json();
     if (content.error) {
-        if (content.error.code === "23503") {
-            alert("No rental record were found under the given rid.");
-            console.log(content.error);
-            throw Error(content.error);
-        }
         console.log(content.error);
         alert("New Untracked Error In createReturn.");
         throw Error(content.error);
@@ -253,7 +249,7 @@ async function createReturn(rid, date, time, odometer, fulltank, value) {
 }
 
 async function getDailyRentals(date) {
-    if (typeof date === "undefined") {
+    if (date.length === 0) {
         alert("Missing required daily rental report information: Date.");
         throw Error("Missing required daily report information.");
     }
@@ -265,7 +261,7 @@ async function getDailyRentals(date) {
     const content = await response.json();
     if (content.error) {
         console.log(content.error);
-        alert("New Untracked Error In getDailyRentals.");
+        alert("New Untracked Error In getDailyRentals: " + content.error.detail);
         throw Error(content.error);
     } else {
         return (content.data);
@@ -273,13 +269,13 @@ async function getDailyRentals(date) {
 }
 
 async function getDailyRentalsByBranch(date, location, city) {
-    if (typeof date === "undefined") {
+    if (date.length === 0) {
         alert("Missing required daily rental report by branch information: Date.");
         throw Error("Missing required daily rental report by branch information.");
-    } else if (typeof location === "undefined") {
+    } else if (location.length === 0) {
         alert("Missing required daily rental report by branch information: Location.");
         throw Error("Missing required daily rental report by branch information.");
-    } else if (typeof city === "undefined") {
+    } else if (city.length === 0) {
         alert("Missing required daily rental report by branch information: City.");
         throw Error("Missing required daily rental report by branch information.");
     }
@@ -294,7 +290,7 @@ async function getDailyRentalsByBranch(date, location, city) {
     const content = await response.json();
     if (content.error) {
         console.log(content.error);
-        alert("New Untracked Error In getDailyRentalsByBranch.");
+        alert("New Untracked Error In getDailyRentalsByBranch: " + content.error.detail);
         throw Error(content.error);
     } else {
         return (content.data);
@@ -302,7 +298,7 @@ async function getDailyRentalsByBranch(date, location, city) {
 }
 
 async function getDailyReturns(date) {
-    if (typeof date === "undefined") {
+    if (date.length === 0) {
         alert("Missing required daily return report information: Date.");
         throw Error("Missing required daily return report information.");
     }
@@ -314,7 +310,7 @@ async function getDailyReturns(date) {
     const content = await response.json();
     if (content.error) {
         console.log(content.error);
-        alert("New Untracked Error In getDailyReturns.");
+        alert("New Untracked Error In getDailyReturns: " + content.error.detail);
         throw Error(content.error);
     } else {
         return (content.data);
@@ -322,13 +318,13 @@ async function getDailyReturns(date) {
 }
 
 async function getDailyReturnsByBranch(date, location, city) {
-    if (typeof date === "undefined") {
+    if (date.length === 0) {
         alert("Missing required daily return report by branch information: Date.");
         throw Error("Missing required daily return report by branch information.");
-    } else if (typeof location === "undefined") {
+    } else if (location.length === 0) {
         alert("Missing required daily return report by branch information: Location.");
         throw Error("Missing required daily return report by branch information.");
-    } else if (typeof city === "undefined") {
+    } else if (city.length === 0) {
         alert("Missing required daily return report by branch information: City.");
         throw Error("Missing required daily return report by branch information.");
     }
@@ -343,7 +339,7 @@ async function getDailyReturnsByBranch(date, location, city) {
     const content = await response.json();
     if (content.error) {
         console.log(content.error);
-        alert("New Untracked Error In getDailyReturnsByBranch.");
+        alert("New Untracked Error In getDailyReturnsByBranch: " + content.error.detail);
         throw Error(content.error);
     } else {
         return (content.data);
