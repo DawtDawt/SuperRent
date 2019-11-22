@@ -1,7 +1,9 @@
 // File for fetch functions
 module.exports.getVehicle = getVehicle;
 module.exports.createCustomer = createCustomer;
+module.exports.getReserve = getReserve;
 module.exports.createReserve = createReserve;
+module.exports.getRent = getRent;
 module.exports.createRent = createRent;
 module.exports.createReturn = createReturn;
 module.exports.getDailyRental = getDailyRentals;
@@ -62,10 +64,30 @@ async function createCustomer(name, cellphone, address, dlicense) {
             throw Error(content.error);
         }
         console.log(content.error);
-        alert("New Untracked Error in createCustomer: " + content.error.detail);
+        alert("New Untracked Error in createCustomer: " + String(content.error.detail));
         throw Error(content.error);
     } else {
         return content.data;
+    }
+}
+
+async function getReserve(confno) {
+    if (confno.length === 0) {
+        alert("Missing required get reserve information: Confirmation Number.");
+        throw Error("Missing required get reserve information");
+    }
+
+    const query = 'confno=' + encodeURIComponent(confno);
+
+    const response = await fetch("http://localhost:8080/reserve/get/?" + query);
+
+    const content = await response.json();
+    if (content.error) {
+        console.log(content.error);
+        alert("New Untracked Error In getReserve: " + String(content.error.detail));
+        throw Error(content.error);
+    } else {
+        return (content.data);
     }
 }
 
@@ -127,7 +149,27 @@ async function createReserve(vtname, dlicense, location, city, fromdate, todate,
             throw Error(content.error);
         }
         console.log(content.error);
-        alert("New Untracked Error In createReserve: " + content.error.detail);
+        alert("New Untracked Error In createReserve: " + String(content.error.detail));
+        throw Error(content.error);
+    } else {
+        return (content.data);
+    }
+}
+
+async function getRent(rid) {
+    if (rid.length === 0) {
+        alert("Missing required get reserve information: Confirmation Number.");
+        throw Error("Missing required get reserve information");
+    }
+
+    const query = 'rid=' + encodeURIComponent(rid);
+
+    const response = await fetch("http://localhost:8080/rent/get/?" + query);
+
+    const content = await response.json();
+    if (content.error) {
+        console.log(content.error);
+        alert("New Untracked Error In getRent: " + String(content.error.detail));
         throw Error(content.error);
     } else {
         return (content.data);
@@ -199,7 +241,7 @@ async function createRent(vlicense, dlicense, fromdate, todate, fromtime, totime
             throw Error("Missing required return information");
         }
         console.log(content.error);
-        alert("New Untracked Error In createRent: " + content.error.detail);
+        alert("New Untracked Error In createRent: " + String(content.error.detail));
         throw Error(content.error);
     } else {
         return (content.data);
@@ -271,7 +313,7 @@ async function getDailyRentals(date) {
     const content = await response.json();
     if (content.error) {
         console.log(content.error);
-        alert("New Untracked Error In getDailyRentals: " + content.error.detail);
+        alert("New Untracked Error In getDailyRentals: " + String(content.error.detail));
         throw Error(content.error);
     } else {
         return (content.data);
@@ -300,7 +342,7 @@ async function getDailyRentalsByBranch(date, location, city) {
     const content = await response.json();
     if (content.error) {
         console.log(content.error);
-        alert("New Untracked Error In getDailyRentalsByBranch: " + content.error.detail);
+        alert("New Untracked Error In getDailyRentalsByBranch: " + String(content.error.detail));
         throw Error(content.error);
     } else {
         return (content.data);
@@ -320,7 +362,7 @@ async function getDailyReturns(date) {
     const content = await response.json();
     if (content.error) {
         console.log(content.error);
-        alert("New Untracked Error In getDailyReturns: " + content.error.detail);
+        alert("New Untracked Error In getDailyReturns: " + String(content.error.detail));
         throw Error(content.error);
     } else {
         return (content.data);
@@ -349,7 +391,7 @@ async function getDailyReturnsByBranch(date, location, city) {
     const content = await response.json();
     if (content.error) {
         console.log(content.error);
-        alert("New Untracked Error In getDailyReturnsByBranch: " + content.error.detail);
+        alert("New Untracked Error In getDailyReturnsByBranch: " + String(content.error.detail));
         throw Error(content.error);
     } else {
         return (content.data);
