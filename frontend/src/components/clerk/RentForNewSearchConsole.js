@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Button, ButtonGroup, DropdownButton, DropdownItem} from "react-bootstrap";
+import {Button, ButtonGroup, Dropdown, DropdownButton, DropdownItem} from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
@@ -8,11 +8,14 @@ import moment from "moment";
 import RentTable from "./RentTable";
 import Spinner from "react-bootstrap/Spinner";
 import {createRent, createReturn} from "../Fetch";
+import {DateRangePicker} from "react-dates";
 
 class RentForNewSearchConsole extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            vtnameSelection: ['Economy', 'Compact', 'Mid-size', 'Standard', 'Full-size', 'SUV', 'Truck'],
+        };
     }
 
     handleSubmit = async (event) =>{
@@ -85,6 +88,18 @@ class RentForNewSearchConsole extends React.Component {
             overflowY: "scroll",
         };
 
+        const timeStyle = {
+            width: "180px",
+            margin: "5px"
+        };
+
+        const flexStyle = {
+            margin: "20px 0 0 0",
+            minWidth: "100%",
+            display: "flex", flexDirection: "row",
+            flexWrap: "wrap",
+            justifyContent: "center"
+        };
         return (
             <React.Fragment>
                 <div style={consoleStyle}>
@@ -113,20 +128,83 @@ class RentForNewSearchConsole extends React.Component {
                                     <Form.Control id="expdate" type="text" placeholder="MM/YY" name = "carddate" onChange={this.handleChange}/>
                                 </Col>
                             </Form.Group>
-
-                            <Form.Group as={Row} controlId="confno">
-                                <Form.Label column sm="3">
-                                    Confirmation Number
-                                </Form.Label>
-                                <Col sm="9">
-                                    <Form.Control type="text" placeholder="Enter Confirmation Number" name = "cnum" onChange={this.handleChange}/>
-                                </Col>
-                            </Form.Group>
                         </Form>
                     </div>
                     <Button size={"lg"} onClick={this.handleSubmit}>Generate Receipt</Button>
                     <div id={"rent-result"}></div>
                 </div>
+                <h1>
+                    Select Your Car????
+                </h1>
+                <div style={flexStyle}>
+                    <DropdownButton title={"Location"} size={"lg"} id={"reportLocation"} style={locationStyle}
+                                    as={ButtonGroup}
+                                    variant={"outline-primary"}
+                                    drop={'down'}>
+                    </DropdownButton>
+                    <DateRangePicker
+                        startDate={this.state["browse-startdate"]} // momentPropTypes.momentObj or null,
+                        startDateId="browse-startdate" // PropTypes.string.isRequired,
+                        endDate={this.state["browse-todate"]} // momentPropTypes.momentObj or null,
+                        endDateId="browse-todate" // PropTypes.string.isRequired,
+                        onDatesChange={({startDate, endDate}) => this.setState({
+                            "browse-startdate": startDate,
+                            "browse-todate": endDate
+                        })} // PropTypes.func.isRequired,
+                        focusedInput={this.state.focusedInput} // PropTypes.oneOf([START_DATE, END_DATE]) or null,
+                        onFocusChange={focusedInput => this.setState({focusedInput})} // PropTypes.func.isRequired,
+                    />
+                    <DropdownButton title={"Start Time"}
+                                    value={this.state["browse-fromtime"]}
+                                    size={"lg"}
+                                    variant={"outline-primary"}
+                                    as={ButtonGroup} id={"browse-fromtime"} style={timeStyle}>
+                        <Dropdown.Divider/>
+                        <div style={dropdownStyle}>
+                            {this.props.times.map((elem, idx) => {
+                                return <DropdownItem key={idx} value={elem} as={"button"}
+                                                     onClick={this.handleChange}
+                                                     className={"browse-fromtime"}>{elem}</DropdownItem>;
+                            })}
+                        </div>
+                    </DropdownButton>
+                    <DropdownButton title={"End Time"}
+                                    value={this.state["browse-totime"]}
+                                    size={"lg"}
+                                    variant={"outline-primary"}
+                                    as={ButtonGroup} id={"browse-totime"} style={timeStyle}>
+                        <div style={dropdownStyle}>
+                            <Dropdown.Divider/>
+                            {this.props.times.map((elem, idx) => {
+                                return <DropdownItem key={idx} value={elem} as={"button"}
+                                                     onClick={this.handleChange}
+                                                     className={"browse-totime"}>{elem}</DropdownItem>;
+                            })}
+                        </div>
+                    </DropdownButton>
+                    <DropdownButton title={"Any Car Type"}
+                                    value={this.state["browse-vtname"]}
+                                    size={"lg"}
+                                    variant={"outline-primary"}
+                                    as={ButtonGroup} id={"browse-vtname"} style={timeStyle}>
+                        <div style={dropdownStyle}>
+                            <DropdownItem key={"-1"} value={"Any Car Type"} as={"button"}
+                                          onClick={this.handleAnySelection}
+                                          className={"browse-vtname"}>Any Car Type</DropdownItem>
+                            <Dropdown.Divider/>
+                            {this.state.vtnameSelection.map((elem, idx) => {
+                                return <DropdownItem key={idx} value={elem} as={"button"}
+                                                     onClick={this.handleChange}
+                                                     className={"browse-vtname"}>{elem}</DropdownItem>;
+                            })}
+                        </div>
+                    </DropdownButton>
+                </div>
+                <div style={{textAlign: "center"}}>
+                    <Button size={"lg"} onClick={() => this.handleSubmit(this.state)}
+                            style={{margin: "10px 0"}}>Search</Button>
+                </div>
+                <div id="browse-result"></div>
             </React.Fragment>
         )
     }
