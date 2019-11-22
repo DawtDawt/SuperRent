@@ -5,6 +5,7 @@ import ReturnSearchConsole from "./ReturnSearchConsole";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
 import ReportSearchConsole from "./ReportSearchConsole";
+import RentForNewSearchConsole from "./RentForNewSearchConsole";
 
 class Clerk extends React.Component {
     constructor(props) {
@@ -75,6 +76,9 @@ class Clerk extends React.Component {
                     <Tabs justify defaultActiveKey="Rent" id="uncontrolled-tab-example">
                         <Tab eventKey="Rent" title="Rent">
                             <RentSearchConsole confNoSelection={this.state.confNoSelection}/>
+                        </Tab>
+                        <Tab eventKey="RentNew" title="Rent For Non-Reserved">
+                            <RentForNewSearchConsole confNoSelection={this.state.confNoSelection}/>
                         </Tab>
                         <Tab eventKey="Return" title="Return">
                             <ReturnSearchConsole rentIDSelection={this.state.rentIDSelection}/>

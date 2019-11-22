@@ -9,7 +9,7 @@ import RentTable from "./RentTable";
 import Spinner from "react-bootstrap/Spinner";
 import {createRent, createReturn} from "../Fetch";
 
-class RentSearchConsole extends React.Component {
+class RentForNewSearchConsole extends React.Component {
     constructor(props) {
         super(props);
         this.state = {};
@@ -133,5 +133,5 @@ class RentSearchConsole extends React.Component {
 }
 
 
-export default RentSearchConsole;
+export default RentForNewSearchConsole;
 
