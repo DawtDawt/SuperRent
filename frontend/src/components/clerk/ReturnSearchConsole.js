@@ -17,7 +17,7 @@ class ReturnSearchConsole extends React.Component {
     }
 
     handleSubmit = async (event) => {
-        const response = await createReturn(this.state.rid,moment().format("YYYY-MM-DD"),moment().format("LT"),this.state.odometer,this.state.fulltank,0);
+        const response = await createReturn(this.state.rid,moment().format("YYYY-MM-DD"),moment().format("LT"),this.state.odometer,false,0);
         // temp rendering for testing
         ReactDOM.render(
             <div style={{margin: "30px"}}>

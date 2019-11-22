@@ -7,6 +7,7 @@ import Row from "react-bootstrap/Row";
 import moment from "moment";
 import RentTable from "./RentTable";
 import Spinner from "react-bootstrap/Spinner";
+import {createRent, createReturn} from "../Fetch";
 
 class RentSearchConsole extends React.Component {
     constructor(props) {
@@ -14,8 +15,9 @@ class RentSearchConsole extends React.Component {
         this.state = {};
     }
 
-    handleSubmit() {
+    handleSubmit = async (event) =>{
         // temp handle submit before fetch is setup
+        const response = await createRent(this.state.rid,moment().format("YYYY-MM-DD"),moment().format("LT"),this.state.odometer,false,0);
         const rentDetail = {
             rid: 1,
             confno: 1,
