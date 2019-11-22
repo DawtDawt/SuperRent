@@ -1,5 +1,6 @@
 import React from 'react';
 import {Fade, Table} from "react-bootstrap";
+import moment from "moment";
 
 class ReportTable extends React.Component {
     constructor(props) {
@@ -14,7 +15,7 @@ class ReportTable extends React.Component {
         const numByType = {
             Economy: 0,
             Compact: 0,
-            Mid: 0,
+            "Mid-size": 0,
             Standard: 0,
             "Full-size": 0,
             SUV: 0,
@@ -76,14 +77,6 @@ class ReportTable extends React.Component {
         );
     }
 
-    getPerCompany() {
-        return (
-            <React.Fragment>
-                <h5>Total Number of {this.props.action}s: {this.props.report.perCompany}</h5>
-            </React.Fragment>
-        );
-    }
-
     getVehicles() {
         const action = this.props.action === "rental" ? "Rented" : "Returned";
 
@@ -93,18 +86,36 @@ class ReportTable extends React.Component {
                 <Table bordered hover>
                     <thead>
                     <tr>
-                        <th style={{width: "33%"}}>Vehicle Type</th>
-                        <th style={{width: "33%"}}>Location</th>
-                        <th style={{width: "33%"}}>City</th>
+                        <th>Vehicle License</th>
+                        <th>Make</th>
+                        <th>Model</th>
+                        <th>Year</th>
+                        <th>Color</th>
+                        <th>Odometer</th>
+                        <th>Vehicle Type</th>
+                        <th>Location</th>
+                        <th>City</th>
+                        <th>Rent ID</th>
+                        <th>From</th>
+                        <th>To</th>
                     </tr>
                     </thead>
                     <tbody>
                     {this.props.report.vehicle.map((car, idx) => {
                         return (
                             <tr key={idx}>
+                                <td>{car.vlicense}</td>
+                                <td>{car.make}</td>
+                                <td>{car.model}</td>
+                                <td>{car.year}</td>
+                                <td>{car.color.toUpperCase()}</td>
+                                <td>{car.odometer}</td>
                                 <td>{car.vtname}</td>
                                 <td>{car.location}</td>
                                 <td>{car.city}</td>
+                                <td>{car.rid}</td>
+                                <td>{moment(car.fromdate).format("YYYY-MM-DD")} {moment(car.fromtime, "hh:mm:ss").format("LT")}</td>
+                                <td>{moment(car.todate).format("YYYY-MM-DD")} {moment(car.totime, "hh:mm:ss").format("LT")}</td>
                             </tr>
                         )
                     })}
@@ -206,26 +217,13 @@ class ReportTable extends React.Component {
         } else {
             if (this.props.action === "rental") {
                 // Rentals
-                if (this.props.location === "all") {
-                    // Daily Rental
-                    table = (
-                        <React.Fragment>
-                            {this.getVehicles()}
-                            {this.getPerCategory()}
-                            {this.getPerBranch()}
-                            {this.getPerCompany()}
-                        </React.Fragment>
-                    );
-                } else {
-                    // Daily Rentals for Branch
-                    table = (
-                        <React.Fragment>
-                            {this.getVehicles()}
-                            {this.getPerCategory()}
-                            {this.getPerBranch()}
-                        </React.Fragment>
-                    );
-                }
+                table = (
+                    <React.Fragment>
+                        {this.getVehicles()}
+                        {this.getPerCategory()}
+                        {this.getPerBranch()}
+                    </React.Fragment>
+                )
             } else {
                 // Returns
                 if (this.props.location === "all") {
