@@ -13,14 +13,16 @@ import {createReturn} from "../Fetch";
 class ReturnSearchConsole extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            isChecked: true,
+        };
     }
 
     handleSubmit = async (event) => {
         let run;
         let response;
         try {
-            response = await createReturn(this.state.rid,moment().format("YYYY-MM-DD"),moment().format("LT"),this.state.odometer,false,0);
+            response = await createReturn(this.state.rid,moment().format("YYYY-MM-DD"),moment().format("LT"),this.state.odometer,this.state.isChecked,0);
             run = true;
         } catch (error) {
             run = false;
@@ -43,7 +45,7 @@ class ReturnSearchConsole extends React.Component {
                                                  date: moment().format("YYYY-MM-DD"),
                                                  time: moment().format("LT"),
                                                  odometer: this.state.odometer,
-                                                 fulltank: this.state.fulltank,
+                                                 fulltank: this.state.isChecked,
                                                  value: 0
                                              }}/>, document.getElementById("return-result"));
             }, 500);
@@ -57,13 +59,13 @@ class ReturnSearchConsole extends React.Component {
         console.log(event.target.value);
     };
 
-    handleCheck = (event) => {
 
+
+    toggleChange = () => {
         this.setState({
             isChecked: !this.state.isChecked,
         });
-    };
-
+    }
 
     render() {
         const consoleStyle = {
@@ -102,7 +104,7 @@ class ReturnSearchConsole extends React.Component {
                                 </Col>
                             </Form.Group>
                             <Form.Group controlId="fulltank">
-                                <Form.Check type="checkbox" label="Full Tank"  name ="fulltank" />
+                                <Form.Check type="checkbox" label="Full Tank"  name ="fulltank" checked={this.state.isChecked} onChange={this.toggleChange}/>
                             </Form.Group>
                         </Form>
                     </div>
