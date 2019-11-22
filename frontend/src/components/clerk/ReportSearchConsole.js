@@ -29,81 +29,126 @@ class ReportSearchConsole extends React.Component {
             ReactDOM.render(<ReportTable
                 action={"rental"}
                 location={"all"}
-                report={{
-                    "vehicle": [
-                        {
-                            "vtname": "Economy",
-                            "location": "Richmond Centre",
-                            "city": "Richmond"
-                        },
-                        {
-                            "vtname": "Standard",
-                            "location": "Dunbar",
-                            "city": "Vancouver"
-                        },
-                        {
-                            "vtname": "Compact",
-                            "location": "Kerrisdale",
-                            "city": "Vancouver"
-                        },
-                        {
-                            "vtname": "SUV",
-                            "location": "Kitsilano",
-                            "city": "Vancouver"
-                        },
-                        {
-                            "vtname": "SUV",
-                            "location": "UBC",
-                            "city": "Vancouver"
-                        }
-                    ],
-                    "perCategory": [
-                        {
-                            "vtname": "Compact",
-                            "count": "1"
-                        },
-                        {
-                            "vtname": "Economy",
-                            "count": "1"
-                        },
-                        {
-                            "vtname": "SUV",
-                            "count": "6"
-                        },
-                        {
-                            "vtname": "Standard",
-                            "count": "1"
-                        }
-                    ],
-                    "perBranch": [
-                        {
-                            "location": "Richmond Centre",
-                            "city": "Richmond",
-                            "count": "1"
-                        },
-                        {
-                            "location": "Dunbar",
-                            "city": "Vancouver",
-                            "count": "1"
-                        },
-                        {
-                            "location": "Kerrisdale",
-                            "city": "Vancouver",
-                            "count": "1"
-                        },
-                        {
-                            "location": "Kitsilano",
-                            "city": "Vancouver",
-                            "count": "1"
-                        },
-                        {
-                            "location": "UBC",
-                            "city": "Vancouver",
-                            "count": "5"
-                        }
-                    ],
-                    "perCompany": 5
-                }}/>, document.getElementById("report-result"));
+                report={
+                    {
+                        "vehicle": [
+                            {
+                                "vlicense": "ABC015",
+                                "make": "Tesla",
+                                "model": "Model X",
+                                "year": 2019,
+                                "color": "white",
+                                "odometer": 130,
+                                "status": "available",
+                                "vtname": "Compact",
+                                "location": "UBC",
+                                "city": "Vancouver",
+                                "rid": "8",
+                                "dlicense": "000009",
+                                "fromdate": "2019-10-15T07:00:00.000Z",
+                                "todate": "2019-10-30T07:00:00.000Z",
+                                "fromtime": "00:00:00",
+                                "totime": "15:00:00",
+                                "cardname": "John Doe",
+                                "cardno": "888812345",
+                                "expdate": "2030-10-10T07:00:00.000Z",
+                                "confno": "8"
+                            },
+                            {
+                                "vlicense": "ABC014",
+                                "make": "Tesla",
+                                "model": "Model X",
+                                "year": 2019,
+                                "color": "white",
+                                "odometer": 130,
+                                "status": "available",
+                                "vtname": "Economy",
+                                "location": "UBC",
+                                "city": "Vancouver",
+                                "rid": "7",
+                                "dlicense": "000008",
+                                "fromdate": "2019-10-15T07:00:00.000Z",
+                                "todate": "2019-10-30T07:00:00.000Z",
+                                "fromtime": "00:00:00",
+                                "totime": "15:00:00",
+                                "cardname": "John Doe",
+                                "cardno": "888812345",
+                                "expdate": "2030-10-10T07:00:00.000Z",
+                                "confno": "7"
+                            },
+                            {
+                                "vlicense": "ABC013",
+                                "make": "Tesla",
+                                "model": "Model X",
+                                "year": 2019,
+                                "color": "white",
+                                "odometer": 130,
+                                "status": "available",
+                                "vtname": "Mid-size",
+                                "location": "UBC",
+                                "city": "Vancouver",
+                                "rid": "6",
+                                "dlicense": "000007",
+                                "fromdate": "2019-10-15T07:00:00.000Z",
+                                "todate": "2019-10-30T07:00:00.000Z",
+                                "fromtime": "00:00:00",
+                                "totime": "15:00:00",
+                                "cardname": "John Doe",
+                                "cardno": "888812345",
+                                "expdate": "2030-10-10T07:00:00.000Z",
+                                "confno": "6"
+                            },
+                            {
+                                "vlicense": "ABC000",
+                                "make": "Tesla",
+                                "model": "Model X",
+                                "year": 2019,
+                                "color": "white",
+                                "odometer": 130,
+                                "status": "available",
+                                "vtname": "SUV",
+                                "location": "UBC",
+                                "city": "Vancouver",
+                                "rid": "1",
+                                "dlicense": "000000",
+                                "fromdate": "2019-10-15T07:00:00.000Z",
+                                "todate": "2019-10-30T07:00:00.000Z",
+                                "fromtime": "00:00:00",
+                                "totime": "15:00:00",
+                                "cardname": "John Doe",
+                                "cardno": "888812345",
+                                "expdate": "2030-10-10T07:00:00.000Z",
+                                "confno": "1"
+                            }
+                        ],
+                        "perCategory": [
+                            {
+                                "vtname": "Compact",
+                                "count": "1"
+                            },
+                            {
+                                "vtname": "Economy",
+                                "count": "1"
+                            },
+                            {
+                                "vtname": "Mid-size",
+                                "count": "1"
+                            },
+                            {
+                                "vtname": "SUV",
+                                "count": "1"
+                            }
+                        ],
+                        "perBranch": [
+                            {
+                                "location": "UBC",
+                                "city": "Vancouver",
+                                "count": "4"
+                            }
+                        ],
+                        "perCompany": 4
+                    }
+                }/>, document.getElementById("report-result"));
         }, 500);
     };
 
