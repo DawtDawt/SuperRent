@@ -193,6 +193,11 @@ async function createRent(vlicense, dlicense, fromdate, todate, fromtime, totime
 
     const content = await response.json();
     if (content.error) {
+        if (content.error.code === 23505) {
+            alert("This rental record (rid) already exists in the rental table.");
+            console.log(content.error);
+            throw Error("Missing required return information");
+        }
         console.log(content.error);
         alert("New Untracked Error In createRent: " + content.error.detail);
         throw Error(content.error);
@@ -240,6 +245,11 @@ async function createReturn(rid, date, time, odometer, fulltank, value) {
 
     const content = await response.json();
     if (content.error) {
+        if (content.error.code === 23505) {
+            alert("This rental record (rid) has already been returned in the return table.");
+            console.log(content.error);
+            throw Error("Missing required return information");
+        }
         console.log(content.error);
         alert("New Untracked Error In createReturn.");
         throw Error(content.error);
