@@ -17,27 +17,38 @@ class ReturnSearchConsole extends React.Component {
     }
 
     handleSubmit = async (event) => {
-        const response = await createReturn(this.state.rid,moment().format("YYYY-MM-DD"),moment().format("LT"),this.state.odometer,false,0);
+        let run;
+        let response;
+        try {
+            response = await createReturn(this.state.rid,moment().format("YYYY-MM-DD"),moment().format("LT"),this.state.odometer,false,0);
+            run = true;
+        } catch (error) {
+            run = false;
+            console.log(error);
+        }
         // temp rendering for testing
-        ReactDOM.render(
-            <div style={{margin: "30px"}}>
-                <Spinner animation="border" role="status">
-                    <span className="sr-only">Loading...</span>
-                </Spinner>
-            </div>,
-            document.getElementById("return-result"));
+        if (run) {
+            ReactDOM.render(
+                <div style={{margin: "30px"}}>
+                    <Spinner animation="border" role="status">
+                        <span className="sr-only">Loading...</span>
+                    </Spinner>
+                </div>,
+                document.getElementById("return-result"));
 
-        setTimeout(() => {
-            ReactDOM.render(<ReturnTable ref={this.ReportTable}
-                                         rentDetail={{
-                                             rid: response.data,
-                                             date: moment().format("YYYY-MM-DD"),
-                                             time: moment().format("LT"),
-                                             odometer: this.state.odometer,
-                                             fulltank: this.state.fulltank,
-                                             value: 0
-                                         }}/>, document.getElementById("return-result"));
-        }, 500);
+            setTimeout(() => {
+                ReactDOM.render(<ReturnTable ref={this.ReportTable}
+                                             rentDetail={{
+                                                 rid: response.data,
+                                                 date: moment().format("YYYY-MM-DD"),
+                                                 time: moment().format("LT"),
+                                                 odometer: this.state.odometer,
+                                                 fulltank: this.state.fulltank,
+                                                 value: 0
+                                             }}/>, document.getElementById("return-result"));
+            }, 500);
+        }
+
     };
 
     handleChange = (event) => {
