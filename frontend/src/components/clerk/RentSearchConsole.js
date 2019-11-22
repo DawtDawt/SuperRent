@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Button} from "react-bootstrap";
+import {Button, ButtonGroup, DropdownButton, DropdownItem} from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
@@ -17,7 +17,7 @@ class RentSearchConsole extends React.Component {
 
     handleSubmit = async (event) =>{
         // temp handle submit before fetch is setup
-        const response = await createRent(this.state.rid,moment().format("YYYY-MM-DD"),moment().format("LT"),this.state.odometer,false,0);
+        // const response = await createRent(this.state.rid,moment().format("YYYY-MM-DD"),moment().format("LT"),this.state.odometer,false,0);
         const rentDetail = {
             rid: 1,
             confno: 1,
@@ -31,7 +31,7 @@ class RentSearchConsole extends React.Component {
             fromtime: "12:00 PM",
             totime: "2:00 PM",
             cardname: "VISA",
-            cardno: 1234520112412,
+            cardno: this.state["cardnum"],
             expdate: "04/25",
             odometer: 3000
         };
@@ -49,6 +49,22 @@ class RentSearchConsole extends React.Component {
         }, 500);
     }
 
+    handleChange = (event) => {
+        this.setState({ [event.target.name]: event.target.value });
+        console.log(event.target.name);
+        console.log(event.target.value);
+    };
+
+    chandleChange = (event) => {
+        const btnName = event.target.className.split(" ")[0];
+        document.getElementById(btnName).innerText = event.target.value;
+        document.getElementById(btnName).className = document.getElementById(btnName).className.split(" ").filter((elem) => {
+            return elem !== "btn-outline-primary";
+        }).join(" ");
+        document.getElementById(btnName).className = document.getElementById(btnName).className.concat(" btn-primary");
+        this.setState({[btnName]: event.target.value});
+    };
+
     render() {
         const consoleStyle = {
             margin: "20px",
@@ -62,6 +78,23 @@ class RentSearchConsole extends React.Component {
             padding: "0px"
         };
 
+        const locationDropdownStyle = {
+            maxHeight: "205px",
+            width: "300px",
+            overflowY: "scroll",
+        };
+
+        const locationStyle = {
+            margin: "5px",
+            width: "350px",
+        };
+
+        const dropdownStyle = {
+            maxHeight: "205px",
+            // width: "300px",
+            overflowY: "scroll",
+        };
+
         return (
             <React.Fragment>
                 <div style={consoleStyle}>
@@ -72,7 +105,7 @@ class RentSearchConsole extends React.Component {
                                     Credit Card Name
                                 </Form.Label>
                                 <Col sm="9">
-                                    <Form.Control type="text" placeholder="Enter Card Name"/>
+                                    <Form.Control type="text" placeholder="Enter Card Name" name = "cardname" onChange={this.handleChange}/>
                                 </Col>
                             </Form.Group>
 
@@ -81,13 +114,13 @@ class RentSearchConsole extends React.Component {
                                     Credit Card Number
                                 </Form.Label>
                                 <Col sm="5">
-                                    <Form.Control id="cardno" type="number" placeholder="Enter Card Number"/>
+                                    <Form.Control id="cardno" type="number" placeholder="Enter Card Number" name = "cardnum" onChange={this.handleChange}/>
                                 </Col>
                                 <Form.Label column sm="2">
                                     Expiry Date
                                 </Form.Label>
                                 <Col sm="2">
-                                    <Form.Control id="expdate" type="text" placeholder="MM/YY"/>
+                                    <Form.Control id="expdate" type="text" placeholder="MM/YY" name = "carddate" onChange={this.handleChange}/>
                                 </Col>
                             </Form.Group>
 
@@ -96,7 +129,19 @@ class RentSearchConsole extends React.Component {
                                     Confirmation Number
                                 </Form.Label>
                                 <Col sm="9">
-                                    <Form.Control type="text" placeholder="Enter Confirmation Number"/>
+                                    <DropdownButton title={"Confirmation Number"} size={"lg"} id={"cnum"} style={locationStyle}
+                                                    as={ButtonGroup}
+                                                    variant={"outline-primary"}
+                                                    drop={'down'}>
+                                        <div style={dropdownStyle}>
+                                            {this.props.confNoSelection.map((elem, idx) => {
+                                                return <DropdownItem key={idx} value={elem} as={"button"}
+                                                                     className={"reserve-location"}
+                                                                     onClick={this.chandleChange}
+                                                                     style={locationDropdownStyle}>{elem}</DropdownItem>;
+                                            })}
+                                        </div>
+                                    </DropdownButton>
                                 </Col>
                             </Form.Group>
                         </Form>
