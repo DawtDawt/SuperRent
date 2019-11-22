@@ -22,7 +22,7 @@ class ReturnSearchConsole extends React.Component {
         let run;
         let response;
         try {
-            response = await createReturn(this.state.rid,moment().format("YYYY-MM-DD"),moment().format("LT"),this.state.odometer,this.state.isChecked,0);
+            response = await createReturn(this.state.rid,moment().format("YYYY-MM-DD"),moment().format("LT"),this.state.odometer,this.state.isChecked,150);
             run = true;
         } catch (error) {
             run = false;
@@ -37,7 +37,6 @@ class ReturnSearchConsole extends React.Component {
                     </Spinner>
                 </div>,
                 document.getElementById("return-result"));
-
             setTimeout(() => {
                 ReactDOM.render(<ReturnTable ref={this.ReportTable}
                                              rentDetail={{
@@ -46,7 +45,7 @@ class ReturnSearchConsole extends React.Component {
                                                  time: moment().format("LT"),
                                                  odometer: this.state.odometer,
                                                  fulltank: this.state.isChecked,
-                                                 value: 0
+                                                 value: 150
                                              }}/>, document.getElementById("return-result"));
             }, 500);
         }
