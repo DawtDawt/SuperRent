@@ -256,7 +256,7 @@ class RentForNewSearchConsole extends React.Component {
                         <div style={dropdownStyle}>
                             {this.props.times.map((elem, idx) => {
                                 return <DropdownItem key={idx} value={elem} as={"button"}
-                                                     onClick={this.handleChange}
+                                                     onClick={this.vhandleChange}
                                                      className={"browse-fromtime"}>{elem}</DropdownItem>;
                             })}
                         </div>
