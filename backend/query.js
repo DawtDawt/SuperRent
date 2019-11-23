@@ -284,7 +284,7 @@ function createRent(request, response) {
             return pool.query(`SELECT odometer FROM vehicle WHERE vlicense = $1`, [vlicense]);
         })
         .then(result => {
-            odometer = result.rows[0].odometer;
+            odometer = Number(result.rows[0].odometer);
             return pool.query(`INSERT INTO rental(vlicense, dlicense, fromdate, todate, fromtime, totime, odometer, cardname, cardno, expdate, confno)
         VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING rid`,
                 [vlicense, dlicense, fromdate, todate, fromtime, totime, odometer, cardname, cardno, expdate, confno]);

@@ -38,6 +38,7 @@ class RentWithResSearchConsole extends React.Component {
                 body["totime"] = data.totime;
                 body["vtname"] = data.vtname;
 
+                let odometer;
                 const response = getVehicle(body)
                     .then(vdata => {
                         console.log(vdata.data[0].vlicense);
@@ -50,6 +51,7 @@ class RentWithResSearchConsole extends React.Component {
                         }
                         license = vdata.data[0].vlicense;
                         console.log(data.dlicense);
+                        odometer = vdata.data[0].odometer;
                         return createRent(vdata.data[0].vlicense, data.dlicense, data.fromdate, data.todate, data.fromtime, data.totime, 3000, this.state.cardname, this.state.cardno, this.state.expdate, this.state.confno);
                     })
                     .then(rid => {
@@ -69,7 +71,7 @@ class RentWithResSearchConsole extends React.Component {
                             cardname: this.state.cardname,
                             cardno: this.state.cardno,
                             expdate: this.state.expdate,
-                            odometer: 3000
+                            odometer: odometer
                         };
 
                         ReactDOM.render(

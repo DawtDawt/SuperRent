@@ -71,7 +71,7 @@ class RentVehicle extends React.Component {
             const confNo = await this.reserve(newDlicense);
 
             // Rent
-            const rid = await createRent(vehicles.data[0].vlicense, newDlicense, fromdate, todate, decodeURIComponent(fromtime), decodeURIComponent(totime), vehicles.data[0].odometer, cardname, cardno, expdate, confNo);
+            const rid = await createRent(vehicles.data[0].vlicense, newDlicense, fromdate, todate, decodeURIComponent(fromtime), decodeURIComponent(totime), cardname, cardno, expdate, confNo);
 
             window.location.href = `/clerk/rent/success/${city}/${location}/${fromdate}/${todate}/${fromtime}/${totime}/${vtname}/${vlicense}/${rid}/${newDlicense}`;
         } catch (e) {
@@ -101,7 +101,7 @@ class RentVehicle extends React.Component {
             const confNo = await this.reserve(dlicense);
 
             // Rent
-            const rid = await createRent(vehicles.data[0].vlicense, dlicense, fromdate, todate, decodeURIComponent(fromtime), decodeURIComponent(totime), vehicles.data[0].odometer, cardname, cardno, expdate, confNo);
+            const rid = await createRent(vehicles.data[0].vlicense, dlicense, fromdate, todate, decodeURIComponent(fromtime), decodeURIComponent(totime), cardname, cardno, expdate, confNo);
 
             window.location.href = `/clerk/rent/success/${city}/${location}/${fromdate}/${todate}/${fromtime}/${totime}/${vtname}/${vlicense}/${rid}/${dlicense}`;
         } catch (e) {
