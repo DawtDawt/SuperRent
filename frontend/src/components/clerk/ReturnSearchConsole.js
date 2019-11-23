@@ -40,7 +40,7 @@ class ReturnSearchConsole extends React.Component {
             setTimeout(() => {
                 ReactDOM.render(<ReturnTable ref={this.ReportTable}
                                              rentDetail={{
-                                                 rid: response.data,
+                                                 rid: response,
                                                  date: moment().format("YYYY-MM-DD"),
                                                  time: moment().format("LT"),
                                                  odometer: this.state.odometer,
