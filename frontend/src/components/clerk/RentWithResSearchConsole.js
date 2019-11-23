@@ -20,6 +20,7 @@ class RentWithResSearchConsole extends React.Component {
         let RentalResponse;
         let rentDetail;
         let license;
+
         getReserve(this.state.confno)
             .then(data => {
                 if (data.error) {
@@ -47,6 +48,7 @@ class RentWithResSearchConsole extends React.Component {
                         } else {
                             this.setState({vehicles: vdata.data});
                         }
+                        license = vdata.data[0].vlicense;
                         console.log(data.dlicense);
                         return createRent(vdata.data[0].vlicense, data.dlicense, data.fromdate, data.todate, data.fromtime, data.totime, 3000, this.state.cardname, this.state.cardno, this.state.expdate, this.state.confno);
                     })
@@ -56,7 +58,7 @@ class RentWithResSearchConsole extends React.Component {
                             rid: rid,
                             confno: this.state.confno,
                             vtname: data.vtname,
-                            vlicense: "ABC000",
+                            vlicense: license,
                             dlicense: data.dlicense,
                             location: data.location,
                             city: data.city,
@@ -132,7 +134,6 @@ class RentWithResSearchConsole extends React.Component {
 
         const dropdownStyle = {
             maxHeight: "205px",
-            // width: "300px",
             overflowY: "scroll",
         };
 
