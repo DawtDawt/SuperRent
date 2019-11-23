@@ -37,7 +37,7 @@ class RentWithResSearchConsole extends React.Component {
                 body["totime"] = data.totime;
                 body["vtname"] = data.vtname;
 
-                getVehicle(body)
+                const response = getVehicle(body)
                     .then(vdata => {
                         console.log(vdata.data[0].vlicense);
                         console.log(data.city);
@@ -48,13 +48,42 @@ class RentWithResSearchConsole extends React.Component {
                             this.setState({vehicles: vdata.data});
                         }
                         console.log(data.dlicense);
-                    try {
-                        RentalResponse = createRent(vdata.data[0].vlicense, data.dlicense, data.fromdate, data.todate, data.fromtime, data.totime, 3000, this.state.cardname, this.state.cardno, this.state.expdate, this.state.confno);
-                    } catch (error){
-                            console.log(error);
-                    }
+                        return createRent(vdata.data[0].vlicense, data.dlicense, data.fromdate, data.todate, data.fromtime, data.totime, 3000, this.state.cardname, this.state.cardno, this.state.expdate, this.state.confno);
+                    })
+                    .then(rid => {
+                        console.log(rid);
+                        rentDetail = {
+                            rid: rid,
+                            confno: this.state.confno,
+                            vtname: data.vtname,
+                            vlicense: "ABC000",
+                            dlicense: data.dlicense,
+                            location: data.location,
+                            city: data.city,
+                            fromdate: moment(data.fromdate).format("YYYY-MM-DD"),
+                            todate: moment(data.todate).format("YYYY-MM-DD"),
+                            fromtime: data.fromtime,
+                            totime: data.totime,
+                            cardname: this.state.cardname,
+                            cardno: this.state.cardno,
+                            expdate: this.state.expdate,
+                            odometer: 3000
+                        };
 
-                    }).catch(console.log);
+                        ReactDOM.render(
+                            <div style={{margin: "30px"}}>
+                                <Spinner animation="border" role="status">
+                                    <span className="sr-only">Loading...</span>
+                                </Spinner>
+                            </div>,
+                            document.getElementById("rent-result")
+                        );
+
+                        setTimeout(() => {
+                            ReactDOM.render(<RentWithResTable rentDetail={rentDetail}/>, document.getElementById("rent-result"))
+                        }, 500);
+                    })
+                    .catch(console.log);
 
                 // try {
                 //     console.log(license);
@@ -62,37 +91,10 @@ class RentWithResSearchConsole extends React.Component {
                 // } catch (error) {
                 //     console.log(error);
                 // }
-                    rentDetail = {
-                        rid: 1,
-                        confno: this.state.confno,
-                        vtname: data.vtname,
-                        vlicense: "ABC000",
-                        dlicense: data.dlicense,
-                        location: data.location,
-                        city: data.city,
-                        fromdate: moment(data.fromdate).format("YYYY-MM-DD"),
-                        todate: moment(data.todate).format("YYYY-MM-DD"),
-                        fromtime: data.fromtime,
-                        totime: data.totime,
-                        cardname: this.state.cardname,
-                        cardno: this.state.cardno,
-                        expdate: this.state.expdate,
-                        odometer: 3000
-                    };
 
 
-                ReactDOM.render(
-                    <div style={{margin: "30px"}}>
-                        <Spinner animation="border" role="status">
-                            <span className="sr-only">Loading...</span>
-                        </Spinner>
-                    </div>,
-                    document.getElementById("rent-result")
-                );
 
-                setTimeout(() => {
-                    ReactDOM.render(<RentWithResTable rentDetail={rentDetail}/>, document.getElementById("rent-result"))
-                }, 500);
+
             })
             .catch(console.log);
     }
