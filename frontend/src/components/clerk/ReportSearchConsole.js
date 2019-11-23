@@ -4,7 +4,7 @@ import {SingleDatePicker} from "react-dates";
 import ReactDOM from "react-dom";
 import ReportTable from "./ReportTable";
 import Spinner from "react-bootstrap/Spinner";
-import {getDailyRentals, getDailyRentalsByBranch, getDailyReturns, getDailyReturnsByBranch} from "../Fetch"
+import {getDailyRental, getDailyBranchRental, getDailyBranchReturn, getDailyReturn} from "../Fetch"
 import moment from "moment";
 
 class ReportSearchConsole extends React.Component {
@@ -31,18 +31,18 @@ class ReportSearchConsole extends React.Component {
                 if (reportType === "Rental") {
                     if (reportCity === "All Locations") {
                         // Daily Rental
-                        report = await getDailyRentals(reportDate);
+                        report = await getDailyRental(reportDate);
                     } else {
                         // Daily Rental By Branch
-                        report = await getDailyRentalsByBranch(reportDate, reportLocation, reportCity);
+                        report = await getDailyBranchRental(reportDate, reportLocation, reportCity);
                     }
                 } else {
                     if (reportCity === "All Locations") {
                         // Daily Return
-                        report = await getDailyReturns(reportDate);
+                        report = await getDailyReturn(reportDate);
                     } else {
                         // Daily Return by Branch
-                        report = await getDailyReturnsByBranch(reportDate, reportLocation, reportCity);
+                        report = await getDailyBranchReturn(reportDate, reportLocation, reportCity);
                     }
                 }
 
