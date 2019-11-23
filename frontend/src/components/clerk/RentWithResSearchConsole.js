@@ -7,7 +7,7 @@ import Row from "react-bootstrap/Row";
 import moment from "moment";
 import RentWithResTable from "./RentWithResTable";
 import Spinner from "react-bootstrap/Spinner";
-import {createRent, createReturn} from "../Fetch";
+import {createRent} from "../Fetch";
 
 class RentWithResSearchConsole extends React.Component {
     constructor(props) {
@@ -47,7 +47,7 @@ class RentWithResSearchConsole extends React.Component {
         setTimeout(() => {
             ReactDOM.render(<RentWithResTable rentDetail={rentDetail}/>, document.getElementById("rent-result"))
         }, 500);
-    }
+    };
 
     handleChange = (event) => {
         this.setState({ [event.target.name]: event.target.value });
@@ -81,7 +81,6 @@ class RentWithResSearchConsole extends React.Component {
 
         const dropdownStyle = {
             maxHeight: "205px",
-            // width: "300px",
             overflowY: "scroll",
         };
 
@@ -90,12 +89,12 @@ class RentWithResSearchConsole extends React.Component {
                 <div style={consoleStyle}>
                     <div className={"payment-info"} style={paymentStyle}>
                         <Form>
-                            <Form.Group as={Row} controlId="cardname">
+                            <Form.Group as={Row} controlId="rentwo-cardname">
                                 <Form.Label column sm="3">
                                     Credit Card Name
                                 </Form.Label>
                                 <Col sm="9">
-                                    <Form.Control type="text" placeholder="Enter Card Name" name = "cardname" onChange={this.handleChange}/>
+                                    <Form.Control type="text" placeholder="Enter Card Name" name = "rentwo-cardname" onChange={this.handleChange}/>
                                 </Col>
                             </Form.Group>
 
@@ -104,22 +103,22 @@ class RentWithResSearchConsole extends React.Component {
                                     Credit Card Number
                                 </Form.Label>
                                 <Col sm="5">
-                                    <Form.Control id="cardno" type="number" placeholder="Enter Card Number" name = "cardnum" onChange={this.handleChange}/>
+                                    <Form.Control id="rentwo-cardno" type="number" placeholder="Enter Card Number" name = "rentwo-cardno" onChange={this.handleChange}/>
                                 </Col>
                                 <Form.Label column sm="2">
                                     Expiry Date
                                 </Form.Label>
                                 <Col sm="2">
-                                    <Form.Control id="expdate" type="text" placeholder="MM/YY" name = "carddate" onChange={this.handleChange}/>
+                                    <Form.Control id="rentwo-expdate" type="text" placeholder="MM/YY" name = "rentwo-expdate" onChange={this.handleChange}/>
                                 </Col>
                             </Form.Group>
 
-                            <Form.Group as={Row} controlId="confno">
+                            <Form.Group as={Row} controlId="rentwo-confno">
                                 <Form.Label column sm="3">
                                     Confirmation Number
                                 </Form.Label>
                                 <Col sm="9">
-                                    <Form.Control type="text" placeholder="Enter Confirmation Number" name = "cnum" onChange={this.handleChange}/>
+                                    <Form.Control type="text" placeholder="Enter Confirmation Number" name = "rentwo-confno" onChange={this.handleChange}/>
                                 </Col>
                             </Form.Group>
                         </Form>

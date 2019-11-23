@@ -22,120 +22,67 @@ class RentWithoutResSearchConsole extends React.Component {
 
     vhandleSubmit = (state) => {
         const body = this.getBody(state);
-        getVehicle(body)
-            .then(data => {
-                if (data.error) {
-                    console.log(data.error);
-                    this.setState({vehicles: []});
-                } else {
-                    this.setState({vehicles: data.data});
-                }
+        if (body.vtname === "Any Car Type") {
+            delete body.vtname;
+        }
+        console.log(body);
+        if (body.city && body.location && body.fromdate && body.todate && body.fromtime && body.totime) {
+            getVehicle(body)
+                .then(data => {
+                    if (data.error) {
+                        console.log(data.error);
+                        this.setState({vehicles: []});
+                    } else {
+                        this.setState({vehicles: data.data});
+                    }
 
-                ReactDOM.render(
-                    <div>
-                        <div style={{margin: "20px"}}>
-                            <Spinner animation="border" role="status">
-                                <span className="sr-only">Loading...</span>
-                            </Spinner>
+                    ReactDOM.render(
+                        <div>
+                            <div style={{margin: "20px"}}>
+                                <Spinner animation="border" role="status">
+                                    <span className="sr-only">Loading...</span>
+                                </Spinner>
+                            </div>
                         </div>
-                    </div>
-                    , document.getElementById("browse-result"));
+                        , document.getElementById("rentwo-result"));
 
-                setTimeout(() => {
-                    ReactDOM.render(<RentWithoutResTable vehicles={this.state.vehicles}/>, document.getElementById("browse-result"));
-                }, 200);
+                    setTimeout(() => {
+                        ReactDOM.render(<RentWithoutResTable vehicles={this.state.vehicles}/>, document.getElementById("rentwo-result"));
+                    }, 200);
 
-            })
-            .catch(console.log);
+                })
+                .catch(console.log);
+        } else {
+            alert("Missing required information");
+        }
+
     };
 
 
     getBody = (state) => {
         const body = {};
-        if (state["browse-location"]) {
-            body["city"] = state["browse-location"].split(" - ")[0];
-            body["location"] = state["browse-location"].split(" - ")[1];
+        if (state["rentwo-location"]) {
+            body["city"] = state["rentwo-location"].split(" - ")[0];
+            body["location"] = state["rentwo-location"].split(" - ")[1];
         }
-        if (state["browse-startdate"] && state["browse-todate"]) {
-            body["fromdate"] = state["browse-startdate"].format("YYYY-MM-DD");
-            body["todate"] = state["browse-todate"].format("YYYY-MM-DD");
+        if (state["rentwo-fromdate"] && state["rentwo-todate"]) {
+            body["fromdate"] = state["rentwo-fromdate"].format("YYYY-MM-DD");
+            body["todate"] = state["rentwo-todate"].format("YYYY-MM-DD");
         }
-        if (state["browse-fromtime"] && state["browse-totime"]) {
-            body["fromtime"] = state["browse-fromtime"];
-            body["totime"] = state["browse-totime"];
+        if (state["rentwo-fromtime"] && state["rentwo-totime"]) {
+            body["fromtime"] = state["rentwo-fromtime"];
+            body["totime"] = state["rentwo-totime"];
         }
-        if (state["browse-vtname"]) {
-            body["vtname"] = state["browse-vtname"]
+        if (state["rentwo-vtname"]) {
+            body["vtname"] = state["rentwo-vtname"]
         }
-        /*const query = Object.keys(body).map(function (key) {
-            return key + '=' + encodeURIComponent(body[key]);
-        }).join('&');*/
+
         return body;
     };
-
-    handleAnySelection = (event) => {
-        const btnName = event.target.className.split(" ")[0];
-        document.getElementById(btnName).innerText = event.target.value;
-        document.getElementById(btnName).className = document.getElementById(btnName).className.split(" ").filter((elem) => {
-            return elem !== "btn-success";
-        }).join(" ");
-        this.setState({[btnName]: undefined});
-        console.log(event.target.value);
-    };
-
-    handleSubmit = async (event) =>{
-        // temp handle submit before fetch is setup
-        let Rentalresponse;
-        try {
-            Rentalresponse = await createRent(1,1,"2019-10-30","2019-11-02","12:00 PM","2:00 PM",3000, this.state.cardname,this.state.cardno,this.state.expdate, this.state.cnum);
-        } catch (e) {
-            console.log(e);
-        }
-        const rentDetail = {
-            rid: Rentalresponse.data,
-            confno: 1,
-            vtname: "SUV",
-            vlicense: "ABC000",
-            dlicense: "00000",
-            location: "UBC",
-            city: "Vancouver",
-            fromdate: "2019-10-30",
-            todate: "2019-11-02",
-            fromtime: "12:00 PM",
-            totime: "2:00 PM",
-            cardname: "VISA",
-            cardno: this.state["cardnum"],
-            expdate: "04/25",
-            odometer: 3000
-        };
-        ReactDOM.render(
-            <div style={{margin: "30px"}}>
-                <Spinner animation="border" role="status">
-                    <span className="sr-only">Loading...</span>
-                </Spinner>
-            </div>,
-            document.getElementById("rent-result")
-        );
-
-        setTimeout(() => {
-            ReactDOM.render(<RentWithResTable rentDetail={rentDetail}/>, document.getElementById("rent-result"))
-        }, 500);
-    }
-
-    handleChange = (event) => {
-        this.setState({ [event.target.name]: event.target.value });
-        console.log(event.target.name);
-        console.log(event.target.value);
-    };
-
 
     vhandleChange = (event) => {
         const btnName = event.target.className.split(" ")[0];
         document.getElementById(btnName).innerText = event.target.value;
-        document.getElementById(btnName).className = document.getElementById(btnName).className.split(" ").filter((elem) => {
-            return elem !== "btn-outline-primary";
-        }).join(" ");
-        document.getElementById(btnName).className = document.getElementById(btnName).className.concat(" btn-primary");
         this.setState({[btnName]: event.target.value});
     };
 
@@ -165,7 +112,6 @@ class RentWithoutResSearchConsole extends React.Component {
 
         const dropdownStyle = {
             maxHeight: "205px",
-            // width: "300px",
             overflowY: "scroll",
         };
 
@@ -183,152 +129,84 @@ class RentWithoutResSearchConsole extends React.Component {
         };
         return (
             <React.Fragment>
-                {/*<div style={consoleStyle}>*/}
-                {/*    <div className={"payment-info"} style={paymentStyle}>*/}
-                {/*        <Form>*/}
-                {/*            <Form.Group as={Row} controlId="cardname">*/}
-                {/*                <Form.Label column sm="3">*/}
-                {/*                    Credit Card Name*/}
-                {/*                </Form.Label>*/}
-                {/*                <Col sm="9">*/}
-                {/*                    <Form.Control type="text" placeholder="Enter Card Name" name = "cardname" onChange={this.handleChange}/>*/}
-                {/*                </Col>*/}
-                {/*            </Form.Group>*/}
-
-                {/*            <Form.Group as={Row}>*/}
-                {/*                <Form.Label column sm="3">*/}
-                {/*                    Credit Card Number*/}
-                {/*                </Form.Label>*/}
-                {/*                <Col sm="5">*/}
-                {/*                    <Form.Control id="cardno" type="number" placeholder="Enter Card Number" name = "cardnum" onChange={this.handleChange}/>*/}
-                {/*                </Col>*/}
-                {/*                <Form.Label column sm="2">*/}
-                {/*                    Expiry Date*/}
-                {/*                </Form.Label>*/}
-                {/*                <Col sm="2">*/}
-                {/*                    <Form.Control id="expdate" type="text" placeholder="MM/YY" name = "carddate" onChange={this.handleChange}/>*/}
-                {/*                </Col>*/}
-                {/*            </Form.Group>*/}
-                {/*        </Form>*/}
-                {/*    </div>*/}
-                {/*    <Button size={"lg"} onClick={this.handleSubmit}>Generate Receipt</Button>*/}
-                {/*    <div id={"rent-result"}></div>*/}
-                {/*</div>*/}
-
-
-                <div style={{display: 'flex',  justifyContent:'center', alignItems:'center', height: '10vh'}}>
-                    <h1> Select a vehicle </h1>
-                </div>
-
                 <div style={flexStyle}>
 
-                    <DropdownButton title={"Location"} size={"lg"} id={"reportLocation"} style={locationStyle}
+                    <DropdownButton title={"Location"} size={"lg"} id={"rentwo-location"} style={locationStyle}
                                     as={ButtonGroup}
                                     variant={"outline-primary"}
                                     drop={'down'}>
                         <div style={dropdownStyle}>
                             {this.props.branchSelection.map((elem, idx) => {
                                 return <DropdownItem key={idx} value={elem} as={"button"}
-                                                     className={"browse-location"}
+                                                     className={"rentwo-location"}
                                                      onClick={this.vhandleChange}
                                                      style={locationDropdownStyle}>{elem}</DropdownItem>;
                             })}
                         </div>
                     </DropdownButton>
                     <DateRangePicker
-                        startDate={this.state["browse-startdate"]} // momentPropTypes.momentObj or null,
-                        startDateId="browse-startdate" // PropTypes.string.isRequired,
-                        endDate={this.state["browse-todate"]} // momentPropTypes.momentObj or null,
-                        endDateId="browse-todate" // PropTypes.string.isRequired,
+                        startDate={this.state["rentwo-fromdate"]} // momentPropTypes.momentObj or null,
+                        startDateId="rentwo-fromdate" // PropTypes.string.isRequired,
+                        endDate={this.state["rentwo-todate"]} // momentPropTypes.momentObj or null,
+                        endDateId="rentwo-todate" // PropTypes.string.isRequired,
                         onDatesChange={({startDate, endDate}) => this.setState({
-                            "browse-startdate": startDate,
-                            "browse-todate": endDate
+                            "rentwo-fromdate": startDate,
+                            "rentwo-todate": endDate
                         })} // PropTypes.func.isRequired,
                         focusedInput={this.state.focusedInput} // PropTypes.oneOf([START_DATE, END_DATE]) or null,
                         onFocusChange={focusedInput => this.setState({focusedInput})} // PropTypes.func.isRequired,
                     />
                     <DropdownButton title={"Start Time"}
-                                    value={this.state["browse-fromtime"]}
+                                    value={this.state["rentwo-fromtime"]}
                                     size={"lg"}
                                     variant={"outline-primary"}
-                                    as={ButtonGroup} id={"browse-fromtime"} style={timeStyle}>
+                                    as={ButtonGroup} id={"rentwo-fromtime"} style={timeStyle}>
                         <Dropdown.Divider/>
                         <div style={dropdownStyle}>
                             {this.props.times.map((elem, idx) => {
                                 return <DropdownItem key={idx} value={elem} as={"button"}
                                                      onClick={this.vhandleChange}
-                                                     className={"browse-fromtime"}>{elem}</DropdownItem>;
+                                                     className={"rentwo-fromtime"}>{elem}</DropdownItem>;
                             })}
                         </div>
                     </DropdownButton>
                     <DropdownButton title={"End Time"}
-                                    value={this.state["browse-totime"]}
+                                    value={this.state["rentwo-totime"]}
                                     size={"lg"}
                                     variant={"outline-primary"}
-                                    as={ButtonGroup} id={"browse-totime"} style={timeStyle}>
+                                    as={ButtonGroup} id={"rentwo-totime"} style={timeStyle}>
                         <div style={dropdownStyle}>
                             <Dropdown.Divider/>
                             {this.props.times.map((elem, idx) => {
                                 return <DropdownItem key={idx} value={elem} as={"button"}
                                                      onClick={this.vhandleChange}
-                                                     className={"browse-totime"}>{elem}</DropdownItem>;
+                                                     className={"rentwo-totime"}>{elem}</DropdownItem>;
                             })}
                         </div>
                     </DropdownButton>
                     <DropdownButton title={"Any Car Type"}
-                                    value={this.state["browse-vtname"]}
+                                    value={this.state["rentwo-vtname"]}
                                     size={"lg"}
                                     variant={"outline-primary"}
-                                    as={ButtonGroup} id={"browse-vtname"} style={timeStyle}>
+                                    as={ButtonGroup} id={"rentwo-vtname"} style={timeStyle}>
                         <div style={dropdownStyle}>
                             <DropdownItem key={"-1"} value={"Any Car Type"} as={"button"}
-                                          onClick={this.handleAnySelection}
-                                          className={"browse-vtname"}>Any Car Type</DropdownItem>
+                                          onClick={this.vhandleChange}
+                                          className={"rentwo-vtname"}>Any Car Type</DropdownItem>
                             <Dropdown.Divider/>
                             {this.state.vtnameSelection.map((elem, idx) => {
                                 return <DropdownItem key={idx} value={elem} as={"button"}
                                                      onClick={this.vhandleChange}
-                                                     className={"browse-vtname"}>{elem}</DropdownItem>;
+                                                     className={"rentwo-vtname"}>{elem}</DropdownItem>;
                             })}
                         </div>
                     </DropdownButton>
                 </div>
-                <div style={consoleStyle}>
-                    <div className={"payment-info"} style={paymentStyle}>
-                        <Form>
-                            <Form.Group as={Row} controlId="cardname">
-                                <Form.Label column sm="3">
-                                    Credit Card Name
-                                </Form.Label>
-                                <Col sm="9">
-                                    <Form.Control type="text" placeholder="Enter Card Name" name = "cardname" onChange={this.handleChange}/>
-                                </Col>
-                            </Form.Group>
-
-                            <Form.Group as={Row}>
-                                <Form.Label column sm="3">
-                                    Credit Card Number
-                                </Form.Label>
-                                <Col sm="5">
-                                    <Form.Control id="cardno" type="number" placeholder="Enter Card Number" name = "cardnum" onChange={this.handleChange}/>
-                                </Col>
-                                <Form.Label column sm="2">
-                                    Expiry Date
-                                </Form.Label>
-                                <Col sm="2">
-                                    <Form.Control id="expdate" type="text" placeholder="MM/YY" name = "carddate" onChange={this.handleChange}/>
-                                </Col>
-                            </Form.Group>
-                        </Form>
-                    </div>
-                    <div id={"rent-result"}></div>
-                </div>
                 <div style={{textAlign: "center"}}>
                     <Button size={"lg"} onClick={() => this.vhandleSubmit(this.state)}
-                            style={{margin: "10px 0"}}>Search and Rent</Button>
+                            style={{margin: "10px 0"}}>Search</Button>
                 </div>
-
-                <div id="browse-result"></div>
+                <div id="rentwo-result"></div>
             </React.Fragment>
         )
     }
