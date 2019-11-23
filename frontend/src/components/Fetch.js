@@ -18,7 +18,7 @@ async function getVehicle(body) {
         console.log(content.error);
         throw Error(content.error);
     } else {
-        return (content.data);
+        return (content);
     }
 }
 
@@ -314,7 +314,7 @@ async function createReturn(rid, date, time, odometer, fulltank, value) {
     const content = await response.json();
     if (content.error) {
         if (content.error.hasOwnProperty("message")) {
-            alert(console.error.message);
+            alert(content.error.message);
             console.log(content.error);
             throw Error(content.error);
         }
@@ -326,7 +326,7 @@ async function createReturn(rid, date, time, odometer, fulltank, value) {
     }
 }
 
-async function getDailyRentals(date) {
+async function getDailyRental(date) {
     if (date.length === 0) {
         alert("Missing required daily rental report information: Date.");
         throw Error("Missing required daily report information.");
@@ -339,7 +339,7 @@ async function getDailyRentals(date) {
     const content = await response.json();
     if (content.error) {
         if (content.error.hasOwnProperty("message")) {
-            alert(console.error.message);
+            alert(content.error.message);
             console.log(content.error);
             throw Error(content.error);
         }
@@ -351,7 +351,7 @@ async function getDailyRentals(date) {
     }
 }
 
-async function getDailyRentalsByBranch(date, location, city) {
+async function getDailyBranchRental(date, location, city) {
     if (date.length === 0) {
         alert("Missing required daily rental report by branch information: Date.");
         throw Error("Missing required daily rental report by branch information.");
@@ -373,7 +373,7 @@ async function getDailyRentalsByBranch(date, location, city) {
     const content = await response.json();
     if (content.error) {
         if (content.error.hasOwnProperty("message")) {
-            alert(console.error.message);
+            alert(content.error.message);
             console.log(content.error);
             throw Error(content.error);
         }
@@ -385,7 +385,7 @@ async function getDailyRentalsByBranch(date, location, city) {
     }
 }
 
-async function getDailyReturns(date) {
+async function getDailyReturn(date) {
     if (date.length === 0) {
         alert("Missing required daily return report information: Date.");
         throw Error("Missing required daily return report information.");
@@ -398,7 +398,7 @@ async function getDailyReturns(date) {
     const content = await response.json();
     if (content.error) {
         if (content.error.hasOwnProperty("message")) {
-            alert(console.error.message);
+            alert(content.error.message);
             console.log(content.error);
             throw Error(content.error);
         }
@@ -410,7 +410,7 @@ async function getDailyReturns(date) {
     }
 }
 
-async function getDailyReturnsByBranch(date, location, city) {
+async function getDailyBranchReturn(date, location, city) {
     if (date.length === 0) {
         alert("Missing required daily return report by branch information: Date.");
         throw Error("Missing required daily return report by branch information.");
@@ -432,7 +432,7 @@ async function getDailyReturnsByBranch(date, location, city) {
     const content = await response.json();
     if (content.error) {
         if (content.error.hasOwnProperty("message")) {
-            alert(console.error.message);
+            alert(content.error.message);
             console.log(content.error);
             throw Error(content.error);
         }
@@ -453,8 +453,8 @@ module.exports = {
     getRent,
     createRent,
     createReturn,
-    getDailyRentals,
-    getDailyRentalsByBranch,
-    getDailyReturns,
-    getDailyReturnsByBranch
+    getDailyRental,
+    getDailyBranchRental,
+    getDailyReturn,
+    getDailyBranchReturn
 }
