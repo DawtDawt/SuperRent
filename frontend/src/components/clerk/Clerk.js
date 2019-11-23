@@ -11,10 +11,12 @@ class Clerk extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            vehicles: [],
             reservationDetail: [],
             confNoSelection: [],
             rentIDSelection: [],
             branchSelection: [],
+
         };
     }
 

@@ -31,45 +31,56 @@ class RentWithResSearchConsole extends React.Component {
                 const body = {};
                 body["city"] = data.city;
                 body["location"] = data.location;
-                body["fromdate"] = data.fromDate;
-                body["todate"] = data.toDate;
+                body["fromdate"] = data.fromdate;
+                body["todate"] = data.todate;
                 body["fromtime"] = data.fromtime;
                 body["totime"] = data.totime;
                 body["vtname"] = data.vtname;
 
-                // getVehicle(body)
-                //     .then(vdata => {
-                //         if (vdata.error) {
-                //             console.log(data.error);
-                //             this.setState({vehicles: []});
-                //         } else {
-                //             this.setState({vehicles: data.data});
-                //         }
-                //      license=data.vlicense;
-                //     })
+                getVehicle(body)
+                    .then(vdata => {
+                        console.log(vdata.data[0].vlicense);
+                        console.log(data.city);
+                        if (vdata.error) {
+                            console.log(vdata.error);
+                            this.setState({vehicles: []});
+                        } else {
+                            this.setState({vehicles: vdata.data});
+                        }
+                        console.log(data.dlicense);
+                    try {
+                        RentalResponse = createRent(vdata.data[0].vlicense, data.dlicense, data.fromdate, data.todate, data.fromtime, data.totime, 3000, this.state.cardname, this.state.cardno, this.state.expdate, this.state.confno);
+                    } catch (error){
+                            console.log(error);
+                    }
 
-                try {
-                    RentalResponse = createRent("ABC000", data.dlicense, moment(data.fromdate).format("YYYY-MM-DD"), moment(data.todate).format("YYYY-MM-DD"), data.fromtime, data.totime, 3000, this.state.cardname, this.state.cardno, this.state.expdate, this.state.cardno);
-                } catch (error) {
-                    console.log(error);
-                }
-                rentDetail = {
-                    rid: RentalResponse.data,
-                    confno: this.state.confno,
-                    vtname: data.vtname,
-                    vlicense: "ABC000",
-                    dlicense: data.dlicense,
-                    location: data.location,
-                    city: data.city,
-                    fromdate: moment(data.fromdate).format("YYYY-MM-DD"),
-                    todate: moment(data.todate).format("YYYY-MM-DD"),
-                    fromtime: data.fromtime,
-                    totime: data.totime,
-                    cardname: this.state.cardname,
-                    cardno: this.state.cardno,
-                    expdate: this.state.expdate,
-                    odometer: 3000
-                };
+                    }).catch(console.log);
+
+                // try {
+                //     console.log(license);
+                //     RentalResponse = createRent(license, data.dlicense, moment(data.fromdate).format("YYYY-MM-DD"), moment(data.todate).format("YYYY-MM-DD"), data.fromtime, data.totime, 3000, this.state.cardname, this.state.cardno, this.state.expdate, this.state.cardno);
+                // } catch (error) {
+                //     console.log(error);
+                // }
+                    rentDetail = {
+                        rid: 1,
+                        confno: this.state.confno,
+                        vtname: data.vtname,
+                        vlicense: "ABC000",
+                        dlicense: data.dlicense,
+                        location: data.location,
+                        city: data.city,
+                        fromdate: moment(data.fromdate).format("YYYY-MM-DD"),
+                        todate: moment(data.todate).format("YYYY-MM-DD"),
+                        fromtime: data.fromtime,
+                        totime: data.totime,
+                        cardname: this.state.cardname,
+                        cardno: this.state.cardno,
+                        expdate: this.state.expdate,
+                        odometer: 3000
+                    };
+
+
                 ReactDOM.render(
                     <div style={{margin: "30px"}}>
                         <Spinner animation="border" role="status">
