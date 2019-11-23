@@ -1,3 +1,5 @@
+// File for fetch functions
+
 async function getVehicle(body) {
     const query = Object.keys(body).map(function (key) {
         return key + '=' + encodeURIComponent(body[key]);
@@ -5,56 +7,43 @@ async function getVehicle(body) {
 
     const response = await fetch("http://localhost:8080/vehicle/get/?" + query);
 
-    return response.json();
+    const content = await response.json();
+    if (content.error) {
+        if (content.error.hasOwnProperty("message")) {
+            alert(console.error.message);
+            console.log(content.error);
+            throw Error(content.error);
+        }
+        alert("New Untracked Error In getVehicle: " + content.error.detail);
+        console.log(content.error);
+        throw Error(content.error);
+    } else {
+        return (content);
+    }
 }
 
-async function createCustomer(name, cellphone, address, dlicense) {
-    console.log(name);
-    if (name.length === 0) {
-        alert("Missing required customer information: Name.");
-        throw Error("Missing required customer information.");
-    } else if (cellphone.length === 0) {
-        alert("Missing required customer information: Cellphone.");
-        throw Error("Missing required customer information.");
-    } else if (address.length === 0) {
-        alert("Missing required customer information: Address.");
-        throw Error("Missing required customer information.");
-    } else if (dlicense.length === 0) {
-        alert("Missing required customer information: Driver License.");
-        throw Error("Missing required customer information.");
+async function getReserve(confno) {
+    if (confno.length === 0) {
+        alert("Missing required get reserve information: Confirmation Number.");
+        throw Error("Missing required get reserve information.");
     }
 
-    const response = await fetch("http://localhost:8080/customer/create", {
-        method: "POST",
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            name,
-            cellphone,
-            address,
-            dlicense,
-        })
-    });
+    const query = 'confno=' + encodeURIComponent(confno);
+
+    const response = await fetch("http://localhost:8080/reserve/get/?" + query);
 
     const content = await response.json();
     if (content.error) {
-        if (content.error.code === "23505") {
-            alert("The given driver's license is already associated with an existing customer account.");
+        if (content.error.hasOwnProperty("message")) {
+            alert(console.error.message);
             console.log(content.error);
             throw Error(content.error);
         }
-        if (content.error.code === "22P02") {
-            alert("Invalid cellphone number.");
-            console.log(content.error);
-            throw Error(content.error);
-        }
+        alert("New Untracked Error In getReserve: " + content.error.detail);
         console.log(content.error);
-        alert("New Untracked Error in createCustomer: " + content.error.detail);
         throw Error(content.error);
     } else {
-        return content.data;
+        return (content.data);
     }
 }
 
@@ -105,18 +94,108 @@ async function createReserve(vtname, dlicense, location, city, fromdate, todate,
 
     const content = await response.json();
     if (content.error) {
-        if (content.error.code === "23503") {
-            alert("No customer were found under the given driver's license.");
-            console.log(content.error);
-            throw Error(content.error);
-        }
-        if (content.error.code === "RESALREXIS") {
+        if (content.error.hasOwnProperty("message")) {
             alert(content.error.message);
             console.log(content.error);
             throw Error(content.error);
         }
         console.log(content.error);
         alert("New Untracked Error In createReserve: " + content.error.detail);
+        throw Error(content.error);
+    } else {
+        return (content.data);
+    }
+}
+
+async function getCustomer(dlicense) {
+    if (dlicense.length === 0) {
+        alert("Missing required get customer information: Driver License.");
+        throw Error("Missing required get customer information.");
+    }
+
+    const query = 'dlicense=' + encodeURIComponent(dlicense);
+
+    const response = await fetch("http://localhost:8080/customer/get/?" + query);
+
+    const content = await response.json();
+    if (content.error) {
+        if (content.error.hasOwnProperty("message")) {
+            alert(console.error.message);
+            console.log(content.error);
+            throw Error(content.error);
+        }
+        alert("New Untracked Error In getCustomer: " + content.error.detail);
+        console.log(content.error);
+        throw Error(content.error);
+    } else {
+        return (content.data);
+    }
+}
+
+async function createCustomer(name, cellphone, address, dlicense) {
+    console.log(name);
+    if (name.length === 0) {
+        alert("Missing required customer information: Name.");
+        throw Error("Missing required customer information.");
+    } else if (cellphone.length === 0) {
+        alert("Missing required customer information: Cellphone.");
+        throw Error("Missing required customer information.");
+    } else if (address.length === 0) {
+        alert("Missing required customer information: Address.");
+        throw Error("Missing required customer information.");
+    } else if (dlicense.length === 0) {
+        alert("Missing required customer information: Driver License.");
+        throw Error("Missing required customer information.");
+    }
+
+    const response = await fetch("http://localhost:8080/customer/create", {
+        method: "POST",
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            name,
+            cellphone,
+            address,
+            dlicense,
+        })
+    });
+
+    const content = await response.json();
+    if (content.error) {
+        if (content.error.hasOwnProperty("message")) {
+            alert(console.error.message);
+            console.log(content.error);
+            throw Error(content.error);
+        }
+        alert("New Untracked Error In createCustomer: " + content.error.detail);
+        console.log(content.error);
+        throw Error(content.error);
+    } else {
+        return (content.data);
+    }
+}
+
+async function getRent(rid) {
+    if (rid.length === 0) {
+        alert("Missing required get customer information: Driver License.");
+        throw Error("Missing required get customer information.");
+    }
+
+    const query = 'rid=' + encodeURIComponent(rid);
+
+    const response = await fetch("http://localhost:8080/rent/get/?" + query);
+
+    const content = await response.json();
+    if (content.error) {
+        if (content.error.hasOwnProperty("message")) {
+            alert(console.error.message);
+            console.log(content.error);
+            throw Error(content.error);
+        }
+        alert("New Untracked Error In getRent: " + content.error.detail);
+        console.log(content.error);
         throw Error(content.error);
     } else {
         return (content.data);
@@ -182,8 +261,13 @@ async function createRent(vlicense, dlicense, fromdate, todate, fromtime, totime
 
     const content = await response.json();
     if (content.error) {
-        console.log(content.error);
+        if (content.error.hasOwnProperty("message")) {
+            alert(console.error.message);
+            console.log(content.error);
+            throw Error(content.error);
+        }
         alert("New Untracked Error In createRent: " + content.error.detail);
+        console.log(content.error);
         throw Error(content.error);
     } else {
         return (content.data);
@@ -229,15 +313,20 @@ async function createReturn(rid, date, time, odometer, fulltank, value) {
 
     const content = await response.json();
     if (content.error) {
+        if (content.error.hasOwnProperty("message")) {
+            alert(content.error.message);
+            console.log(content.error);
+            throw Error(content.error);
+        }
+        alert("New Untracked Error In createReturn: " + content.error.detail);
         console.log(content.error);
-        alert("New Untracked Error In createReturn.");
         throw Error(content.error);
     } else {
         return (content.data);
     }
 }
 
-async function getDailyRentals(date) {
+async function getDailyRental(date) {
     if (date.length === 0) {
         alert("Missing required daily rental report information: Date.");
         throw Error("Missing required daily report information.");
@@ -249,15 +338,20 @@ async function getDailyRentals(date) {
 
     const content = await response.json();
     if (content.error) {
-        console.log(content.error);
+        if (content.error.hasOwnProperty("message")) {
+            alert(content.error.message);
+            console.log(content.error);
+            throw Error(content.error);
+        }
         alert("New Untracked Error In getDailyRentals: " + content.error.detail);
+        console.log(content.error);
         throw Error(content.error);
     } else {
         return (content.data);
     }
 }
 
-async function getDailyRentalsByBranch(date, location, city) {
+async function getDailyBranchRental(date, location, city) {
     if (date.length === 0) {
         alert("Missing required daily rental report by branch information: Date.");
         throw Error("Missing required daily rental report by branch information.");
@@ -278,15 +372,20 @@ async function getDailyRentalsByBranch(date, location, city) {
 
     const content = await response.json();
     if (content.error) {
-        console.log(content.error);
+        if (content.error.hasOwnProperty("message")) {
+            alert(content.error.message);
+            console.log(content.error);
+            throw Error(content.error);
+        }
         alert("New Untracked Error In getDailyRentalsByBranch: " + content.error.detail);
+        console.log(content.error);
         throw Error(content.error);
     } else {
         return (content.data);
     }
 }
 
-async function getDailyReturns(date) {
+async function getDailyReturn(date) {
     if (date.length === 0) {
         alert("Missing required daily return report information: Date.");
         throw Error("Missing required daily return report information.");
@@ -298,15 +397,20 @@ async function getDailyReturns(date) {
 
     const content = await response.json();
     if (content.error) {
-        console.log(content.error);
+        if (content.error.hasOwnProperty("message")) {
+            alert(content.error.message);
+            console.log(content.error);
+            throw Error(content.error);
+        }
         alert("New Untracked Error In getDailyReturns: " + content.error.detail);
+        console.log(content.error);
         throw Error(content.error);
     } else {
         return (content.data);
     }
 }
 
-async function getDailyReturnsByBranch(date, location, city) {
+async function getDailyBranchReturn(date, location, city) {
     if (date.length === 0) {
         alert("Missing required daily return report by branch information: Date.");
         throw Error("Missing required daily return report by branch information.");
@@ -327,23 +431,30 @@ async function getDailyReturnsByBranch(date, location, city) {
 
     const content = await response.json();
     if (content.error) {
-        console.log(content.error);
+        if (content.error.hasOwnProperty("message")) {
+            alert(content.error.message);
+            console.log(content.error);
+            throw Error(content.error);
+        }
         alert("New Untracked Error In getDailyReturnsByBranch: " + content.error.detail);
+        console.log(content.error);
         throw Error(content.error);
     } else {
         return (content.data);
     }
 }
 
-// File for fetch functions
 module.exports = {
     getVehicle,
-    createCustomer,
+    getReserve,
     createReserve,
+    getCustomer,
+    createCustomer,
+    getRent,
     createRent,
     createReturn,
-    getDailyRentals,
-    getDailyRentalsByBranch,
-    getDailyReturns,
-    getDailyReturnsByBranch,
-};
+    getDailyRental,
+    getDailyBranchRental,
+    getDailyReturn,
+    getDailyBranchReturn
+}
