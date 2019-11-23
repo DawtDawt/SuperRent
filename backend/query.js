@@ -258,7 +258,7 @@ function createRent(request, response) {
     const todate = request.body.todate;
     const fromtime = request.body.fromtime;
     const totime = request.body.totime;
-    const odometer = request.body.odometer;
+    let odometer;
     const cardname = request.body.cardname;
     const cardno = Number(request.body.cardno);
     const expdate = request.body.expdate;
@@ -281,6 +281,10 @@ function createRent(request, response) {
             if (result.rows.length === 0) {
                 return Promise.reject({message: "No reservation found in database with given confirmation number."});
             }
+            return pool.query(`SELECT odometer FROM vehicle WHERE vlicense = $1`, [vlicense]);
+        })
+        .then(result => {
+            odometer = result.rows[0].odometer;
             return pool.query(`INSERT INTO rental(vlicense, dlicense, fromdate, todate, fromtime, totime, odometer, cardname, cardno, expdate, confno)
         VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING rid`,
                 [vlicense, dlicense, fromdate, todate, fromtime, totime, odometer, cardname, cardno, expdate, confno]);

@@ -208,7 +208,7 @@ async function getRent(rid) {
     }
 }
 
-async function createRent(vlicense, dlicense, fromdate, todate, fromtime, totime, odometer, cardname, cardno, expdate, confno) {
+async function createRent(vlicense, dlicense, fromdate, todate, fromtime, totime, cardname, cardno, expdate, confno) {
     if (vlicense.length !== 6) {
         alert("Missing required rental information: Vehicle License.");
         throw Error("Missing required rental information.");
@@ -226,9 +226,6 @@ async function createRent(vlicense, dlicense, fromdate, todate, fromtime, totime
         throw Error("Missing required rental information.");
     } else if (totime.length === 0) {
         alert("Missing required rental information: End Time.");
-        throw Error("Missing required rental information.");
-    } else if (odometer.length === 0) {
-        alert("Missing required rental information: Odometer.");
         throw Error("Missing required rental information.");
     } else if (cardname.length === 0) {
         alert("Missing required rental information: Card Name.");
@@ -257,7 +254,6 @@ async function createRent(vlicense, dlicense, fromdate, todate, fromtime, totime
             todate,
             fromtime,
             totime,
-            odometer,
             cardname,
             cardno,
             expdate,
