@@ -17,7 +17,9 @@ class RentWithResSearchConsole extends React.Component {
 
     handleSubmit = async (event) =>{
         // temp handle submit before fetch is setup
-        let RentalResponse
+        let RentalResponse;
+        let rentDetail;
+        let license;
         getReserve(this.state.confno)
             .then(data => {
                 if (data.error) {
@@ -35,21 +37,23 @@ class RentWithResSearchConsole extends React.Component {
                 body["totime"] = data.totime;
                 body["vtname"] = data.vtname;
 
-                getVehicle(body)
-                    .then(vdata => {
-                        if (vdata.error) {
-                            console.log(vdata.error);
-                            this.setState({vehicles: []});
-                        } else {
-                            this.setState({vehicles: vdata.data});
-                        }
-                        try {
-                            RentalResponse = createRent(vdata.vlicence, data.dlicense, data.fromdate, data.todate, data.fromtime, data.totime, 3000, this.state.cardname, this.state.cardno, this.state.expdate, this.state.cardno);
-                        } catch (e) {
-                            console.log(e);
-                        }
-                    })
-                const rentDetail = {
+                // getVehicle(body)
+                //     .then(vdata => {
+                //         if (vdata.error) {
+                //             console.log(data.error);
+                //             this.setState({vehicles: []});
+                //         } else {
+                //             this.setState({vehicles: data.data});
+                //         }
+                //      license=data.vlicense;
+                //     })
+
+                try {
+                    RentalResponse = createRent("ABC000", data.dlicense, moment(data.fromdate).format("YYYY-MM-DD"), moment(data.todate).format("YYYY-MM-DD"), data.fromtime, data.totime, 3000, this.state.cardname, this.state.cardno, this.state.expdate, this.state.cardno);
+                } catch (error) {
+                    console.log(error);
+                }
+                rentDetail = {
                     rid: RentalResponse.data,
                     confno: this.state.confno,
                     vtname: data.vtname,
@@ -57,8 +61,8 @@ class RentWithResSearchConsole extends React.Component {
                     dlicense: data.dlicense,
                     location: data.location,
                     city: data.city,
-                    fromdate: data.fromdate,
-                    todate: data.todate,
+                    fromdate: moment(data.fromdate).format("YYYY-MM-DD"),
+                    todate: moment(data.todate).format("YYYY-MM-DD"),
                     fromtime: data.fromtime,
                     totime: data.totime,
                     cardname: this.state.cardname,
@@ -78,7 +82,8 @@ class RentWithResSearchConsole extends React.Component {
                 setTimeout(() => {
                     ReactDOM.render(<RentWithResTable rentDetail={rentDetail}/>, document.getElementById("rent-result"))
                 }, 500);
-            }) .catch(console.log);
+            })
+            .catch(console.log);
     }
 
     handleChange = (event) => {
