@@ -20,11 +20,18 @@ class RentVehicle extends React.Component {
             "Mid-size": "https://www.avis.ca/content/dam/cars/l/2018/hyundai/2018-hyundai-elantra-limited-sedan-black.png",
         };
     }
+    validateExpDate (expdate) {
+        if (!expdate.include("/") || expdate.split("/").length !== 2 || expdate.split("/")[0].length !== 2 || expdate.split("/")[1].length !== 2) {
+            alert("Invalid expiry date format");
+            throw Error("Invalid expiry date format")
+        }
+    }
 
     getCardInfo() {
         const cardno = document.getElementById("cardno").value;
         const cardname = document.getElementById("cardname").value;
         const expdate = document.getElementById("expdate").value;
+        validateExpDate(expdate);
         if (cardno && cardname && expdate) {
             return {
                 cardno,
