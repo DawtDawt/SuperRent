@@ -4,6 +4,8 @@ import {SingleDatePicker} from "react-dates";
 import ReactDOM from "react-dom";
 import ReportTable from "./ReportTable";
 import Spinner from "react-bootstrap/Spinner";
+import {getDailyRental, getDailyBranchRental, getDailyBranchReturn, getDailyReturn} from "../Fetch"
+import moment from "moment";
 
 class ReportSearchConsole extends React.Component {
     constructor(props) {
@@ -15,96 +17,55 @@ class ReportSearchConsole extends React.Component {
 
     handleSubmit = async (event) => {
 
-        // temp rendering for testing
-        ReactDOM.render(
-            <div style={{margin: "30px"}}>
-                <Spinner animation="border" role="status">
-                    <span className="sr-only">Loading...</span>
-                </Spinner>
-            </div>
-            , document.getElementById("report-result"));
+        let reportCity = this.state.reportLocationCity && this.state.reportLocationCity.split(" - ")[0];
+        let reportLocation = this.state.reportLocationCity && this.state.reportLocationCity.split(" - ")[1];
+        let reportDate = this.state.reportDate && moment(this.state.reportDate).format("YYYY-MM-DD");
+        let reportType = this.state.reportType;
 
-        setTimeout(() => {
-            // temp data to testing convenience
-            ReactDOM.render(<ReportTable
-                action={"rental"}
-                location={"all"}
-                report={{
-                    "vehicle": [
-                        {
-                            "vtname": "Economy",
-                            "location": "Richmond Centre",
-                            "city": "Richmond"
-                        },
-                        {
-                            "vtname": "Standard",
-                            "location": "Dunbar",
-                            "city": "Vancouver"
-                        },
-                        {
-                            "vtname": "Compact",
-                            "location": "Kerrisdale",
-                            "city": "Vancouver"
-                        },
-                        {
-                            "vtname": "SUV",
-                            "location": "Kitsilano",
-                            "city": "Vancouver"
-                        },
-                        {
-                            "vtname": "SUV",
-                            "location": "UBC",
-                            "city": "Vancouver"
-                        }
-                    ],
-                    "perCategory": [
-                        {
-                            "vtname": "Compact",
-                            "count": "1"
-                        },
-                        {
-                            "vtname": "Economy",
-                            "count": "1"
-                        },
-                        {
-                            "vtname": "SUV",
-                            "count": "6"
-                        },
-                        {
-                            "vtname": "Standard",
-                            "count": "1"
-                        }
-                    ],
-                    "perBranch": [
-                        {
-                            "location": "Richmond Centre",
-                            "city": "Richmond",
-                            "count": "1"
-                        },
-                        {
-                            "location": "Dunbar",
-                            "city": "Vancouver",
-                            "count": "1"
-                        },
-                        {
-                            "location": "Kerrisdale",
-                            "city": "Vancouver",
-                            "count": "1"
-                        },
-                        {
-                            "location": "Kitsilano",
-                            "city": "Vancouver",
-                            "count": "1"
-                        },
-                        {
-                            "location": "UBC",
-                            "city": "Vancouver",
-                            "count": "5"
-                        }
-                    ],
-                    "perCompany": 5
-                }}/>, document.getElementById("report-result"));
-        }, 500);
+        let report = {
+
+        };
+        if (reportCity && reportDate && reportType) {
+
+            try {
+                if (reportType === "Rental") {
+                    if (reportCity === "All Locations") {
+                        // Daily Rental
+                        report = await getDailyRental(reportDate);
+                    } else {
+                        // Daily Rental By Branch
+                        report = await getDailyBranchRental(reportDate, reportLocation, reportCity);
+                    }
+                } else {
+                    if (reportCity === "All Locations") {
+                        // Daily Return
+                        report = await getDailyReturn(reportDate);
+                    } else {
+                        // Daily Return by Branch
+                        report = await getDailyBranchReturn(reportDate, reportLocation, reportCity);
+                    }
+                }
+
+                ReactDOM.render(
+                    <div style={{margin: "30px"}}>
+                        <Spinner animation="border" role="status">
+                            <span className="sr-only">Loading...</span>
+                        </Spinner>
+                    </div>
+                    , document.getElementById("report-result"));
+
+                setTimeout(() => {
+                    // temp data to testing convenience
+                    ReactDOM.render(<ReportTable
+                        action={"rental"}
+                        location={"all"}
+                        report={report}/>, document.getElementById("report-result"));
+                }, 500);
+
+            } catch (e) {
+                console.log(e);
+            }
+        }
     };
 
     encodeQuery(query) {
@@ -122,7 +83,6 @@ class ReportSearchConsole extends React.Component {
             return elem !== "btn-outline-primary";
         }).join(" ");
         this.setState({[btnName]: event.target.value});
-        console.log(event.target.value);
     };
 
     render() {
@@ -154,25 +114,25 @@ class ReportSearchConsole extends React.Component {
         return (
             <React.Fragment>
                 <div style={consoleStyle}>
-                    <DropdownButton title={"Location"} size={"lg"} id={"reportLocation"} style={locationStyle}
+                    <DropdownButton title={"Location"} size={"lg"} id={"reportLocationCity"} style={locationStyle}
                                     as={ButtonGroup}
                                     variant={"outline-primary"}
                                     drop={'down'}>
                         <div style={dropdownStyle}>
-                            <DropdownItem key={"-1"} value={"All Location"} as={"button"} className={"reportLocation"}
+                            <DropdownItem key={"-1"} value={"All Locations"} as={"button"} className={"reportLocationCity"}
                                           onClick={this.handleChange}
                             > All Locations
                             </DropdownItem>
                             {this.props.branchSelection.map((elem, idx) => {
                                 return <DropdownItem key={idx} value={elem} as={"button"}
-                                                     className={"reportLocation"}
+                                                     className={"reportLocationCity"}
                                                      onClick={this.handleChange}>{elem}</DropdownItem>;
                             })}
                         </div>
                     </DropdownButton>
                     <SingleDatePicker
-                        date={this.state.date} // momentPropTypes.momentObj or null
-                        onDateChange={date => this.setState({date})} // PropTypes.func.isRequired
+                        date={this.state.reportDate} // momentPropTypes.momentObj or null
+                        onDateChange={reportDate => this.setState({reportDate})} // PropTypes.func.isRequired
                         focused={this.state.focused} // PropTypes.bool
                         onFocusChange={({focused}) => this.setState({focused})} // PropTypes.func.isRequired
                         id="reportDate" // PropTypes.string.isRequired,

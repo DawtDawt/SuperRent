@@ -1,19 +1,22 @@
 import React from 'react';
 import ClerkNavbar from "./ClerkNavbar";
-import RentSearchConsole from "./RentSearchConsole";
+import RentWithResSearchConsole from "./RentWithResSearchConsole";
 import ReturnSearchConsole from "./ReturnSearchConsole";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
 import ReportSearchConsole from "./ReportSearchConsole";
-import RentForNewSearchConsole from "./RentForNewSearchConsole";
+import RentWithoutResSearchConsole from "./RentWithoutResSearchConsole";
 
 class Clerk extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            vehicles: [],
+            reservationDetail: [],
             confNoSelection: [],
             rentIDSelection: [],
             branchSelection: [],
+
         };
     }
 
@@ -58,6 +61,34 @@ class Clerk extends React.Component {
             .catch(console.log);
     }
 
+
+    generateTimes = () => {
+        const times = [];
+        times.push("12:00 AM", "12:30 AM");
+        for (let i = 1; i < 12; i++) {
+            if (i <= 9) {
+                times.push("0" + String(i) + ":00 AM");
+                times.push("0" + String(i) + ":30 AM");
+            } else {
+                times.push(String(i) + ":00 AM");
+                times.push(String(i) + ":30 AM");
+            }
+
+        }
+        times.push("12:00 PM", "12:30PM");
+        for (let i = 1; i < 12; i++) {
+            if (i <= 9) {
+                times.push("0" + String(i) + ":00 PM");
+                times.push("0" + String(i) + ":30 PM");
+            } else {
+                times.push(String(i) + ":00 PM");
+                times.push(String(i) + ":30 PM");
+            }
+        }
+        return times;
+    };
+
+
     render() {
         const style = {
             margin: "100px",
@@ -74,11 +105,11 @@ class Clerk extends React.Component {
                 <ClerkNavbar/>
                 <div style={style}>
                     <Tabs justify defaultActiveKey="Rent" id="uncontrolled-tab-example">
-                        <Tab eventKey="Rent" title="Rent">
-                            <RentSearchConsole confNoSelection={this.state.confNoSelection}/>
+                        <Tab eventKey="Rent" title="Rent with Reservation">
+                            <RentWithResSearchConsole confNoSelection={this.state.confNoSelection}/>
                         </Tab>
-                        <Tab eventKey="RentNew" title="Rent For Non-Reserved">
-                            <RentForNewSearchConsole confNoSelection={this.state.confNoSelection}/>
+                        <Tab eventKey="RentNew" title="Rent without Reservation">
+                            <RentWithoutResSearchConsole times={this.generateTimes()} confNoSelection={this.state.branchSelection} branchSelection={this.state.branchSelection}/>
                         </Tab>
                         <Tab eventKey="Return" title="Return">
                             <ReturnSearchConsole rentIDSelection={this.state.rentIDSelection}/>
