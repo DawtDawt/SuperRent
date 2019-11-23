@@ -5,7 +5,44 @@ async function getVehicle(body) {
 
     const response = await fetch("http://localhost:8080/vehicle/get/?" + query);
 
-    return response.json();
+    const content = await response.json();
+    if (content.error) {
+        if (content.error.hasOwnProperty(message)) {
+            alert(console.error.message);
+            console.log(content.error);
+            throw Error(content.error);
+        }
+        alert("New Untracked Error In getVehicle: " + content.error.detail);
+        console.log(content.error);
+        throw Error(content.error);
+    } else {
+        return (content.data);
+    }
+}
+
+async function getReserve(confno) {
+    if (confno.length === 0) {
+        alert("Missing required get reserve information: Confirmation Number.");
+        throw Error("Missing required get reserve information.");
+    }
+
+    const query = 'confno=' + encodeURIComponent(confno);
+
+    const response = await fetch("http://localhost:8080/reserve/get/?" + query);
+
+    const content = await response.json();
+    if (content.error) {
+        if (content.error.hasOwnProperty(message)) {
+            alert(console.error.message);
+            console.log(content.error);
+            throw Error(content.error);
+        }
+        alert("New Untracked Error In getReserve: " + content.error.detail);
+        console.log(content.error);
+        throw Error(content.error);
+    } else {
+        return (content.data);
+    }
 }
 
 async function createCustomer(name, cellphone, address, dlicense) {
@@ -105,12 +142,7 @@ async function createReserve(vtname, dlicense, location, city, fromdate, todate,
 
     const content = await response.json();
     if (content.error) {
-        if (content.error.code === "23503") {
-            alert("No customer were found under the given driver's license.");
-            console.log(content.error);
-            throw Error(content.error);
-        }
-        if (content.error.code === "RESALREXIS") {
+        if (content.error.hasOwnProperty(message)) {
             alert(content.error.message);
             console.log(content.error);
             throw Error(content.error);
@@ -182,6 +214,11 @@ async function createRent(vlicense, dlicense, fromdate, todate, fromtime, totime
 
     const content = await response.json();
     if (content.error) {
+        if (content.error.code === 23505) {
+            alert("The confirmation code already has been used to make an existing rental.");
+            console.log(content.error);
+            throw Error(content.error);
+        }
         console.log(content.error);
         alert("New Untracked Error In createRent: " + content.error.detail);
         throw Error(content.error);
@@ -229,6 +266,16 @@ async function createReturn(rid, date, time, odometer, fulltank, value) {
 
     const content = await response.json();
     if (content.error) {
+        if (content.error.code === 23503) {
+            alert("The given rid is not associated with a valid rental record.");
+            console.log(console.error);
+            throw Error(content.error);
+        }
+        if (content.error.code === 23505) {
+            alert("The given rid has already been returned.");
+            console.log(console.error);
+            throw Error(content.error);
+        }
         console.log(content.error);
         alert("New Untracked Error In createReturn.");
         throw Error(content.error);
