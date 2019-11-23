@@ -2,7 +2,7 @@ import React from 'react';
 import {Button, Fade, Table} from "react-bootstrap";
 import moment from "moment";
 
-class RentBrowseTable extends React.Component {
+class RentWithoutResTable extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -92,4 +92,4 @@ class RentBrowseTable extends React.Component {
 }
 
 
-export default RentBrowseTable;
+export default RentWithoutResTable;

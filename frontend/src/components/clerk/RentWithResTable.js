@@ -1,7 +1,7 @@
 import React from 'react';
 import {Fade} from "react-bootstrap";
 
-class RentTable extends React.Component {
+class RentWithResTable extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -55,4 +55,4 @@ class RentTable extends React.Component {
 }
 
 
-export default RentTable;
+export default RentWithResTable;

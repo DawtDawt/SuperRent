@@ -1,11 +1,11 @@
 import React from 'react';
 import ClerkNavbar from "./ClerkNavbar";
-import RentSearchConsole from "./RentSearchConsole";
+import RentWithResSearchConsole from "./RentWithResSearchConsole";
 import ReturnSearchConsole from "./ReturnSearchConsole";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
 import ReportSearchConsole from "./ReportSearchConsole";
-import RentForNewSearchConsole from "./RentForNewSearchConsole";
+import RentWithoutResSearchConsole from "./RentWithoutResSearchConsole";
 
 class Clerk extends React.Component {
     constructor(props) {
@@ -102,11 +102,11 @@ class Clerk extends React.Component {
                 <ClerkNavbar/>
                 <div style={style}>
                     <Tabs justify defaultActiveKey="Rent" id="uncontrolled-tab-example">
-                        <Tab eventKey="Rent" title="Rent For Customers That Have A Reservation">
-                            <RentSearchConsole confNoSelection={this.state.confNoSelection}/>
+                        <Tab eventKey="Rent" title="Rent with Reservation">
+                            <RentWithResSearchConsole confNoSelection={this.state.confNoSelection}/>
                         </Tab>
-                        <Tab eventKey="RentNew" title="Rent For Customers That Does Not Have A Reservation">
-                            <RentForNewSearchConsole times={this.generateTimes()} confNoSelection={this.state.branchSelection} branchSelection={this.state.branchSelection}/>
+                        <Tab eventKey="RentNew" title="Rent without Reservation">
+                            <RentWithoutResSearchConsole times={this.generateTimes()} confNoSelection={this.state.branchSelection} branchSelection={this.state.branchSelection}/>
                         </Tab>
                         <Tab eventKey="Return" title="Return">
                             <ReturnSearchConsole rentIDSelection={this.state.rentIDSelection}/>

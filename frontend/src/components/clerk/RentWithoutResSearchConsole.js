@@ -5,13 +5,13 @@ import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import moment from "moment";
-import RentTable from "./RentTable";
+import RentWithResTable from "./RentWithResTable";
 import Spinner from "react-bootstrap/Spinner";
 import {createRent, createReturn, getVehicle} from "../Fetch";
 import {DateRangePicker} from "react-dates";
-import RentBrowseTable from "./RentBrowseTable";
+import RentWithoutResTable from "./RentWithoutResTable";
 
-class RentForNewSearchConsole extends React.Component {
+class RentWithoutResSearchConsole extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -42,7 +42,7 @@ class RentForNewSearchConsole extends React.Component {
                     , document.getElementById("browse-result"));
 
                 setTimeout(() => {
-                    ReactDOM.render(<RentBrowseTable vehicles={this.state.vehicles}/>, document.getElementById("browse-result"));
+                    ReactDOM.render(<RentWithoutResTable vehicles={this.state.vehicles}/>, document.getElementById("browse-result"));
                 }, 200);
 
             })
@@ -85,7 +85,7 @@ class RentForNewSearchConsole extends React.Component {
 
     handleSubmit = async (event) =>{
         // temp handle submit before fetch is setup
-        let Rentalresponse
+        let Rentalresponse;
         try {
             Rentalresponse = await createRent(1,1,"2019-10-30","2019-11-02","12:00 PM","2:00 PM",3000, this.state.cardname,this.state.cardno,this.state.expdate, this.state.cnum);
         } catch (e) {
@@ -118,7 +118,7 @@ class RentForNewSearchConsole extends React.Component {
         );
 
         setTimeout(() => {
-            ReactDOM.render(<RentTable rentDetail={rentDetail}/>, document.getElementById("rent-result"))
+            ReactDOM.render(<RentWithResTable rentDetail={rentDetail}/>, document.getElementById("rent-result"))
         }, 500);
     }
 
@@ -335,5 +335,5 @@ class RentForNewSearchConsole extends React.Component {
 }
 
 
-export default RentForNewSearchConsole;
+export default RentWithoutResSearchConsole;
 

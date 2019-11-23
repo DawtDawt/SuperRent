@@ -5,11 +5,11 @@ import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import moment from "moment";
-import RentTable from "./RentTable";
+import RentWithResTable from "./RentWithResTable";
 import Spinner from "react-bootstrap/Spinner";
 import {createRent, createReturn} from "../Fetch";
 
-class RentSearchConsole extends React.Component {
+class RentWithResSearchConsole extends React.Component {
     constructor(props) {
         super(props);
         this.state = {};
@@ -45,7 +45,7 @@ class RentSearchConsole extends React.Component {
         );
 
         setTimeout(() => {
-            ReactDOM.render(<RentTable rentDetail={rentDetail}/>, document.getElementById("rent-result"))
+            ReactDOM.render(<RentWithResTable rentDetail={rentDetail}/>, document.getElementById("rent-result"))
         }, 500);
     }
 
@@ -133,5 +133,5 @@ class RentSearchConsole extends React.Component {
 }
 
 
-export default RentSearchConsole;
+export default RentWithResSearchConsole;
 
