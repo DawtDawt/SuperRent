@@ -457,4 +457,4 @@ module.exports = {
     getDailyBranchRental,
     getDailyReturn,
     getDailyBranchReturn
-}
+};
