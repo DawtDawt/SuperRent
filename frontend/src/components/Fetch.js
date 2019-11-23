@@ -281,6 +281,32 @@ async function createRent(vlicense, dlicense, fromdate, todate, fromtime, totime
     }
 }
 
+async function getReturn(rid) {
+    if (rid.length === 0) {
+        alert("Missing required get return information: Rental ID.");
+        throw Error("Missing required get return information.");
+    }
+
+    const query = 'rid=' + encodeURIComponent(rid);
+
+    const response = await fetch("http://localhost:8080/return/get/?" + query);
+
+    const content = await response.json();
+    if (content.error) {
+        if (content.error.hasOwnProperty("message")) {
+            alert(content.error.message);
+            console.log(content.error);
+            throw Error(content.error);
+        } else {
+            alert("New Untracked Error In getReturn: " + content.error.detail);
+            console.log(content.error);
+            throw Error(content.error);
+        }
+    } else {
+        return (content.data);
+    }
+}
+
 async function createReturn(rid, date, time, odometer, fulltank) {
     if (rid.length === 0) {
         alert("Missing required return information: Rent ID.");
@@ -460,6 +486,7 @@ module.exports = {
     createCustomer,
     getRent,
     createRent,
+    getReturn,
     createReturn,
     getDailyRental,
     getDailyBranchRental,

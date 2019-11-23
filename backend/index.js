@@ -56,7 +56,7 @@ app.get('/customer/get', query.getCustomer);
 // @return data: dlicense
 app.post('/customer/create', query.createCustomer);
 
-// Get a rent based of rid
+// Get a rent based off rid
 // requires: rid
 // @return data: tuple if found, error if not found
 app.get('/rent/get', query.getRent);
@@ -66,6 +66,11 @@ app.get('/rent/get', query.getRent);
 // requirement: a valid confno from reservation
 // @return data: rid
 app.post('/rent/create', query.createRent);
+
+// Get a return based off rid
+// requires: rid
+// @return data: tuple if found, error if not found
+app.get('/return/get', query.getReturn);
 
 // Return a vehicle
 // require: id, date, time, odometer, fulltank, value
