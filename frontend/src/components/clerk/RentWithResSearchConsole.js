@@ -16,7 +16,10 @@ class RentWithResSearchConsole extends React.Component {
     }
 
     handleSubmit = async (event) =>{
+        // temp handle submit before fetch is setup
         let RentalResponse;
+        let rentDetail;
+        let license;
         getReserve(this.state.confno)
             .then(data => {
                 if (data.error) {
@@ -28,56 +31,72 @@ class RentWithResSearchConsole extends React.Component {
                 const body = {};
                 body["city"] = data.city;
                 body["location"] = data.location;
-                body["fromdate"] = data.fromDate;
-                body["todate"] = data.toDate;
+                body["fromdate"] = data.fromdate;
+                body["todate"] = data.todate;
                 body["fromtime"] = data.fromtime;
                 body["totime"] = data.totime;
                 body["vtname"] = data.vtname;
 
-                getVehicle(body)
+                const response = getVehicle(body)
                     .then(vdata => {
+                        console.log(vdata.data[0].vlicense);
+                        console.log(data.city);
                         if (vdata.error) {
                             console.log(vdata.error);
                             this.setState({vehicles: []});
                         } else {
                             this.setState({vehicles: vdata.data});
                         }
-                        try {
-                            RentalResponse = createRent(vdata.vlicence, data.dlicense, data.fromdate, data.todate, data.fromtime, data.totime, 3000, this.state.cardname, this.state.cardno, this.state.expdate, this.state.cardno);
-                        } catch (e) {
-                            console.log(e);
-                        }
-                    });
-                const rentDetail = {
-                    rid: RentalResponse.data,
-                    confno: this.state.confno,
-                    vtname: data.vtname,
-                    vlicense: "ABC000",
-                    dlicense: data.dlicense,
-                    location: data.location,
-                    city: data.city,
-                    fromdate: data.fromdate,
-                    todate: data.todate,
-                    fromtime: data.fromtime,
-                    totime: data.totime,
-                    cardname: this.state.cardname,
-                    cardno: this.state.cardno,
-                    expdate: this.state.expdate,
-                    odometer: 3000
-                };
-                ReactDOM.render(
-                    <div style={{margin: "30px"}}>
-                        <Spinner animation="border" role="status">
-                            <span className="sr-only">Loading...</span>
-                        </Spinner>
-                    </div>,
-                    document.getElementById("rent-result")
-                );
+                        console.log(data.dlicense);
+                        return createRent(vdata.data[0].vlicense, data.dlicense, data.fromdate, data.todate, data.fromtime, data.totime, 3000, this.state.cardname, this.state.cardno, this.state.expdate, this.state.confno);
+                    })
+                    .then(rid => {
+                        console.log(rid);
+                        rentDetail = {
+                            rid: rid,
+                            confno: this.state.confno,
+                            vtname: data.vtname,
+                            vlicense: "ABC000",
+                            dlicense: data.dlicense,
+                            location: data.location,
+                            city: data.city,
+                            fromdate: moment(data.fromdate).format("YYYY-MM-DD"),
+                            todate: moment(data.todate).format("YYYY-MM-DD"),
+                            fromtime: data.fromtime,
+                            totime: data.totime,
+                            cardname: this.state.cardname,
+                            cardno: this.state.cardno,
+                            expdate: this.state.expdate,
+                            odometer: 3000
+                        };
 
-                setTimeout(() => {
-                    ReactDOM.render(<RentWithResTable rentDetail={rentDetail}/>, document.getElementById("rent-result"))
-                }, 500);
-            }) .catch(console.log);
+                        ReactDOM.render(
+                            <div style={{margin: "30px"}}>
+                                <Spinner animation="border" role="status">
+                                    <span className="sr-only">Loading...</span>
+                                </Spinner>
+                            </div>,
+                            document.getElementById("rent-result")
+                        );
+
+                        setTimeout(() => {
+                            ReactDOM.render(<RentWithResTable rentDetail={rentDetail}/>, document.getElementById("rent-result"))
+                        }, 500);
+                    })
+                    .catch(console.log);
+
+                // try {
+                //     console.log(license);
+                //     RentalResponse = createRent(license, data.dlicense, moment(data.fromdate).format("YYYY-MM-DD"), moment(data.todate).format("YYYY-MM-DD"), data.fromtime, data.totime, 3000, this.state.cardname, this.state.cardno, this.state.expdate, this.state.cardno);
+                // } catch (error) {
+                //     console.log(error);
+                // }
+
+
+
+
+            })
+            .catch(console.log);
     }
 
     handleChange = (event) => {
@@ -113,6 +132,7 @@ class RentWithResSearchConsole extends React.Component {
 
         const dropdownStyle = {
             maxHeight: "205px",
+            // width: "300px",
             overflowY: "scroll",
         };
 
@@ -121,12 +141,12 @@ class RentWithResSearchConsole extends React.Component {
                 <div style={consoleStyle}>
                     <div className={"payment-info"} style={paymentStyle}>
                         <Form>
-                            <Form.Group as={Row} controlId="rentwo-cardname">
+                            <Form.Group as={Row} controlId="cardname">
                                 <Form.Label column sm="3">
                                     Credit Card Name
                                 </Form.Label>
                                 <Col sm="9">
-                                    <Form.Control type="text" placeholder="Enter Card Name" name = "rentwo-cardname" onChange={this.handleChange}/>
+                                    <Form.Control type="text" placeholder="Enter Card Name" name = "cardname" onChange={this.handleChange}/>
                                 </Col>
                             </Form.Group>
 
@@ -145,7 +165,7 @@ class RentWithResSearchConsole extends React.Component {
                                 </Col>
                             </Form.Group>
 
-                            <Form.Group as={Row} controlId="rentwo-confno">
+                            <Form.Group as={Row} controlId="confno">
                                 <Form.Label column sm="3">
                                     Confirmation Number
                                 </Form.Label>

@@ -9,8 +9,6 @@ const pool = new Pool({
     port: process.env.DB_PORT,
 });
 
-
-
 // abstracted queries
 const vehicleRentQuery = `SELECT * FROM vehicle WHERE vtname LIKE $1 AND location LIKE $2 AND city LIKE $3 AND vlicense NOT IN
     (SELECT r.vlicense FROM rental r WHERE (r.fromdate < $4 AND $4 < r.todate) OR (r.fromdate < $5 AND $5 < r.todate) OR
@@ -305,18 +303,49 @@ function createRent(request, response) {
 }
 
 function createReturn(request, response) {
+    const max = (a, b) => {
+        if (a > b) {
+            return a;
+        } else {
+            return b;
+        }
+    };
     const rid = request.body.rid;
     const date = request.body.date;
     const time = request.body.time;
-    const odometer = Number(request.body.odometer);
+    const odometer = request.body.odometer;
     const fulltank = Boolean(request.body.fulltank);
-    let value;
+    let value = 0;
     let finalResult;
     return pool.query(`SELECT * FROM rental WHERE rid = $1`, [rid])
         .then(result => {
             if (result.rows.length === 0) {
                 return Promise.reject({message: "No rental record found in database with given rental id."});
             }
+            return pool.query(`SELECT * FROM rental r, vehicle v, vehicletype vt WHERE r.rid = $1
+            AND v.vlicense = r.vlicense AND v.vtname = vt.vtname`, [rid]);
+        })
+        .then(result => {
+            const initialOdometer = Number(result.rows[0].odometer);
+            const krate = result.rows[0].krate;
+            const kvalue = krate * (odometer - initialOdometer);
+            const from = new Date(result.rows[0].fromdate + " " + result.rows[0].fromtime);
+            console.log(result.rows[0].fromdate);
+            console.log(from);
+            const to = new Date(date + " " + time);
+            console.log(to);
+            let msec = to - from;
+            const ww = Math.floor(msec / 1000 / 60 / 60 / 24 / 7);
+            msec -= ww * 1000 * 60 * 60 * 24 * 7;
+            const dd = Math.floor(msec / 1000 / 60 / 60 / 24);
+            msec -= dd * 1000 * 60 * 60 * 24;
+            const hh = Math.floor(msec / 1000 / 60 / 60);
+            const wrate = result.rows[0].wrate;
+            const drate = result.rows[0].drate;
+            const hrate = result.rows[0].hrate;
+            const tvalue = wrate * ww + drate * dd + hrate * hh;
+            value = max(kvalue, tvalue);
+            console.log(value);
             return pool.query(`INSERT INTO return(rid, date, time, odometer, fulltank, value)
                     VALUES ($1, $2, $3, $4, $5, $6) RETURNING rid`,
                 [rid, date, time, odometer, fulltank, value]);

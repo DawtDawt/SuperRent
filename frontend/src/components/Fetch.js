@@ -10,13 +10,14 @@ async function getVehicle(body) {
     const content = await response.json();
     if (content.error) {
         if (content.error.hasOwnProperty("message")) {
-            alert(console.error.message);
+            alert(content.error.message);
+            console.log(content.error);
+            throw Error(content.error);
+        } else {
+            alert("New Untracked Error In getVehicle: " + content.error.detail);
             console.log(content.error);
             throw Error(content.error);
         }
-        alert("New Untracked Error In getVehicle: " + content.error.detail);
-        console.log(content.error);
-        throw Error(content.error);
     } else {
         return (content);
     }
@@ -35,13 +36,14 @@ async function getReserve(confno) {
     const content = await response.json();
     if (content.error) {
         if (content.error.hasOwnProperty("message")) {
-            alert(console.error.message);
+            alert(content.error.message);
+            console.log(content.error);
+            throw Error(content.error);
+        } else {
+            alert("New Untracked Error In getReserve: " + content.error.detail);
             console.log(content.error);
             throw Error(content.error);
         }
-        alert("New Untracked Error In getReserve: " + content.error.detail);
-        console.log(content.error);
-        throw Error(content.error);
     } else {
         return (content.data);
     }
@@ -98,10 +100,11 @@ async function createReserve(vtname, dlicense, location, city, fromdate, todate,
             alert(content.error.message);
             console.log(content.error);
             throw Error(content.error);
+        } else {
+            console.log(content.error);
+            alert("New Untracked Error In createReserve: " + content.error.detail);
+            throw Error(content.error);
         }
-        console.log(content.error);
-        alert("New Untracked Error In createReserve: " + content.error.detail);
-        throw Error(content.error);
     } else {
         return (content.data);
     }
@@ -120,13 +123,14 @@ async function getCustomer(dlicense) {
     const content = await response.json();
     if (content.error) {
         if (content.error.hasOwnProperty("message")) {
-            alert(console.error.message);
+            alert(content.error.message);
+            console.log(content.error);
+            throw Error(content.error);
+        } else {
+            alert("New Untracked Error In getCustomer: " + content.error.detail);
             console.log(content.error);
             throw Error(content.error);
         }
-        alert("New Untracked Error In getCustomer: " + content.error.detail);
-        console.log(content.error);
-        throw Error(content.error);
     } else {
         return (content.data);
     }
@@ -165,13 +169,14 @@ async function createCustomer(name, cellphone, address, dlicense) {
     const content = await response.json();
     if (content.error) {
         if (content.error.hasOwnProperty("message")) {
-            alert(console.error.message);
+            alert(content.error.message);
+            console.log(content.error);
+            throw Error(content.error);
+        } else {
+            alert("New Untracked Error In createCustomer: " + content.error.detail);
             console.log(content.error);
             throw Error(content.error);
         }
-        alert("New Untracked Error In createCustomer: " + content.error.detail);
-        console.log(content.error);
-        throw Error(content.error);
     } else {
         return (content.data);
     }
@@ -190,13 +195,14 @@ async function getRent(rid) {
     const content = await response.json();
     if (content.error) {
         if (content.error.hasOwnProperty("message")) {
-            alert(console.error.message);
+            alert(content.error.message);
+            console.log(content.error);
+            throw Error(content.error);
+        } else {
+            alert("New Untracked Error In getRent: " + content.error.detail);
             console.log(content.error);
             throw Error(content.error);
         }
-        alert("New Untracked Error In getRent: " + content.error.detail);
-        console.log(content.error);
-        throw Error(content.error);
     } else {
         return (content.data);
     }
@@ -262,19 +268,20 @@ async function createRent(vlicense, dlicense, fromdate, todate, fromtime, totime
     const content = await response.json();
     if (content.error) {
         if (content.error.hasOwnProperty("message")) {
-            alert(console.error.message);
+            alert(content.error.message);
+            console.log(content.error);
+            throw Error(content.error);
+        } else {
+            alert("New Untracked Error In createRent: " + content.error.detail);
             console.log(content.error);
             throw Error(content.error);
         }
-        alert("New Untracked Error In createRent: " + content.error.detail);
-        console.log(content.error);
-        throw Error(content.error);
     } else {
         return (content.data);
     }
 }
 
-async function createReturn(rid, date, time, odometer, fulltank, value) {
+async function createReturn(rid, date, time, odometer, fulltank) {
     if (rid.length === 0) {
         alert("Missing required return information: Rent ID.");
         throw Error("Missing required return information.");
@@ -290,9 +297,6 @@ async function createReturn(rid, date, time, odometer, fulltank, value) {
     } else if (fulltank.length === 0) {
         alert("Missing required return information: Fulltank Boolean.");
         throw Error("Missing required return information.");
-    } else if (value.length === 0) {
-        alert("Missing required return information: Value of Return.");
-        throw Error("Missing required return information.");
     }
 
     const response = await fetch("http://localhost:8080/return/create", {
@@ -306,8 +310,7 @@ async function createReturn(rid, date, time, odometer, fulltank, value) {
             date,
             time,
             odometer,
-            fulltank,
-            value
+            fulltank
         })
     });
 
@@ -317,10 +320,11 @@ async function createReturn(rid, date, time, odometer, fulltank, value) {
             alert(content.error.message);
             console.log(content.error);
             throw Error(content.error);
+        } else {
+            alert("New Untracked Error In createReturn: " + content.error.detail);
+            console.log(content.error);
+            throw Error(content.error);
         }
-        alert("New Untracked Error In createReturn: " + content.error.detail);
-        console.log(content.error);
-        throw Error(content.error);
     } else {
         return (content.data);
     }
@@ -342,10 +346,11 @@ async function getDailyRental(date) {
             alert(content.error.message);
             console.log(content.error);
             throw Error(content.error);
+        } else {
+            alert("New Untracked Error In getDailyRentals: " + content.error.detail);
+            console.log(content.error);
+            throw Error(content.error);
         }
-        alert("New Untracked Error In getDailyRentals: " + content.error.detail);
-        console.log(content.error);
-        throw Error(content.error);
     } else {
         return (content.data);
     }
@@ -376,10 +381,11 @@ async function getDailyBranchRental(date, location, city) {
             alert(content.error.message);
             console.log(content.error);
             throw Error(content.error);
+        } else {
+            alert("New Untracked Error In getDailyRentalsByBranch: " + content.error.detail);
+            console.log(content.error);
+            throw Error(content.error);
         }
-        alert("New Untracked Error In getDailyRentalsByBranch: " + content.error.detail);
-        console.log(content.error);
-        throw Error(content.error);
     } else {
         return (content.data);
     }
@@ -401,10 +407,11 @@ async function getDailyReturn(date) {
             alert(content.error.message);
             console.log(content.error);
             throw Error(content.error);
+        } else {
+            alert("New Untracked Error In getDailyReturns: " + content.error.detail);
+            console.log(content.error);
+            throw Error(content.error);
         }
-        alert("New Untracked Error In getDailyReturns: " + content.error.detail);
-        console.log(content.error);
-        throw Error(content.error);
     } else {
         return (content.data);
     }
@@ -435,10 +442,11 @@ async function getDailyBranchReturn(date, location, city) {
             alert(content.error.message);
             console.log(content.error);
             throw Error(content.error);
+        } else {
+            alert("New Untracked Error In getDailyReturnsByBranch: " + content.error.detail);
+            console.log(content.error);
+            throw Error(content.error);
         }
-        alert("New Untracked Error In getDailyReturnsByBranch: " + content.error.detail);
-        console.log(content.error);
-        throw Error(content.error);
     } else {
         return (content.data);
     }
