@@ -18,46 +18,67 @@ class RentWithResSearchConsole extends React.Component {
     handleSubmit = async (event) =>{
         // temp handle submit before fetch is setup
         let RentalResponse
-        let ReservationDetail
+        getReserve(this.state.confno)
+            .then(data => {
+                if (data.error) {
+                    console.log(data.error);
+                    this.setState({ReservationDetail: []});
+                } else {
+                    this.setState({ReservationDetail: data.data});
+                }
+                const body = {};
+                body["city"] = data.city;
+                body["location"] = data.location;
+                body["fromdate"] = data.fromDate;
+                body["todate"] = data.toDate;
+                body["fromtime"] = data.fromtime;
+                body["totime"] = data.totime;
+                body["vtname"] = data.vtname;
 
+                getVehicle(body)
+                    .then(vdata => {
+                        if (vdata.error) {
+                            console.log(vdata.error);
+                            this.setState({vehicles: []});
+                        } else {
+                            this.setState({vehicles: vdata.data});
+                        }
+                        try {
+                            RentalResponse = createRent(vdata.vlicence, data.dlicense, data.fromDate, data.toDate, data.fromtime, data.totime, 3000, this.state.cardname, this.state.cardno, this.state.expdate, this.state.cardno);
+                        } catch (e) {
+                            console.log(e);
+                        }
+                    })
+                const rentDetail = {
+                    rid: RentalResponse.data,
+                    confno: this.state.confno,
+                    vtname: data.vtname,
+                    vlicense: "ABC000",
+                    dlicense: data.dlicense,
+                    location: data.location,
+                    city: data.city,
+                    fromdate: data.fromDate,
+                    todate: data.toDate,
+                    fromtime: data.fromtime,
+                    totime: data.totime,
+                    cardname: this.state.cardname,
+                    cardno: this.state.cardno,
+                    expdate: this.state.expdate,
+                    odometer: 3000
+                };
+                ReactDOM.render(
+                    <div style={{margin: "30px"}}>
+                        <Spinner animation="border" role="status">
+                            <span className="sr-only">Loading...</span>
+                        </Spinner>
+                    </div>,
+                    document.getElementById("rent-result")
+                );
 
-
-
-
-        try {
-            RentalResponse = await createRent(1,1,"2019-10-30","2019-11-02","12:00 PM","2:00 PM",3000, this.state.cardname,this.state.cardno,this.state.expdate, this.state.cnum);
-        } catch (e) {
-            console.log(e);
-        }
-        const rentDetail = {
-            rid: RentalResponse.data,
-            confno: this.state.confno,
-            vtname: "SUV",
-            vlicense: "ABC000",
-            dlicense: "00000",
-            location: "UBC",
-            city: "Vancouver",
-            fromdate: "2019-10-30",
-            todate: "2019-11-02",
-            fromtime: "12:00 PM",
-            totime: "2:00 PM",
-            cardname: this.state.cardname,
-            cardno: this.state.cardno,
-            expdate: this.state.expdate,
-            odometer: 3000
-        };
-        ReactDOM.render(
-            <div style={{margin: "30px"}}>
-                <Spinner animation="border" role="status">
-                    <span className="sr-only">Loading...</span>
-                </Spinner>
-            </div>,
-            document.getElementById("rent-result")
-        );
-
-        setTimeout(() => {
-            ReactDOM.render(<RentWithResTable rentDetail={rentDetail}/>, document.getElementById("rent-result"))
-        }, 500);
+                setTimeout(() => {
+                    ReactDOM.render(<RentWithResTable rentDetail={rentDetail}/>, document.getElementById("rent-result"))
+                }, 500);
+            }) .catch(console.log);
     }
 
     handleChange = (event) => {

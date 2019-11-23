@@ -25,7 +25,7 @@ class BrowseSearchConsole extends React.Component {
                 } else {
                     this.setState({vehicles: data.data});
                 }
-                console.log(data.vlicense);
+
                 ReactDOM.render(
                     <div>
                         <div style={{margin: "20px"}}>
