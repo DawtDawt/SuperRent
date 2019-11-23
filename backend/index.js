@@ -17,11 +17,11 @@ const allowCrossDomain = function(req, res, next) {
 }
 app.use(allowCrossDomain);
 
-try {
-    const started = start.init();
-} catch (error) {
-    console.log(error);
-}
+// try {
+//     const started = start.init();
+// } catch (error) {
+//     console.log(error);
+// }
 
 app.get('/', (request, response) => {
     response.status(200).send('ok');

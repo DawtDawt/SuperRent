@@ -100,6 +100,7 @@ function getVehicle(request, response) {
 
 function getReserve(request, response) {
     const confno = Number(request.query.confno);
+    console.log("confno: " + confno);
     return pool.query(`SELECT * FROM reservation WHERE confno = $1`, [confno])
         .then(result => {
             if (result.rows.length === 0) {
@@ -252,6 +253,7 @@ function getRent(request, response) {
 }
 
 function createRent(request, response) {
+    console.log("got here");
     const vlicense = request.body.vlicense;
     const dlicense = request.body.dlicense;
     const fromdate = request.body.fromdate;

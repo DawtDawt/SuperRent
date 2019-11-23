@@ -20,8 +20,8 @@ class RentWithResSearchConsole extends React.Component {
         let RentalResponse;
         let rentDetail;
         let license;
-
-        getReserve(this.state.confno)
+        console.log("confno: " + this.state.confno);
+        return getReserve(this.state.confno)
             .then(data => {
                 if (data.error) {
                     console.log(data.error);
@@ -52,7 +52,8 @@ class RentWithResSearchConsole extends React.Component {
                         license = vdata.data[0].vlicense;
                         console.log(data.dlicense);
                         odometer = vdata.data[0].odometer;
-                        return createRent(vdata.data[0].vlicense, data.dlicense, data.fromdate, data.todate, data.fromtime, data.totime, 3000, this.state.cardname, this.state.cardno, this.state.expdate, this.state.confno);
+                        this.setState({expdate: moment("28/" + this.state.expdate, "DD/MM/YY").format("YYYY-MM-DD")});
+                        return createRent(vdata.data[0].vlicense, data.dlicense, data.fromdate, data.todate, data.fromtime, data.totime, this.state.cardname, this.state.cardno, this.state.expdate, this.state.confno);
                     })
                     .then(rid => {
                         console.log(rid);

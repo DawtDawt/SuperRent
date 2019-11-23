@@ -240,6 +240,8 @@ async function createRent(vlicense, dlicense, fromdate, todate, fromtime, totime
         alert("Missing required rental information: Confirmation Number.");
         throw Error("Missing required rental information.");
     }
+    console.log(confno);
+    console.log(typeof confno);
 
     const response = await fetch("http://localhost:8080/rent/create", {
         method: 'POST',
