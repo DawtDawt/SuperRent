@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const port = 8080;
 const query = require("./query");
+const start = require("./init");
 
 // init body-parser for post
 app.use(express.json());
@@ -15,6 +16,12 @@ const allowCrossDomain = function(req, res, next) {
     next();
 }
 app.use(allowCrossDomain);
+
+try {
+    const started = start.init();
+} catch (error) {
+    console.log(error);
+}
 
 app.get('/', (request, response) => {
     response.status(200).send('ok');

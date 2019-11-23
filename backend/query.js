@@ -59,33 +59,34 @@ function getVehicle(request, response) {
         totime = request.query.totime;
     }
     let finalResult;
-    console.log(vtname, location, city, fromdate, todate, fromtime, totime);
-    console.log("starting vehicleRentQuery");
     // query: SELECT vehicle fulfilling type, location, and NOT in Rent during time interval
-    return pool.query(vehicleRentQuery, [vtname, location, city, fromdate, todate, fromtime, totime])
+    return pool.query(`SELECT * from vehicletype WHERE vtname = $1`, [vtname]).then(result => {
+        if (result.rows.length === 0) {
+            return Promise.reject({message: "Given vehicle type does not exist."});
+        }
+        return pool.query(`SELECT * from vehicle WHERE location = $1 AND city = $2`, [location, city]);
+    })
         .then(result => {
-            console.log("vehicleRentQuery results are:");
-            console.log(result.rows);
+            if (result.rows.length === 0) {
+                return Promise.reject({message: "Given branch does not exist."});
+            }
+            return pool.query(vehicleRentQuery, [vtname, location, city, fromdate, todate, fromtime, totime]);
+        })
+        .then(result => {
             // throws error if no reservation slot is available
             if (result.rows.length === 0) {
-                return Promise.reject({code: 'NOVEH', message: "No such vehicle available for rent."});
+                return Promise.reject({message: "No such vehicle available for rent."});
             }
             finalResult = result;
-            console.log("starting vehicleReservationQuery");
             return pool.query(vehicleReservationQuery, [vtname, location, city, fromdate, todate, fromtime, totime]);
         })
         .then(reserveResult => {
-            console.log("vehicleReservationQuery results are:");
-            console.log(reserveResult.rows);
             if (finalResult.rows.length <= reserveResult.rows.length) {
-                return Promise.reject({code: 'RESFULL', message: "All such vehicles are either reserved or rented."});
+                return Promise.reject({ message: "All such vehicles are either reserved or rented."});
             }
-            console.log("got past vehicleReservationQuery, resolving with: ");
             return Promise.resolve();
         })
         .then(() => {
-            console.log("sending: ");
-            console.log(finalResult.rows);
             return response.json({
                 data: finalResult.rows
             });
@@ -129,23 +130,28 @@ function createReserve(request, response) {
     const totime = request.body.totime;
     // query: check if such vehicle is available
     let rentResult;
-    return pool.query(vehicleRentQuery, [vtname, location, city, fromdate, todate, fromtime, totime])
+    return pool.query('SELECT * from customer WHERE dlicense = $1', [dlicense]).then(result => {
+        if (result.rows.length === 0) {
+            return Promise.reject({message: "No customer found in database with given driver's license."});
+        }
+        return pool.query(vehicleRentQuery, [vtname, location, city, fromdate, todate, fromtime, totime]);
+    })
         .then(result => {
             // throws error if no reservation slot is available
             if (result.rows.length === 0) {
-                return Promise.reject({code: 'NOVEH', message: "No such vehicle available for rent."});
+                return Promise.reject({message: "No such vehicle available for rent."});
             }
             rentResult = result;
             return pool.query(vehicleReservationQuery, [vtname, location, city, fromdate, todate, fromtime, totime]);
         })
         .then(reserveResult => {
             if (rentResult.rows.length <= reserveResult.rows.length) {
-                return Promise.reject({code: 'RESFULL', message: "All such vehicles are either reserved or rented."});
+                return Promise.reject({message: "All such vehicles are either reserved or rented."});
             }
             return pool.query(`SELECT dlicense FROM reservation WHERE dlicense = $1`, [dlicense]);
         }).then(dlicenseResult => {
             if (dlicenseResult.rows.length > 0) {
-                return Promise.reject({code: `RESALREXIS`, message: "Only one reservation can be made per customer"});
+                return Promise.reject({message: "Only one reservation can be made per customer"});
             }
             // perform actual reservation, returning confno
             return pool.query(`INSERT INTO reservation(vtname, dlicense, location, city, fromdate, todate, fromtime, totime)
@@ -268,8 +274,9 @@ function createReturn(request, response) {
     const time = request.body.time;
     const odometer = Number(request.body.odometer);
     const fulltank = Boolean(request.body.fulltank);
-    const value = Number(request.body.value);
+    let value;
     let finalResult;
+    return pool.query(`SELECT `)
     return pool.query(`INSERT INTO return(rid, date, time, odometer, fulltank, value)
                     VALUES ($1, $2, $3, $4, $5, $6) RETURNING rid`,
         [rid, date, time, odometer, fulltank, value])
