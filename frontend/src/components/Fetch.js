@@ -1,13 +1,4 @@
 // File for fetch functions
-module.exports.getVehicle = getVehicle;
-module.exports.createCustomer = createCustomer;
-module.exports.createReserve = createReserve;
-module.exports.createRent = createRent;
-module.exports.createReturn = createReturn;
-module.exports.getDailyRental = getDailyRentals;
-module.exports.getDailyRentalByBranch = getDailyRentalsByBranch;
-module.exports.getDailyReturn = getDailyReturns;
-module.exports.getDailyReturnsByBranch = getDailyReturnsByBranch;
 
 async function getVehicle(body) {
     const query = Object.keys(body).map(function (key) {
@@ -18,7 +9,7 @@ async function getVehicle(body) {
 
     const content = await response.json();
     if (content.error) {
-        if (content.error.hasOwnProperty(message)) {
+        if (content.error.hasOwnProperty("message")) {
             alert(console.error.message);
             console.log(content.error);
             throw Error(content.error);
@@ -43,7 +34,7 @@ async function getReserve(confno) {
 
     const content = await response.json();
     if (content.error) {
-        if (content.error.hasOwnProperty(message)) {
+        if (content.error.hasOwnProperty("message")) {
             alert(console.error.message);
             console.log(content.error);
             throw Error(content.error);
@@ -53,56 +44,6 @@ async function getReserve(confno) {
         throw Error(content.error);
     } else {
         return (content.data);
-    }
-}
-
-async function createCustomer(name, cellphone, address, dlicense) {
-    console.log(name);
-    if (name.length === 0) {
-        alert("Missing required customer information: Name.");
-        throw Error("Missing required customer information.");
-    } else if (cellphone.length === 0) {
-        alert("Missing required customer information: Cellphone.");
-        throw Error("Missing required customer information.");
-    } else if (address.length === 0) {
-        alert("Missing required customer information: Address.");
-        throw Error("Missing required customer information.");
-    } else if (dlicense.length === 0) {
-        alert("Missing required customer information: Driver License.");
-        throw Error("Missing required customer information.");
-    }
-
-    const response = await fetch("http://localhost:8080/customer/create", {
-        method: "POST",
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            name,
-            cellphone,
-            address,
-            dlicense,
-        })
-    });
-
-    const content = await response.json();
-    if (content.error) {
-        if (content.error.code === "23505") {
-            alert("The given driver's license is already associated with an existing customer account.");
-            console.log(content.error);
-            throw Error(content.error);
-        }
-        if (content.error.code === "22P02") {
-            alert("Invalid cellphone number.");
-            console.log(content.error);
-            throw Error(content.error);
-        }
-        console.log(content.error);
-        alert("New Untracked Error in createCustomer: " + content.error.detail);
-        throw Error(content.error);
-    } else {
-        return content.data;
     }
 }
 
@@ -153,13 +94,108 @@ async function createReserve(vtname, dlicense, location, city, fromdate, todate,
 
     const content = await response.json();
     if (content.error) {
-        if (content.error.hasOwnProperty(message)) {
+        if (content.error.hasOwnProperty("message")) {
             alert(content.error.message);
             console.log(content.error);
             throw Error(content.error);
         }
         console.log(content.error);
         alert("New Untracked Error In createReserve: " + content.error.detail);
+        throw Error(content.error);
+    } else {
+        return (content.data);
+    }
+}
+
+async function getCustomer(dlicense) {
+    if (dlicense.length === 0) {
+        alert("Missing required get customer information: Driver License.");
+        throw Error("Missing required get customer information.");
+    }
+
+    const query = 'dlicense=' + encodeURIComponent(dlicense);
+
+    const response = await fetch("http://localhost:8080/customer/get/?" + query);
+
+    const content = await response.json();
+    if (content.error) {
+        if (content.error.hasOwnProperty("message")) {
+            alert(console.error.message);
+            console.log(content.error);
+            throw Error(content.error);
+        }
+        alert("New Untracked Error In getCustomer: " + content.error.detail);
+        console.log(content.error);
+        throw Error(content.error);
+    } else {
+        return (content.data);
+    }
+}
+
+async function createCustomer(name, cellphone, address, dlicense) {
+    console.log(name);
+    if (name.length === 0) {
+        alert("Missing required customer information: Name.");
+        throw Error("Missing required customer information.");
+    } else if (cellphone.length === 0) {
+        alert("Missing required customer information: Cellphone.");
+        throw Error("Missing required customer information.");
+    } else if (address.length === 0) {
+        alert("Missing required customer information: Address.");
+        throw Error("Missing required customer information.");
+    } else if (dlicense.length === 0) {
+        alert("Missing required customer information: Driver License.");
+        throw Error("Missing required customer information.");
+    }
+
+    const response = await fetch("http://localhost:8080/customer/create", {
+        method: "POST",
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            name,
+            cellphone,
+            address,
+            dlicense,
+        })
+    });
+
+    const content = await response.json();
+    if (content.error) {
+        if (content.error.hasOwnProperty("message")) {
+            alert(console.error.message);
+            console.log(content.error);
+            throw Error(content.error);
+        }
+        alert("New Untracked Error In createCustomer: " + content.error.detail);
+        console.log(content.error);
+        throw Error(content.error);
+    } else {
+        return (content.data);
+    }
+}
+
+async function getRent(rid) {
+    if (rid.length === 0) {
+        alert("Missing required get customer information: Driver License.");
+        throw Error("Missing required get customer information.");
+    }
+
+    const query = 'rid=' + encodeURIComponent(rid);
+
+    const response = await fetch("http://localhost:8080/rent/get/?" + query);
+
+    const content = await response.json();
+    if (content.error) {
+        if (content.error.hasOwnProperty("message")) {
+            alert(console.error.message);
+            console.log(content.error);
+            throw Error(content.error);
+        }
+        alert("New Untracked Error In getRent: " + content.error.detail);
+        console.log(content.error);
         throw Error(content.error);
     } else {
         return (content.data);
@@ -225,13 +261,13 @@ async function createRent(vlicense, dlicense, fromdate, todate, fromtime, totime
 
     const content = await response.json();
     if (content.error) {
-        if (content.error.code === 23505) {
-            alert("The confirmation code already has been used to make an existing rental.");
+        if (content.error.hasOwnProperty("message")) {
+            alert(console.error.message);
             console.log(content.error);
             throw Error(content.error);
         }
-        console.log(content.error);
         alert("New Untracked Error In createRent: " + content.error.detail);
+        console.log(content.error);
         throw Error(content.error);
     } else {
         return (content.data);
@@ -277,18 +313,13 @@ async function createReturn(rid, date, time, odometer, fulltank, value) {
 
     const content = await response.json();
     if (content.error) {
-        if (content.error.code === 23503) {
-            alert("The given rid is not associated with a valid rental record.");
-            console.log(console.error);
+        if (content.error.hasOwnProperty("message")) {
+            alert(console.error.message);
+            console.log(content.error);
             throw Error(content.error);
         }
-        if (content.error.code === 23505) {
-            alert("The given rid has already been returned.");
-            console.log(console.error);
-            throw Error(content.error);
-        }
+        alert("New Untracked Error In createReturn: " + content.error.detail);
         console.log(content.error);
-        alert("New Untracked Error In createReturn.");
         throw Error(content.error);
     } else {
         return (content.data);
@@ -307,8 +338,13 @@ async function getDailyRentals(date) {
 
     const content = await response.json();
     if (content.error) {
-        console.log(content.error);
+        if (content.error.hasOwnProperty("message")) {
+            alert(console.error.message);
+            console.log(content.error);
+            throw Error(content.error);
+        }
         alert("New Untracked Error In getDailyRentals: " + content.error.detail);
+        console.log(content.error);
         throw Error(content.error);
     } else {
         return (content.data);
@@ -336,8 +372,13 @@ async function getDailyRentalsByBranch(date, location, city) {
 
     const content = await response.json();
     if (content.error) {
-        console.log(content.error);
+        if (content.error.hasOwnProperty("message")) {
+            alert(console.error.message);
+            console.log(content.error);
+            throw Error(content.error);
+        }
         alert("New Untracked Error In getDailyRentalsByBranch: " + content.error.detail);
+        console.log(content.error);
         throw Error(content.error);
     } else {
         return (content.data);
@@ -356,8 +397,13 @@ async function getDailyReturns(date) {
 
     const content = await response.json();
     if (content.error) {
-        console.log(content.error);
+        if (content.error.hasOwnProperty("message")) {
+            alert(console.error.message);
+            console.log(content.error);
+            throw Error(content.error);
+        }
         alert("New Untracked Error In getDailyReturns: " + content.error.detail);
+        console.log(content.error);
         throw Error(content.error);
     } else {
         return (content.data);
@@ -385,10 +431,30 @@ async function getDailyReturnsByBranch(date, location, city) {
 
     const content = await response.json();
     if (content.error) {
-        console.log(content.error);
+        if (content.error.hasOwnProperty("message")) {
+            alert(console.error.message);
+            console.log(content.error);
+            throw Error(content.error);
+        }
         alert("New Untracked Error In getDailyReturnsByBranch: " + content.error.detail);
+        console.log(content.error);
         throw Error(content.error);
     } else {
         return (content.data);
     }
+}
+
+module.exports = {
+    getVehicle,
+    getReserve,
+    createReserve,
+    getCustomer,
+    createCustomer,
+    getRent,
+    createRent,
+    createReturn,
+    getDailyRentals,
+    getDailyRentalsByBranch,
+    getDailyReturns,
+    getDailyReturnsByBranch
 }
