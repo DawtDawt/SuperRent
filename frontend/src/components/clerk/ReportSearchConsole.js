@@ -4,6 +4,8 @@ import {SingleDatePicker} from "react-dates";
 import ReactDOM from "react-dom";
 import ReportTable from "./ReportTable";
 import Spinner from "react-bootstrap/Spinner";
+import {getDailyRentals, getDailyRentalsByBranch, getDailyReturns, getDailyReturnsByBranch} from "../Fetch"
+import moment from "moment";
 
 class ReportSearchConsole extends React.Component {
     constructor(props) {
@@ -15,141 +17,55 @@ class ReportSearchConsole extends React.Component {
 
     handleSubmit = async (event) => {
 
-        // temp rendering for testing
-        ReactDOM.render(
-            <div style={{margin: "30px"}}>
-                <Spinner animation="border" role="status">
-                    <span className="sr-only">Loading...</span>
-                </Spinner>
-            </div>
-            , document.getElementById("report-result"));
+        let reportCity = this.state.reportLocationCity && this.state.reportLocationCity.split(" - ")[0];
+        let reportLocation = this.state.reportLocationCity && this.state.reportLocationCity.split(" - ")[1];
+        let reportDate = this.state.reportDate && moment(this.state.reportDate).format("YYYY-MM-DD");
+        let reportType = this.state.reportType;
 
-        setTimeout(() => {
-            // temp data to testing convenience
-            ReactDOM.render(<ReportTable
-                action={"rental"}
-                location={"all"}
-                report={
-                    {
-                        "vehicle": [
-                            {
-                                "vlicense": "ABC015",
-                                "make": "Tesla",
-                                "model": "Model X",
-                                "year": 2019,
-                                "color": "white",
-                                "odometer": 130,
-                                "status": "available",
-                                "vtname": "Compact",
-                                "location": "UBC",
-                                "city": "Vancouver",
-                                "rid": "8",
-                                "dlicense": "000009",
-                                "fromdate": "2019-10-15T07:00:00.000Z",
-                                "todate": "2019-10-30T07:00:00.000Z",
-                                "fromtime": "00:00:00",
-                                "totime": "15:00:00",
-                                "cardname": "John Doe",
-                                "cardno": "888812345",
-                                "expdate": "2030-10-10T07:00:00.000Z",
-                                "confno": "8"
-                            },
-                            {
-                                "vlicense": "ABC014",
-                                "make": "Tesla",
-                                "model": "Model X",
-                                "year": 2019,
-                                "color": "white",
-                                "odometer": 130,
-                                "status": "available",
-                                "vtname": "Economy",
-                                "location": "UBC",
-                                "city": "Vancouver",
-                                "rid": "7",
-                                "dlicense": "000008",
-                                "fromdate": "2019-10-15T07:00:00.000Z",
-                                "todate": "2019-10-30T07:00:00.000Z",
-                                "fromtime": "00:00:00",
-                                "totime": "15:00:00",
-                                "cardname": "John Doe",
-                                "cardno": "888812345",
-                                "expdate": "2030-10-10T07:00:00.000Z",
-                                "confno": "7"
-                            },
-                            {
-                                "vlicense": "ABC013",
-                                "make": "Tesla",
-                                "model": "Model X",
-                                "year": 2019,
-                                "color": "white",
-                                "odometer": 130,
-                                "status": "available",
-                                "vtname": "Mid-size",
-                                "location": "UBC",
-                                "city": "Vancouver",
-                                "rid": "6",
-                                "dlicense": "000007",
-                                "fromdate": "2019-10-15T07:00:00.000Z",
-                                "todate": "2019-10-30T07:00:00.000Z",
-                                "fromtime": "00:00:00",
-                                "totime": "15:00:00",
-                                "cardname": "John Doe",
-                                "cardno": "888812345",
-                                "expdate": "2030-10-10T07:00:00.000Z",
-                                "confno": "6"
-                            },
-                            {
-                                "vlicense": "ABC000",
-                                "make": "Tesla",
-                                "model": "Model X",
-                                "year": 2019,
-                                "color": "white",
-                                "odometer": 130,
-                                "status": "available",
-                                "vtname": "SUV",
-                                "location": "UBC",
-                                "city": "Vancouver",
-                                "rid": "1",
-                                "dlicense": "000000",
-                                "fromdate": "2019-10-15T07:00:00.000Z",
-                                "todate": "2019-10-30T07:00:00.000Z",
-                                "fromtime": "00:00:00",
-                                "totime": "15:00:00",
-                                "cardname": "John Doe",
-                                "cardno": "888812345",
-                                "expdate": "2030-10-10T07:00:00.000Z",
-                                "confno": "1"
-                            }
-                        ],
-                        "perCategory": [
-                            {
-                                "vtname": "Compact",
-                                "count": "1"
-                            },
-                            {
-                                "vtname": "Economy",
-                                "count": "1"
-                            },
-                            {
-                                "vtname": "Mid-size",
-                                "count": "1"
-                            },
-                            {
-                                "vtname": "SUV",
-                                "count": "1"
-                            }
-                        ],
-                        "perBranch": [
-                            {
-                                "location": "UBC",
-                                "city": "Vancouver",
-                                "count": "4"
-                            }
-                        ],
-                        "perCompany": 4
+        let report = {
+
+        };
+        if (reportCity && reportDate && reportType) {
+
+            try {
+                if (reportType === "Rental") {
+                    if (reportCity === "All Locations") {
+                        // Daily Rental
+                        report = await getDailyRentals(reportDate);
+                    } else {
+                        // Daily Rental By Branch
+                        report = await getDailyRentalsByBranch(reportDate, reportLocation, reportCity);
                     }
-                }/>, document.getElementById("report-result"));
-        }, 500);
+                } else {
+                    if (reportCity === "All Locations") {
+                        // Daily Return
+                        report = await getDailyReturns(reportDate);
+                    } else {
+                        // Daily Return by Branch
+                        report = await getDailyReturnsByBranch(reportDate, reportLocation, reportCity);
+                    }
+                }
+
+                ReactDOM.render(
+                    <div style={{margin: "30px"}}>
+                        <Spinner animation="border" role="status">
+                            <span className="sr-only">Loading...</span>
+                        </Spinner>
+                    </div>
+                    , document.getElementById("report-result"));
+
+                setTimeout(() => {
+                    // temp data to testing convenience
+                    ReactDOM.render(<ReportTable
+                        action={"rental"}
+                        location={"all"}
+                        report={report}/>, document.getElementById("report-result"));
+                }, 500);
+
+            } catch (e) {
+                console.log(e);
+            }
+        }
     };
 
     encodeQuery(query) {
@@ -167,7 +83,6 @@ class ReportSearchConsole extends React.Component {
             return elem !== "btn-outline-primary";
         }).join(" ");
         this.setState({[btnName]: event.target.value});
-        console.log(event.target.value);
     };
 
     render() {
@@ -199,25 +114,25 @@ class ReportSearchConsole extends React.Component {
         return (
             <React.Fragment>
                 <div style={consoleStyle}>
-                    <DropdownButton title={"Location"} size={"lg"} id={"reportLocation"} style={locationStyle}
+                    <DropdownButton title={"Location"} size={"lg"} id={"reportLocationCity"} style={locationStyle}
                                     as={ButtonGroup}
                                     variant={"outline-primary"}
                                     drop={'down'}>
                         <div style={dropdownStyle}>
-                            <DropdownItem key={"-1"} value={"All Location"} as={"button"} className={"reportLocation"}
+                            <DropdownItem key={"-1"} value={"All Locations"} as={"button"} className={"reportLocationCity"}
                                           onClick={this.handleChange}
                             > All Locations
                             </DropdownItem>
                             {this.props.branchSelection.map((elem, idx) => {
                                 return <DropdownItem key={idx} value={elem} as={"button"}
-                                                     className={"reportLocation"}
+                                                     className={"reportLocationCity"}
                                                      onClick={this.handleChange}>{elem}</DropdownItem>;
                             })}
                         </div>
                     </DropdownButton>
                     <SingleDatePicker
-                        date={this.state.date} // momentPropTypes.momentObj or null
-                        onDateChange={date => this.setState({date})} // PropTypes.func.isRequired
+                        date={this.state.reportDate} // momentPropTypes.momentObj or null
+                        onDateChange={reportDate => this.setState({reportDate})} // PropTypes.func.isRequired
                         focused={this.state.focused} // PropTypes.bool
                         onFocusChange={({focused}) => this.setState({focused})} // PropTypes.func.isRequired
                         id="reportDate" // PropTypes.string.isRequired,
