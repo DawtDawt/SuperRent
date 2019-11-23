@@ -17,10 +17,16 @@ class RentWithResSearchConsole extends React.Component {
 
     handleSubmit = async (event) =>{
         // temp handle submit before fetch is setup
-        const Rentalresponse = await createRent(1,1,"2019-10-30","2019-11-02","12:00 PM","2:00 PM",3000, this.state.cardname,this.state.cardno,this.state.expdate, this.state.cnum);
+        let RentalResponse
+        let ReservationDetail
+        try {
+            RentalResponse = await createRent(1,1,"2019-10-30","2019-11-02","12:00 PM","2:00 PM",3000, this.state.cardname,this.state.cardno,this.state.expdate, this.state.cnum);
+        } catch (e) {
+            console.log(e);
+        }
         const rentDetail = {
-            rid: Rentalresponse.data,
-            confno: 1,
+            rid: RentalResponse.data,
+            confno: this.state.confno,
             vtname: "SUV",
             vlicense: "ABC000",
             dlicense: "00000",
@@ -30,9 +36,9 @@ class RentWithResSearchConsole extends React.Component {
             todate: "2019-11-02",
             fromtime: "12:00 PM",
             totime: "2:00 PM",
-            cardname: "VISA",
-            cardno: this.state["cardnum"],
-            expdate: "04/25",
+            cardname: this.state.cardname,
+            cardno: this.state.cardno,
+            expdate: this.state.expdate,
             odometer: 3000
         };
         ReactDOM.render(
@@ -51,8 +57,9 @@ class RentWithResSearchConsole extends React.Component {
 
     handleChange = (event) => {
         this.setState({ [event.target.name]: event.target.value });
-        console.log(event.target.name);
-        console.log(event.target.value);
+        // console.log(event.target.name);
+        // console.log(event.target.value);
+        console.log(this.state.expdate);
     };
 
     render() {
@@ -99,18 +106,18 @@ class RentWithResSearchConsole extends React.Component {
                                 </Col>
                             </Form.Group>
 
-                            <Form.Group as={Row}>
+                            <Form.Group as={Row} controlID="cardno">
                                 <Form.Label column sm="3">
                                     Credit Card Number
                                 </Form.Label>
                                 <Col sm="5">
-                                    <Form.Control id="cardno" type="number" placeholder="Enter Card Number" name = "cardnum" onChange={this.handleChange}/>
+                                    <Form.Control id="cardno" type="number" placeholder="Enter Card Number" name = "cardno" onChange={this.handleChange}/>
                                 </Col>
                                 <Form.Label column sm="2">
                                     Expiry Date
                                 </Form.Label>
                                 <Col sm="2">
-                                    <Form.Control id="expdate" type="text" placeholder="MM/YY" name = "carddate" onChange={this.handleChange}/>
+                                    <Form.Control id="expdate" type="text" placeholder="MM/YY" name = "expdate" onChange={this.handleChange}/>
                                 </Col>
                             </Form.Group>
 
@@ -119,7 +126,7 @@ class RentWithResSearchConsole extends React.Component {
                                     Confirmation Number
                                 </Form.Label>
                                 <Col sm="9">
-                                    <Form.Control type="text" placeholder="Enter Confirmation Number" name = "cnum" onChange={this.handleChange}/>
+                                    <Form.Control type="text" placeholder="Enter Confirmation Number" name = "confno" onChange={this.handleChange}/>
                                 </Col>
                             </Form.Group>
                         </Form>
