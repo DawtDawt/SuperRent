@@ -44,7 +44,7 @@ class RentWithResSearchConsole extends React.Component {
                             this.setState({vehicles: vdata.data});
                         }
                         try {
-                            RentalResponse = createRent(vdata.vlicence, data.dlicense, data.fromDate, data.toDate, data.fromtime, data.totime, 3000, this.state.cardname, this.state.cardno, this.state.expdate, this.state.cardno);
+                            RentalResponse = createRent(vdata.vlicence, data.dlicense, data.fromdate, data.todate, data.fromtime, data.totime, 3000, this.state.cardname, this.state.cardno, this.state.expdate, this.state.cardno);
                         } catch (e) {
                             console.log(e);
                         }
@@ -57,8 +57,8 @@ class RentWithResSearchConsole extends React.Component {
                     dlicense: data.dlicense,
                     location: data.location,
                     city: data.city,
-                    fromdate: data.fromDate,
-                    todate: data.toDate,
+                    fromdate: data.fromdate,
+                    todate: data.todate,
                     fromtime: data.fromtime,
                     totime: data.totime,
                     cardname: this.state.cardname,
