@@ -1,5 +1,6 @@
 const {Pool} = require('pg');
 require('dotenv').config();
+const moment = require('moment');
 
 const pool = new Pool({
     user: process.env.DB_USER,
@@ -300,16 +301,44 @@ function createRent(request, response) {
                 message: "Problem Creating New Rental Record"
             });
         });
+
+}
+
+function getReturn(request, response) {
+    const rid = Number(request.query.rid);
+    return pool.query(`SELECT * FROM return WHERE rid = $1`, [rid])
+        .then(result => {
+            if (result.rows.length === 0) {
+                return Promise.reject({message: "Return not found with given rental id."});
+            }
+            return response.json({
+                // data = tuple
+                data: result.rows[0]
+            });
+        })
+        .catch(error => {
+            return response.send({
+                error: error,
+                message: "Problem Getting Rent Record"
+            });
+        });
 }
 
 function createReturn(request, response) {
-    const max = (a, b) => {
-        if (a > b) {
-            return a;
-        } else {
-            return b;
-        }
-    };
+    function parseIcsDate(icsDate) {
+        if (!/^[0-9]{8}T[0-9]{6}Z$/.test(icsDate))
+            throw new Error("ICS Date is wrongly formatted: " + icsDate);
+
+        var year   = icsDate.substr(0, 4);
+        var month  = icsDate.substr(4, 2);
+        var day    = icsDate.substr(6, 2);
+
+        var hour   = icsDate.substr(9, 2);
+        var minute = icsDate.substr(11, 2);
+        var second = icsDate.substr(13, 2);
+
+        return new Date(Date.UTC(year, month - 1, day, hour, minute, second));
+    }
     const rid = request.body.rid;
     const date = request.body.date;
     const time = request.body.time;
@@ -329,10 +358,15 @@ function createReturn(request, response) {
             const initialOdometer = Number(result.rows[0].odometer);
             const krate = result.rows[0].krate;
             const kvalue = krate * (odometer - initialOdometer);
-            const from = new Date(result.rows[0].fromdate + " " + result.rows[0].fromtime);
-            console.log(result.rows[0].fromdate);
+            const fromdate = new Date(result.rows[0].fromdate);
+            const fromtime = new Date(result.rows[0].fromtime);
+            const mFromDate = moment(fromdate).format("YYYY-MM-DD");
+            const mFromTime = moment(fromtime).format("hh:mm a");
+            const from = moment(mFromDate + mFromTime, "YYYY-MM-DD hh:mm a").toDate();
             console.log(from);
-            const to = new Date(date + " " + time);
+            console.log(date);
+            console.log(time);
+            const to = parseIcsDate(date + "T" + time + "Z");
             console.log(to);
             let msec = to - from;
             const ww = Math.floor(msec / 1000 / 60 / 60 / 24 / 7);
@@ -344,7 +378,7 @@ function createReturn(request, response) {
             const drate = result.rows[0].drate;
             const hrate = result.rows[0].hrate;
             const tvalue = wrate * ww + drate * dd + hrate * hh;
-            value = max(kvalue, tvalue);
+            value = kvalue + tvalue;
             console.log(value);
             return pool.query(`INSERT INTO return(rid, date, time, odometer, fulltank, value)
                     VALUES ($1, $2, $3, $4, $5, $6) RETURNING rid`,
@@ -604,6 +638,7 @@ module.exports = {
     createCustomer,
     getRent,
     createRent,
+    getReturn,
     createReturn,
     getDailyRental,
     getDailyBranchRental,
