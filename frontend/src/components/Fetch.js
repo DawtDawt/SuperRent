@@ -1,14 +1,3 @@
-// File for fetch functions
-module.exports.getVehicle = getVehicle;
-module.exports.createCustomer = createCustomer;
-module.exports.createReserve = createReserve;
-module.exports.createRent = createRent;
-module.exports.createReturn = createReturn;
-module.exports.getDailyRental = getDailyRentals;
-module.exports.getDailyRentalByBranch = getDailyRentalsByBranch;
-module.exports.getDailyReturn = getDailyReturns;
-module.exports.getDailyReturnsByBranch = getDailyReturnsByBranch;
-
 async function getVehicle(body) {
     const query = Object.keys(body).map(function (key) {
         return key + '=' + encodeURIComponent(body[key]);
@@ -345,3 +334,16 @@ async function getDailyReturnsByBranch(date, location, city) {
         return (content.data);
     }
 }
+
+// File for fetch functions
+module.exports = {
+    getVehicle,
+    createCustomer,
+    createReserve,
+    createRent,
+    createReturn,
+    getDailyRentals,
+    getDailyRentalsByBranch,
+    getDailyReturns,
+    getDailyReturnsByBranch,
+};

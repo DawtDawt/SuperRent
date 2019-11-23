@@ -8,7 +8,6 @@ class ReportTable extends React.Component {
         this.state = {
             vehicleTypes: ['Economy', 'Compact', 'Mid-size', 'Standard', 'Full-size', 'SUV', 'Truck'],
         };
-        console.log(this.props.report);
     }
 
     getPerCategory() {
@@ -210,9 +209,7 @@ class ReportTable extends React.Component {
         };
         let table;
 
-
-        // TODO
-        if (this.props.report.vehicle.length === 0) {
+        if (!this.props.report.vehicle || this.props.report.vehicle.length === 0) {
             table = <h5>No result matching the criteria is available</h5>;
         } else {
             if (this.props.action === "rental") {
