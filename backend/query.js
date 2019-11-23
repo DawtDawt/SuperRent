@@ -253,7 +253,6 @@ function getRent(request, response) {
 }
 
 function createRent(request, response) {
-    console.log("got here");
     const vlicense = request.body.vlicense;
     const dlicense = request.body.dlicense;
     const fromdate = request.body.fromdate;
@@ -266,6 +265,8 @@ function createRent(request, response) {
     const expdate = request.body.expdate;
     const confno = Number(request.body.confno);
     let finalResult;
+    console.log(expdate);
+    console.log(confno);
     return pool.query(`SELECT * FROM vehicle WHERE vlicense = $1`, [vlicense])
         .then(result => {
             if (result.rows.length === 0) {
@@ -372,8 +373,7 @@ function createReturn(request, response) {
             console.log(from);
             console.log(date);
             console.log(time);
-            const to = parseIcsDate(date + "T" + time + "Z");
-            console.log(to);
+            const to = moment(date + " " + time, "YYYY-MM-DD hh:mm a").toDate();
             let msec = to - from;
             const ww = Math.floor(msec / 1000 / 60 / 60 / 24 / 7);
             msec -= ww * 1000 * 60 * 60 * 24 * 7;

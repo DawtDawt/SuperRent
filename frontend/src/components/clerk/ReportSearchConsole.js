@@ -57,8 +57,8 @@ class ReportSearchConsole extends React.Component {
                 setTimeout(() => {
                     // temp data to testing convenience
                     ReactDOM.render(<ReportTable
-                        action={"rental"}
-                        location={"all"}
+                        action={document.getElementById("reportType").innerText.toLowerCase()}
+                        location={document.getElementById("reportLocationCity").innerText}
                         report={report}/>, document.getElementById("report-result"));
                 }, 500);
 

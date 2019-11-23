@@ -212,6 +212,7 @@ class ReportTable extends React.Component {
         if (!this.props.report.vehicle || this.props.report.vehicle.length === 0) {
             table = <h5>No result matching the criteria is available</h5>;
         } else {
+            console.log("actions: " + this.props.action);
             if (this.props.action === "rental") {
                 // Rentals
                 table = (
@@ -223,7 +224,7 @@ class ReportTable extends React.Component {
                 )
             } else {
                 // Returns
-                if (this.props.location === "all") {
+                if (this.props.location === "All Locations") {
                     // Daily Returns
                     table = (
                         <React.Fragment>

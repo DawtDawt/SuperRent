@@ -52,8 +52,11 @@ class RentWithResSearchConsole extends React.Component {
                         license = vdata.data[0].vlicense;
                         console.log(data.dlicense);
                         odometer = vdata.data[0].odometer;
-                        this.setState({expdate: moment("28/" + this.state.expdate, "DD/MM/YY").format("YYYY-MM-DD")});
-                        return createRent(vdata.data[0].vlicense, data.dlicense, data.fromdate, data.todate, data.fromtime, data.totime, this.state.cardname, this.state.cardno, this.state.expdate, this.state.confno);
+                        console.log("before: " + this.state.expdate);
+                        let expdate = document.getElementById("expdate").value;
+                        expdate = moment("28/" + expdate, "DD/MM/YY").format("YYYY-MM-DD")
+                        console.log(this.state.expdate);
+                        return createRent(vdata.data[0].vlicense, data.dlicense, data.fromdate, data.todate, data.fromtime, data.totime, this.state.cardname, this.state.cardno, expdate, this.state.confno);
                     })
                     .then(rid => {
                         console.log(rid);
