@@ -1,6 +1,7 @@
 import React from 'react';
 import {Button, Fade, Table} from "react-bootstrap";
 import moment from "moment";
+import {createRent, createReserve} from "../Fetch"
 
 class RentWithoutResTable extends React.Component {
     constructor(props) {
@@ -20,14 +21,16 @@ class RentWithoutResTable extends React.Component {
 
     handleClick = (event) => {
         // Get data
-        const vtname = event.target.id.split("--")[0];
-        const city = document.getElementById("reserve-location").innerText.split(" - ")[0];
-        const location = document.getElementById("reserve-location").innerText.split(" - ")[1];
-        const fromdate = moment(document.getElementById("reserve-startDate").value).format("YYYY-MM-DD");
-        const todate = moment(document.getElementById("reserve-endDate").value).format("YYYY-MM-DD");
-        const fromtime = document.getElementById("reserve-fromtime").innerText;
-        const totime = document.getElementById("reserve-totime").innerText;
-        window.location.href = `/customer/reserve/${city}/${location}/${fromdate}/${todate}/${fromtime}/${totime}/${vtname}`;
+        const vlicense = document.getElementById("table-vlicense").innerText;
+        const vtname = document.getElementById("table-vtname").innerText;
+        const city = document.getElementById("rentwo-location").innerText.split(" - ")[0];
+        const location = document.getElementById("rentwo-location").innerText.split(" - ")[1];
+        const fromdate = moment(document.getElementById("rentwo-fromdate").value).format("YYYY-MM-DD");
+        const todate = moment(document.getElementById("rentwo-todate").value).format("YYYY-MM-DD");
+        const fromtime = document.getElementById("rentwo-fromtime").innerText;
+        const totime = document.getElementById("rentwo-totime").innerText;
+
+        window.location.href = `/clerk/rent/${city}/${location}/${fromdate}/${todate}/${fromtime}/${totime}/${vtname}/${vlicense}`;
     };
 
     render() {
@@ -46,6 +49,7 @@ class RentWithoutResTable extends React.Component {
                     <Table bordered hover style={tableStyle}>
                         <thead>
                         <tr>
+                            <th style={{width: "15%"}}>License</th>
                             <th style={{width: "15%"}}>Make</th>
                             <th style={{width: "15%"}}>Model</th>
                             <th style={{width: "10%"}}>Year</th>
@@ -60,11 +64,12 @@ class RentWithoutResTable extends React.Component {
                         {this.props.vehicles.map((car) => {
                             return (
                                 <tr key={car.vlicense}>
+                                    <td id={"table-vlicense"}>{car.vlicense}</td>
                                     <td>{car.make}</td>
                                     <td>{car.model}</td>
                                     <td>{car.year}</td>
                                     <td>{car.color.toUpperCase()}</td>
-                                    <td>{car.vtname}</td>
+                                    <td id={"table-vtname"}>{car.vtname}</td>
                                     <td>{car.location}</td>
                                     <td>{car.city}</td>
                                     <td> <Button variant={"success"} size={"lg"} id={`hello`}
