@@ -7,7 +7,7 @@ import Row from "react-bootstrap/Row";
 import moment from "moment";
 import RentWithResTable from "./RentWithResTable";
 import Spinner from "react-bootstrap/Spinner";
-import {createRent, createReturn} from "../Fetch";
+import {createRent, getReserve, getVehicle} from "../Fetch";
 
 class RentWithResSearchConsole extends React.Component {
     constructor(props) {
@@ -19,6 +19,11 @@ class RentWithResSearchConsole extends React.Component {
         // temp handle submit before fetch is setup
         let RentalResponse
         let ReservationDetail
+
+
+
+
+
         try {
             RentalResponse = await createRent(1,1,"2019-10-30","2019-11-02","12:00 PM","2:00 PM",3000, this.state.cardname,this.state.cardno,this.state.expdate, this.state.cnum);
         } catch (e) {

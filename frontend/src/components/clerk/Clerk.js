@@ -11,6 +11,7 @@ class Clerk extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            reservationDetail: [],
             confNoSelection: [],
             rentIDSelection: [],
             branchSelection: [],
