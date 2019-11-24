@@ -14,14 +14,15 @@ const allowCrossDomain = function(req, res, next) {
     res.header('Access-Control-Allow-Origin', "*");
     res.header('Access-Control-Allow-Headers', "*");
     next();
-}
+};
+
 app.use(allowCrossDomain);
 
-// try {
-//     const started = start.init();
-// } catch (error) {
-//     console.log(error);
-// }
+try {
+    const started = start.init();
+} catch (error) {
+    console.log(error);
+}
 
 app.get('/', (request, response) => {
     response.status(200).send('ok');

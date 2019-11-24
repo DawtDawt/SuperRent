@@ -15,6 +15,13 @@ class RentWithResSearchConsole extends React.Component {
         this.state = {};
     }
 
+    validateExpDate (expdate) {
+        if (!expdate.includes("/") || expdate.split("/").length !== 2 || expdate.split("/")[0].length !== 2 || expdate.split("/")[1].length !== 2) {
+            alert("Invalid expiry date format");
+            throw Error("Invalid expiry date format")
+        }
+    }
+
     handleSubmit = async (event) =>{
         // temp handle submit before fetch is setup
         let RentalResponse;
@@ -54,7 +61,8 @@ class RentWithResSearchConsole extends React.Component {
                         odometer = vdata.data[0].odometer;
                         console.log("before: " + this.state.expdate);
                         let expdate = document.getElementById("expdate").value;
-                        expdate = moment("28/" + expdate, "DD/MM/YY").format("YYYY-MM-DD")
+                        this.validateExpDate(expdate);
+                        expdate = moment("28/" + expdate, "DD/MM/YY").format("YYYY-MM-DD");
                         console.log(this.state.expdate);
                         return createRent(vdata.data[0].vlicense, data.dlicense, data.fromdate, data.todate, data.fromtime, data.totime, this.state.cardname, this.state.cardno, expdate, this.state.confno);
                     })

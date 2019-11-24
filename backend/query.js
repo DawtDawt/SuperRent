@@ -284,6 +284,12 @@ function createRent(request, response) {
             if (result.rows.length === 0) {
                 return Promise.reject({message: "No reservation found in database with given confirmation number."});
             }
+            return pool.query(`SELECT * FROM rental WHERE confno = $1`, [confno]);
+        })
+        .then(result => {
+            if (result.rows.length > 0) {
+                return Promise.reject({message: "Confirmation number has already been associated with an existing rental record"});
+            }
             return pool.query(`SELECT odometer FROM vehicle WHERE vlicense = $1`, [vlicense]);
         })
         .then(result => {
@@ -357,6 +363,12 @@ function createReturn(request, response) {
         .then(result => {
             if (result.rows.length === 0) {
                 return Promise.reject({message: "No rental record found in database with given rental id."});
+            }
+            return pool.query(`SELECT * FROM reserve WHERE rid = $1`, [rid]);
+        })
+        .then(result => {
+            if (result.rows.length > 0) {
+                return Promise.reject({message: "This rental record has already been returned."});
             }
             return pool.query(`SELECT * FROM rental r, vehicle v, vehicletype vt WHERE r.rid = $1
             AND v.vlicense = r.vlicense AND v.vtname = vt.vtname`, [rid]);
