@@ -6,7 +6,7 @@ import {createCustomer, createReserve, createRent, getVehicle} from "../Fetch";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import moment from "moment";
-import {validateExpDate} from '../Util';
+import {validateExpDate} from "../Util";
 
 class RentVehicle extends React.Component {
     constructor(props) {
@@ -45,9 +45,9 @@ class RentVehicle extends React.Component {
             const {cardno, cardname, expdate} = this.getCardInfo();
 
             // Register customer
-            const customerResponse = await this.register();
+            const customerResponse = await this.registerCustomer();
 
-            const vehicles = await getVehicle({
+            const vehicleResponse = await getVehicle({
                 vtname,
                 location,
                 city,
@@ -58,12 +58,14 @@ class RentVehicle extends React.Component {
             });
 
             // Reserve
-            const reserveResponse = await this.reserve(customerResponse.dlicense);
+            const dlicense = customerResponse.dlicense;
+            const reserveResponse = await this.registerReservation(dlicense);
 
             // Rent
-            const rentResponse = await createRent(vehicles.data[0].vlicense, customerResponse.dlicense, fromdate, todate, decodeURIComponent(fromtime), decodeURIComponent(totime), cardname, cardno, expdate, reserveResponse.confno);
-
-            window.location.href = `/clerk/rent/success/${city}/${location}/${fromdate}/${todate}/${fromtime}/${totime}/${vtname}/${vlicense}/${rentResponse.rid}/${customerResponse.dlicense}`;
+            const confno = reserveResponse.confno;
+            const rentResponse = await createRent(vlicense, dlicense, fromdate, todate, decodeURIComponent(fromtime), decodeURIComponent(totime), cardname, cardno, expdate, confno);
+            const rid = rentResponse.rid;
+            window.location.href = `/clerk/rent/success/${city}/${location}/${fromdate}/${todate}/${fromtime}/${totime}/${vtname}/${vlicense}/${rid}/${dlicense}`;
         } catch (e) {
             console.log(e);
         }
@@ -74,8 +76,6 @@ class RentVehicle extends React.Component {
         try {
             const {city, location, fromdate, todate, fromtime, totime, vtname, vlicense} = this.props.match.params;
             const {cardno, cardname, expdate} = this.getCardInfo();
-
-            const dlicense = document.getElementById("returning-customer-dlicense").value;
 
             const vehicles = await getVehicle({
                 vtname,
@@ -88,18 +88,20 @@ class RentVehicle extends React.Component {
             });
 
             // Reserve
-            const reserveResponse = await this.reserve(dlicense);
+            const dlicense = document.getElementById("returning-customer-dlicense").value;
+            const reserveResponse = await this.registerReservation(dlicense);
 
             // Rent
-            const rentResponse = await createRent(vehicles.data[0].vlicense, dlicense, fromdate, todate, decodeURIComponent(fromtime), decodeURIComponent(totime), cardname, cardno, expdate, reserveResponse.confno);
-
-            window.location.href = `/clerk/rent/success/${city}/${location}/${fromdate}/${todate}/${fromtime}/${totime}/${vtname}/${vlicense}/${rentResponse.rid}/${dlicense}`;
+            const confno = reserveResponse.confno;
+            const rentResponse = await createRent(vlicense, dlicense, fromdate, todate, decodeURIComponent(fromtime), decodeURIComponent(totime), cardname, cardno, expdate, confno);
+            const rid = rentResponse.rid;
+            window.location.href = `/clerk/rent/success/${city}/${location}/${fromdate}/${todate}/${fromtime}/${totime}/${vtname}/${vlicense}/${rid}/${dlicense}`;
         } catch (e) {
             console.log(e);
         }
     };
 
-    register = async () => {
+    registerCustomer = async () => {
         const name = document.getElementById("new-customer-name").value;
         const cellphone = document.getElementById("new-customer-cellphone").value;
         const address = document.getElementById("new-customer-address").value;
@@ -108,7 +110,7 @@ class RentVehicle extends React.Component {
         return await createCustomer(name, cellphone, address, dlicense);
     };
 
-    reserve = async (dlicense) => {
+    registerReservation = async (dlicense) => {
         const {city, location, fromdate, todate, fromtime, totime, vtname} = this.props.match.params;
 
         return await createReserve(vtname, dlicense, location, city, fromdate, todate, fromtime, totime);

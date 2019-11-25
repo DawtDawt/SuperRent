@@ -21,11 +21,13 @@ class ReserveVehicle extends React.Component {
     newCustomer = async () => {
         try {
             // Register customer
-            const customerResponse = await this.register();
+            const customerResponse = await this.registerCustomer();
             // Reserve
-            const reserveResponse = await this.reserve(customerResponse.dlicense);
+            const dlicense = customerResponse.dlicense;
+            const reserveResponse = await this.registerReservation(dlicense);
             const {city, location, fromdate, todate, fromtime, totime, vtname} = this.props.match.params;
-            window.location.href = `/customer/reserve/success/${city}/${location}/${fromdate}/${todate}/${fromtime}/${totime}/${vtname}/${reserveResponse.confno}`;
+            const confno = reserveResponse.confno;
+            window.location.href = `/customer/reserve/success/${city}/${location}/${fromdate}/${todate}/${fromtime}/${totime}/${vtname}/${confno}`;
         } catch (e) {
             console.log(e);
         }
@@ -35,92 +37,28 @@ class ReserveVehicle extends React.Component {
     returningCustomer = async () => {
         try {
             const dlicense = document.getElementById("returning-customer-dlicense").value;
-            const reserveResponse = await this.reserve(dlicense);
+            const reserveResponse = await this.registerReservation(dlicense);
             const {city, location, fromdate, todate, fromtime, totime, vtname} = this.props.match.params;
-            window.location.href = `/customer/reserve/success/${city}/${location}/${fromdate}/${todate}/${fromtime}/${totime}/${vtname}/${reserveResponse.confno}`;
+            const confno = reserveResponse.confno;
+            window.location.href = `/customer/reserve/success/${city}/${location}/${fromdate}/${todate}/${fromtime}/${totime}/${vtname}/${confno}`;
         } catch (e) {
             console.log(e);
         }
     };
 
-    register = async () => {
+    registerCustomer = async () => {
         const name = document.getElementById("name").value;
         const cellphone = document.getElementById("cellphone").value;
         const address = document.getElementById("address").value;
         const dlicense = document.getElementById("new-customer-dlicense").value;
 
         return await createCustomer(name, cellphone, address, dlicense);
-        /*[name, cellphone, address, dlicense].forEach((elem) => {
-            if (!elem) {
-                alert("Missing required rental information.");
-                throw Error("Missing required rental information.");
-            }
-        });
-
-        const response = await fetch("http://localhost:8080/customer/create", {
-            method: "POST",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                name,
-                cellphone,
-                address,
-                dlicense,
-            })
-        });
-
-        const content = await response.json();
-        if (content.error) {
-            alert("Customer already exists");
-            throw Error(content.error);
-        } else {
-            return dlicense;
-        }*/
-
     };
 
-    reserve = async (dlicense) => {
+    registerReservation = async (dlicense) => {
         const {city, location, fromdate, todate, fromtime, totime, vtname} = this.props.match.params;
 
         return await createReserve(vtname, dlicense, location, city, fromdate, todate, fromtime, totime);
-        /*[city, location, fromdate, todate, fromtime, totime, vtname, dlicense].forEach((elem) => {
-            if (!elem) {
-                alert("Missing required rental information.");
-                throw Error("Missing required rental information.")
-            }
-        });
-        const response = await fetch("http://localhost:8080/reserve/create", {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                vtname,
-                dlicense,
-                location,
-                city,
-                fromdate,
-                todate,
-                fromtime,
-                totime
-            })
-        });
-        const content = await response.json();
-        if (content.error) {
-            if (content.error.code === "23503") {
-                alert("No customer were found under the given driver's license.");
-                console.log(content.error);
-                throw Error(content.error);
-            }
-            alert("Another reservation has already been made with this driver's license. Please try again.");
-            console.log(content.error);
-            throw Error(content.error);
-        } else {
-            return (content.data);
-        }*/
     };
 
 

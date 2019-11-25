@@ -1,8 +1,9 @@
 import React from 'react';
 import {Button, ButtonGroup, DropdownButton, DropdownItem} from "react-bootstrap";
 import {DateRangePicker} from 'react-dates';
+import ReactDOM from "react-dom";
 import ReserveTable from "./ReserveTable";
-import {renderOnDiv} from "../Util";
+import Spinner from "react-bootstrap/Spinner";
 import {getVehicle} from "../Fetch";
 
 
@@ -13,45 +14,53 @@ class ReserveSearchConsole extends React.Component {
         this.ReserveTable = React.createRef();
     }
 
-    handleSubmit = (state) => {
-        if (state["reserve-location"] && state["reserve-startDate"] && state["reserve-endDate"] && state["reserve-fromtime"] && state["reserve-totime"]) {
-            const body = this.getBody();
-            this.getResults(body);
+    handleSubmit = async(state) => {
+        try {
+            if (state["reserve-location"] && state["reserve-startDate"] && state["reserve-endDate"] && state["reserve-fromtime"] && state["reserve-totime"]) {
+                const body = this.getBody();
+                await this.getResults(body);
+            }
+        } catch (e) {
+            console.log(e);
         }
 
     };
 
-    getResults(body) {
-        const vehicleTypes = [];
-        getVehicle(body)
-            .then(data => {
-                if (data.error) {
-                    console.log(data.error);
-                    this.setState({vehicles: []});
-                } else {
-                    this.setState({vehicles: data.data});
-                    data.data.forEach((car) => {
-                        if (!vehicleTypes.includes(car.vtname)) {
-                            vehicleTypes.push(car.vtname);
-                        }
-                    });
-                    vehicleTypes.sort();
-                    this.setState({vehicleTypes});
+    getResults = async(body) => {
+        try {
+            const vehicleTypes = [];
+            const vehicles = await getVehicle(body);
+            this.setState({vehicles: vehicles.data});
+            vehicles.data.forEach((car) => {
+                if (!vehicleTypes.includes(car.vtname)) {
+                    vehicleTypes.push(car.vtname);
                 }
+            });
+            vehicleTypes.sort();
+            this.setState({vehicleTypes});
+            ReactDOM.render(
+                <div style={{margin: "20px"}}>
+                    <Spinner animation="border" role="status">
+                        <span className="sr-only">Loading...</span>
+                    </Spinner>
+                </div>
+                , document.getElementById("reserve-result"));
 
-
-                renderOnDiv("reserve-result", <ReserveTable ref={this.ReserveTable}
-                                                            vehicles={this.state.vehicles}
-                                                            vtnames={vehicleTypes}
-                                                            location={this.state["reserve-location"]}
-                                                            fromdate={this.state["reserve-fromdate"]}
-                                                            todate={this.state["reserve-todate"]}
-                                                            fromtime={this.state["reserve-fromtime"]}
-                                                            totime={this.state["reserve-totime"]}
-                />);
-            })
-            .catch(console.log);
-    }
+            setTimeout(() => {
+                ReactDOM.render(<ReserveTable ref={this.ReserveTable}
+                                              vehicles={this.state.vehicles}
+                                              vtnames={vehicleTypes}
+                                              location={this.state["reserve-location"]}
+                                              fromdate={this.state["reserve-fromdate"]}
+                                              todate={this.state["reserve-todate"]}
+                                              fromtime={this.state["reserve-fromtime"]}
+                                              totime={this.state["reserve-totime"]}
+                />, document.getElementById("reserve-result"));
+            }, 300);
+        } catch (e) {
+            console.log(e);
+        }
+    };
 
     getBody = () => {
         const body = {};
@@ -61,7 +70,6 @@ class ReserveSearchConsole extends React.Component {
         body["todate"] = this.state["reserve-endDate"].format("YYYY-MM-DD");
         body["fromtime"] = this.state["reserve-fromtime"];
         body["totime"] = this.state["reserve-totime"];
-
         return body;
     };
 

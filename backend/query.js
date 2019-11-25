@@ -34,8 +34,8 @@ function getVehicle(request, response) {
     let city = '%';
     let fromdate = '9999-01-01';
     let todate = '9999-02-01';
-    let fromtime = '10:00:00';
-    let totime = '12:00:00';
+    let fromtime = '00:00:00';
+    let totime = '23:59:59';
     if (request.query.hasOwnProperty("vtname")) {
         vtname = request.query.vtname;
     }
@@ -160,10 +160,12 @@ function createReserve(request, response) {
             if (rentResult.rows.length <= reserveResult.rows.length) {
                 return Promise.reject({message: "All such vehicles are either reserved or rented."});
             }
-            return pool.query(`SELECT dlicense FROM reservation WHERE dlicense = $1`, [dlicense]);
-        }).then(dlicenseResult => {
-            if (dlicenseResult.rows.length > 0) {
-                return Promise.reject({message: "Only one reservation can be made per customer"});
+            return pool.query(`SELECT confno FROM reservation WHERE dlicense = $1 AND confno IN
+            (SELECT confno FROM rental WHERE rid NOT IN (SELECT rid FROM return))`, [dlicense]);
+        }).then(confnoResult => {
+            if (confnoResult.rows.length > 0) {
+                return Promise.reject({message: "Only one reservation can be made per customer. You have either made a reservation with" +
+                        "the confirmation number: " + confnoResult.rows[0].confno + ". Or you're are currently renting using the given reservation number."});
             }
             // perform actual reservation, returning confno
             return pool.query(`INSERT INTO reservation(vtname, dlicense, location, city, fromdate, todate, fromtime, totime)
@@ -284,11 +286,12 @@ function createRent(request, response) {
             if (result.rows.length === 0) {
                 return Promise.reject({message: "No reservation found in database with given confirmation number."});
             }
-            return pool.query(`SELECT * FROM rental WHERE confno = $1`, [confno]);
+            return pool.query(`SELECT rid FROM rental WHERE dlicense = $1 AND rid NOT IN
+            (SELECT rid FROM return)`, [dlicense]);
         })
         .then(result => {
             if (result.rows.length > 0) {
-                return Promise.reject({message: "Confirmation number has already been associated with an existing rental record"});
+                return Promise.reject({message: "Customer is already renting a vehicle with an existing rental record: " + result.rows[0].rid + "."});
             }
             return pool.query(`SELECT odometer FROM vehicle WHERE vlicense = $1`, [vlicense]);
         })

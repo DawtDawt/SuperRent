@@ -1,12 +1,13 @@
 import React from 'react';
 import {Button} from "react-bootstrap";
 import ReturnTable from "./ReturnTable";
+import ReactDOM from "react-dom";
 import moment from "moment";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import Spinner from "react-bootstrap/Spinner";
 import {createReturn} from "../Fetch";
-import {renderOnDiv} from "../Util";
 
 
 class ReturnSearchConsole extends React.Component {
@@ -18,28 +19,41 @@ class ReturnSearchConsole extends React.Component {
     }
 
     handleSubmit = async (event) => {
-        let response;
         try {
-            response = await createReturn(this.state.rid, moment().format("YYYY-MM-DD"), moment().format("LT"), this.state.odometer, this.state.isChecked, 150);
-            renderOnDiv("return-result", <ReturnTable ref={this.ReportTable}
-                                                      rentDetail={{
-                                                          rid: response,
-                                                          date: moment().format("YYYY-MM-DD"),
-                                                          time: moment().format("LT"),
-                                                          odometer: this.state.odometer,
-                                                          fulltank: this.state.isChecked,
-                                                          value: 150
-                                                      }}/>);
+            const rid = this.state.rid;
+            const date = moment().format("YYYY-MM-DD");
+            const time = moment().format("LT");
+            const odometer = this.state.odometer;
+            const fulltank = this.state.isChecked;
+            const returnResponse = await createReturn(rid, date, time, odometer, fulltank);
+            const value = returnResponse.value;
+            ReactDOM.render(
+                <div style={{margin: "30px"}}>
+                    <Spinner animation="border" role="status">
+                        <span className="sr-only">Loading...</span>
+                    </Spinner>
+                </div>,
+                document.getElementById("return-result"));
+            setTimeout(() => {
+                ReactDOM.render(<ReturnTable ref={this.ReportTable}
+                                             rentDetail={{
+                                                 rid: rid,
+                                                 date: date,
+                                                 time: time,
+                                                 odometer: odometer,
+                                                 fulltank: fulltank,
+                                                 value: value
+                                             }}/>, document.getElementById("return-result"));
+            }, 500);
         } catch (error) {
             console.log(error);
         }
     };
 
     handleChange = (event) => {
-        this.setState({[event.target.name]: event.target.value});
-        console.log(event.target.name);
-        console.log(event.target.value);
+        this.setState({ [event.target.name]: event.target.value });
     };
+
 
 
     toggleChange = () => {
@@ -71,7 +85,7 @@ class ReturnSearchConsole extends React.Component {
                                     Rent ID
                                 </Form.Label>
                                 <Col sm="8">
-                                    <Form.Control type="number" placeholder="Enter Rent ID" name="rid"
+                                    <Form.Control type="number" placeholder="Enter Rent ID" name = "rid"
                                                   onChange={this.handleChange}/>
                                 </Col>
                             </Form.Group>
@@ -80,13 +94,12 @@ class ReturnSearchConsole extends React.Component {
                                     Odometer
                                 </Form.Label>
                                 <Col sm="8">
-                                    <Form.Control type="number" placeholder="Enter Odometer" name="odometer"
+                                    <Form.Control type="number" placeholder="Enter Odometer" name = "odometer"
                                                   onChange={this.handleChange}/>
                                 </Col>
                             </Form.Group>
                             <Form.Group controlId="fulltank">
-                                <Form.Check type="checkbox" label="Full Tank" name="fulltank"
-                                            checked={this.state.isChecked} onChange={this.toggleChange}/>
+                                <Form.Check type="checkbox" label="Full Tank"  name ="fulltank" checked={this.state.isChecked} onChange={this.toggleChange}/>
                             </Form.Group>
                         </Form>
                     </div>

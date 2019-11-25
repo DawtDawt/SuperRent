@@ -1,9 +1,10 @@
 import React from 'react';
 import {Button, ButtonGroup, Dropdown, DropdownButton, DropdownItem} from "react-bootstrap";
 import {DateRangePicker} from 'react-dates';
+import ReactDOM from "react-dom";
 import BrowseTable from "./BrowseTable";
+import Spinner from "react-bootstrap/Spinner";
 import {getVehicle} from "../Fetch";
-import {renderOnDiv} from "../Util";
 
 
 class BrowseSearchConsole extends React.Component {
@@ -15,20 +16,27 @@ class BrowseSearchConsole extends React.Component {
     }
 
     handleSubmit = async (state) => {
-        const body = this.getBody(state);
-        getVehicle(body)
-            .then(data => {
-                if (data.error) {
-                    console.log(data.error);
-                    this.setState({vehicles: []});
-                } else {
-                    this.setState({vehicles: data.data});
-                }
+        try {
+            const body = this.getBody(state);
+            const vehicleResponse = await getVehicle(body);
+            this.setState({vehicles: vehicleResponse.data});
+            ReactDOM.render(
+                <div>
+                    <div style={{margin: "20px"}}>
+                        <Spinner animation="border" role="status">
+                            <span className="sr-only">Loading...</span>
+                        </Spinner>
+                    </div>
+                </div>
+                , document.getElementById("browse-result"));
 
-                renderOnDiv("browse-result", <BrowseTable vehicles={this.state.vehicles}/>);
+            setTimeout(() => {
+                ReactDOM.render(<BrowseTable vehicles={this.state.vehicles}/>, document.getElementById("browse-result"));
+            }, 200);
+        } catch (e) {
+            console.log(e);
+        }
 
-            })
-            .catch(console.log);
     };
 
 
@@ -49,7 +57,6 @@ class BrowseSearchConsole extends React.Component {
         if (state["browse-vtname"]) {
             body["vtname"] = state["browse-vtname"]
         }
-
         return body;
     };
 
