@@ -1,15 +1,10 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import {Button, ButtonGroup, Dropdown, DropdownButton, DropdownItem} from "react-bootstrap";
-import Form from "react-bootstrap/Form";
-import Col from "react-bootstrap/Col";
-import Row from "react-bootstrap/Row";
-import moment from "moment";
-import RentWithResTable from "./RentWithResTable";
-import Spinner from "react-bootstrap/Spinner";
-import {createRent, createReturn, getVehicle} from "../Fetch";
+import {getVehicle} from "../Fetch";
 import {DateRangePicker} from "react-dates";
 import RentWithoutResTable from "./RentWithoutResTable";
+import {renderOnDiv} from "../Util";
+
 
 class RentWithoutResSearchConsole extends React.Component {
     constructor(props) {
@@ -20,12 +15,12 @@ class RentWithoutResSearchConsole extends React.Component {
     }
 
 
-    vhandleSubmit = (state) => {
+    handleSubmit = async (state) => {
         const body = this.getBody(state);
         if (body.vtname === "Any Car Type") {
             delete body.vtname;
         }
-        console.log(body);
+
         if (body.city && body.location && body.fromdate && body.todate && body.fromtime && body.totime) {
             getVehicle(body)
                 .then(data => {
@@ -36,19 +31,7 @@ class RentWithoutResSearchConsole extends React.Component {
                         this.setState({vehicles: data.data});
                     }
 
-                    ReactDOM.render(
-                        <div>
-                            <div style={{margin: "20px"}}>
-                                <Spinner animation="border" role="status">
-                                    <span className="sr-only">Loading...</span>
-                                </Spinner>
-                            </div>
-                        </div>
-                        , document.getElementById("rentwo-result"));
-
-                    setTimeout(() => {
-                        ReactDOM.render(<RentWithoutResTable vehicles={this.state.vehicles}/>, document.getElementById("rentwo-result"));
-                    }, 200);
+                    renderOnDiv("rentwo-result", <RentWithoutResTable vehicles={this.state.vehicles}/>);
 
                 })
                 .catch(console.log);
@@ -80,25 +63,13 @@ class RentWithoutResSearchConsole extends React.Component {
         return body;
     };
 
-    vhandleChange = (event) => {
+    handleChange = (event) => {
         const btnName = event.target.className.split(" ")[0];
         document.getElementById(btnName).innerText = event.target.value;
         this.setState({[btnName]: event.target.value});
     };
 
     render() {
-        const consoleStyle = {
-            margin: "20px",
-            textAlign: "center"
-        };
-
-        const paymentStyle = {
-            textAlign: "left",
-            margin: "auto",
-            maxWidth: "700px",
-            padding: "0px"
-        };
-
         const locationDropdownStyle = {
             maxHeight: "205px",
             width: "300px",
@@ -139,7 +110,7 @@ class RentWithoutResSearchConsole extends React.Component {
                             {this.props.branchSelection.map((elem, idx) => {
                                 return <DropdownItem key={idx} value={elem} as={"button"}
                                                      className={"rentwo-location"}
-                                                     onClick={this.vhandleChange}
+                                                     onClick={this.handleChange}
                                                      style={locationDropdownStyle}>{elem}</DropdownItem>;
                             })}
                         </div>
@@ -165,7 +136,7 @@ class RentWithoutResSearchConsole extends React.Component {
                         <div style={dropdownStyle}>
                             {this.props.times.map((elem, idx) => {
                                 return <DropdownItem key={idx} value={elem} as={"button"}
-                                                     onClick={this.vhandleChange}
+                                                     onClick={this.handleChange}
                                                      className={"rentwo-fromtime"}>{elem}</DropdownItem>;
                             })}
                         </div>
@@ -179,7 +150,7 @@ class RentWithoutResSearchConsole extends React.Component {
                             <Dropdown.Divider/>
                             {this.props.times.map((elem, idx) => {
                                 return <DropdownItem key={idx} value={elem} as={"button"}
-                                                     onClick={this.vhandleChange}
+                                                     onClick={this.handleChange}
                                                      className={"rentwo-totime"}>{elem}</DropdownItem>;
                             })}
                         </div>
@@ -191,19 +162,19 @@ class RentWithoutResSearchConsole extends React.Component {
                                     as={ButtonGroup} id={"rentwo-vtname"} style={timeStyle}>
                         <div style={dropdownStyle}>
                             <DropdownItem key={"-1"} value={"Any Car Type"} as={"button"}
-                                          onClick={this.vhandleChange}
+                                          onClick={this.handleChange}
                                           className={"rentwo-vtname"}>Any Car Type</DropdownItem>
                             <Dropdown.Divider/>
                             {this.state.vtnameSelection.map((elem, idx) => {
                                 return <DropdownItem key={idx} value={elem} as={"button"}
-                                                     onClick={this.vhandleChange}
+                                                     onClick={this.handleChange}
                                                      className={"rentwo-vtname"}>{elem}</DropdownItem>;
                             })}
                         </div>
                     </DropdownButton>
                 </div>
                 <div style={{textAlign: "center"}}>
-                    <Button size={"lg"} onClick={() => this.vhandleSubmit(this.state)}
+                    <Button size={"lg"} onClick={() => this.handleSubmit(this.state)}
                             style={{margin: "10px 0"}}>Search</Button>
                 </div>
                 <div id="rentwo-result"></div>

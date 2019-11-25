@@ -1,11 +1,11 @@
 import React from 'react';
 import {Button, ButtonGroup, DropdownButton, DropdownItem} from "react-bootstrap";
 import {SingleDatePicker} from "react-dates";
-import ReactDOM from "react-dom";
 import ReportTable from "./ReportTable";
-import Spinner from "react-bootstrap/Spinner";
-import {getDailyRental, getDailyBranchRental, getDailyBranchReturn, getDailyReturn} from "../Fetch"
+import {getDailyBranchRental, getDailyBranchReturn, getDailyRental, getDailyReturn} from "../Fetch"
 import moment from "moment";
+import {renderOnDiv} from "../Util";
+
 
 class ReportSearchConsole extends React.Component {
     constructor(props) {
@@ -22,9 +22,7 @@ class ReportSearchConsole extends React.Component {
         let reportDate = this.state.reportDate && moment(this.state.reportDate).format("YYYY-MM-DD");
         let reportType = this.state.reportType;
 
-        let report = {
-
-        };
+        let report = {};
         if (reportCity && reportDate && reportType) {
 
             try {
@@ -46,34 +44,16 @@ class ReportSearchConsole extends React.Component {
                     }
                 }
 
-                ReactDOM.render(
-                    <div style={{margin: "30px"}}>
-                        <Spinner animation="border" role="status">
-                            <span className="sr-only">Loading...</span>
-                        </Spinner>
-                    </div>
-                    , document.getElementById("report-result"));
-
-                setTimeout(() => {
-                    // temp data to testing convenience
-                    ReactDOM.render(<ReportTable
-                        action={document.getElementById("reportType").innerText.toLowerCase()}
-                        location={document.getElementById("reportLocationCity").innerText}
-                        report={report}/>, document.getElementById("report-result"));
-                }, 500);
+                renderOnDiv("report-result", <ReportTable
+                    action={reportType.toLowerCase()}
+                    location={this.state.reportLocationCity}
+                    report={report}/>);
 
             } catch (e) {
                 console.log(e);
             }
         }
     };
-
-    encodeQuery(query) {
-        return Object.keys(query).map(function (key) {
-            return key + '=' + encodeURIComponent(query[key]);
-        }).join('&');
-    }
-
 
     handleChange = (event) => {
         const btnName = event.target.className.split(" ")[0];
@@ -119,7 +99,8 @@ class ReportSearchConsole extends React.Component {
                                     variant={"outline-primary"}
                                     drop={'down'}>
                         <div style={dropdownStyle}>
-                            <DropdownItem key={"-1"} value={"All Locations"} as={"button"} className={"reportLocationCity"}
+                            <DropdownItem key={"-1"} value={"All Locations"} as={"button"}
+                                          className={"reportLocationCity"}
                                           onClick={this.handleChange}
                             > All Locations
                             </DropdownItem>

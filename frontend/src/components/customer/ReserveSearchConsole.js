@@ -1,9 +1,8 @@
 import React from 'react';
 import {Button, ButtonGroup, DropdownButton, DropdownItem} from "react-bootstrap";
 import {DateRangePicker} from 'react-dates';
-import ReactDOM from "react-dom";
 import ReserveTable from "./ReserveTable";
-import Spinner from "react-bootstrap/Spinner";
+import {renderOnDiv} from "../Util";
 
 
 class ReserveSearchConsole extends React.Component {
@@ -42,25 +41,16 @@ class ReserveSearchConsole extends React.Component {
                     this.setState({vehicleTypes});
                 }
 
-                ReactDOM.render(
-                    <div style={{margin: "20px"}}>
-                        <Spinner animation="border" role="status">
-                            <span className="sr-only">Loading...</span>
-                        </Spinner>
-                    </div>
-                    , document.getElementById("reserve-result"));
 
-                setTimeout(() => {
-                    ReactDOM.render(<ReserveTable ref={this.ReserveTable}
-                                                  vehicles={this.state.vehicles}
-                                                  vtnames={vehicleTypes}
-                                                  location={this.state["reserve-location"]}
-                                                  fromdate={this.state["reserve-fromdate"]}
-                                                  todate={this.state["reserve-todate"]}
-                                                  fromtime={this.state["reserve-fromtime"]}
-                                                  totime={this.state["reserve-totime"]}
-                    />, document.getElementById("reserve-result"));
-                }, 300);
+                renderOnDiv("reserve-result", <ReserveTable ref={this.ReserveTable}
+                                                            vehicles={this.state.vehicles}
+                                                            vtnames={vehicleTypes}
+                                                            location={this.state["reserve-location"]}
+                                                            fromdate={this.state["reserve-fromdate"]}
+                                                            todate={this.state["reserve-todate"]}
+                                                            fromtime={this.state["reserve-fromtime"]}
+                                                            totime={this.state["reserve-totime"]}
+                />);
             })
             .catch(console.log);
     }

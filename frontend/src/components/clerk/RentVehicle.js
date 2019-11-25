@@ -6,6 +6,7 @@ import {createCustomer, createReserve, createRent, getVehicle} from "../Fetch";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import moment from "moment";
+import {validateExpDate} from '../Util';
 
 class RentVehicle extends React.Component {
     constructor(props) {
@@ -21,18 +22,11 @@ class RentVehicle extends React.Component {
         };
     }
 
-    validateExpDate (expdate) {
-        if (!expdate.includes("/") || expdate.split("/").length !== 2 || expdate.split("/")[0].length !== 2 || expdate.split("/")[1].length !== 2) {
-            alert("Invalid expiry date format");
-            throw Error("Invalid expiry date format")
-        }
-    }
-
     getCardInfo() {
         const cardno = document.getElementById("cardno").value;
         const cardname = document.getElementById("cardname").value;
         const expdate = document.getElementById("expdate").value;
-        this.validateExpDate(expdate);
+        validateExpDate(expdate);
         if (cardno && cardname && expdate) {
             return {
                 cardno,
@@ -49,18 +43,6 @@ class RentVehicle extends React.Component {
         try {
             const {city, location, fromdate, todate, fromtime, totime, vtname, vlicense} = this.props.match.params;
             const {cardno, cardname, expdate} = this.getCardInfo();
-
-            // console.log(city);
-            // console.log(location);
-            // console.log(fromdate);
-            // console.log(todate);
-            // console.log(fromtime);
-            // console.log(totime);
-            // console.log(vtname);
-            // console.log(vlicense);
-            // console.log(cardno);
-            // console.log(cardname);
-            // console.log(expdate);
 
             // Register customer
             const newDlicense = await this.register();

@@ -1,13 +1,12 @@
 import React from 'react';
 import {Button} from "react-bootstrap";
 import ReturnTable from "./ReturnTable";
-import ReactDOM from "react-dom";
 import moment from "moment";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import Spinner from "react-bootstrap/Spinner";
 import {createReturn} from "../Fetch";
+import {renderOnDiv} from "../Util";
 
 
 class ReturnSearchConsole extends React.Component {
@@ -19,37 +18,21 @@ class ReturnSearchConsole extends React.Component {
     }
 
     handleSubmit = async (event) => {
-        let run;
         let response;
         try {
             response = await createReturn(this.state.rid,moment().format("YYYY-MM-DD"),moment().format("LT"),this.state.odometer,this.state.isChecked,150);
-            run = true;
+            renderOnDiv("return-result", <ReturnTable ref={this.ReportTable}
+                                                      rentDetail={{
+                                                          rid: response,
+                                                          date: moment().format("YYYY-MM-DD"),
+                                                          time: moment().format("LT"),
+                                                          odometer: this.state.odometer,
+                                                          fulltank: this.state.isChecked,
+                                                          value: 150
+                                                      }}/>);
         } catch (error) {
-            run = false;
             console.log(error);
         }
-        // temp rendering for testing
-        if (run) {
-            ReactDOM.render(
-                <div style={{margin: "30px"}}>
-                    <Spinner animation="border" role="status">
-                        <span className="sr-only">Loading...</span>
-                    </Spinner>
-                </div>,
-                document.getElementById("return-result"));
-            setTimeout(() => {
-                ReactDOM.render(<ReturnTable ref={this.ReportTable}
-                                             rentDetail={{
-                                                 rid: response,
-                                                 date: moment().format("YYYY-MM-DD"),
-                                                 time: moment().format("LT"),
-                                                 odometer: this.state.odometer,
-                                                 fulltank: this.state.isChecked,
-                                                 value: 150
-                                             }}/>, document.getElementById("return-result"));
-            }, 500);
-        }
-
     };
 
     handleChange = (event) => {
@@ -59,12 +42,11 @@ class ReturnSearchConsole extends React.Component {
     };
 
 
-
     toggleChange = () => {
         this.setState({
             isChecked: !this.state.isChecked,
         });
-    }
+    };
 
     render() {
         const consoleStyle = {

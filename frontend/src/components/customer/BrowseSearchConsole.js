@@ -1,10 +1,9 @@
 import React from 'react';
 import {Button, ButtonGroup, Dropdown, DropdownButton, DropdownItem} from "react-bootstrap";
 import {DateRangePicker} from 'react-dates';
-import ReactDOM from "react-dom";
 import BrowseTable from "./BrowseTable";
-import Spinner from "react-bootstrap/Spinner";
 import {getVehicle} from "../Fetch";
+import {renderOnDiv} from "../Util";
 
 
 class BrowseSearchConsole extends React.Component {
@@ -15,7 +14,7 @@ class BrowseSearchConsole extends React.Component {
         };
     }
 
-    handleSubmit = (state) => {
+    handleSubmit = async (state) => {
         const body = this.getBody(state);
         getVehicle(body)
             .then(data => {
@@ -26,19 +25,7 @@ class BrowseSearchConsole extends React.Component {
                     this.setState({vehicles: data.data});
                 }
 
-                ReactDOM.render(
-                    <div>
-                        <div style={{margin: "20px"}}>
-                            <Spinner animation="border" role="status">
-                                <span className="sr-only">Loading...</span>
-                            </Spinner>
-                        </div>
-                    </div>
-                    , document.getElementById("browse-result"));
-
-                setTimeout(() => {
-                    ReactDOM.render(<BrowseTable vehicles={this.state.vehicles}/>, document.getElementById("browse-result"));
-                }, 200);
+                renderOnDiv("browse-result", <BrowseTable vehicles={this.state.vehicles}/>);
 
             })
             .catch(console.log);
@@ -62,9 +49,7 @@ class BrowseSearchConsole extends React.Component {
         if (state["browse-vtname"]) {
             body["vtname"] = state["browse-vtname"]
         }
-        /*const query = Object.keys(body).map(function (key) {
-            return key + '=' + encodeURIComponent(body[key]);
-        }).join('&');*/
+
         return body;
     };
 

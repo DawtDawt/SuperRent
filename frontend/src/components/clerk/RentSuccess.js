@@ -1,6 +1,4 @@
 import React from 'react';
-import {Link} from "react-router-dom";
-import {Button} from "react-bootstrap";
 import ClerkNavbar from "./ClerkNavbar";
 
 class RentSuccess extends React.Component {
@@ -18,9 +16,6 @@ class RentSuccess extends React.Component {
     }
 
     render() {
-        const btnStyle = {
-            margin: "10px",
-        };
         const style = {
             width: "85vw",
             padding: "30px",
@@ -32,6 +27,7 @@ class RentSuccess extends React.Component {
             verticalAlign: "center",
         };
 
+        // eslint-disable-next-line
         const {city, location, fromdate, todate, fromtime, totime, vtname, confNo, rid} = this.props.match.params;
 
         return (

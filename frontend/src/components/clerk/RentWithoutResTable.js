@@ -1,7 +1,7 @@
 import React from 'react';
 import {Button, Fade, Table} from "react-bootstrap";
 import moment from "moment";
-import {createRent, createReserve} from "../Fetch"
+
 
 class RentWithoutResTable extends React.Component {
     constructor(props) {
@@ -35,18 +35,16 @@ class RentWithoutResTable extends React.Component {
 
     render() {
         const divStyle = {
+            textAlign: "center",
             margin: "20px 0",
         };
-        const tableStyle = {
-            textAlign: "middle",
-            padding: "0"
-        };
+
         let table;
         if (this.props.vehicles.length > 0) {
             table =
                 <React.Fragment>
                     <h5> {this.props.vehicles.length} Vehicle(s) available </h5>
-                    <Table bordered hover style={tableStyle}>
+                    <Table bordered hover>
                         <thead>
                         <tr>
                             <th style={{width: "15%"}}>License</th>
@@ -57,7 +55,7 @@ class RentWithoutResTable extends React.Component {
                             <th style={{width: "15%"}}>Vehicle Type</th>
                             <th style={{width: "20%"}}>Location</th>
                             <th style={{width: "15%"}}>City</th>
-                            <th style={{width: "15%"}}>Rent Now!!!!!</th>
+                            <th style={{width: "15%"}}>Rent</th>
                         </tr>
                         </thead>
                         <tbody>
