@@ -25,7 +25,6 @@ class RentWithoutResSearchConsole extends React.Component {
         if (body.vtname === "Any Car Type") {
             delete body.vtname;
         }
-        console.log(body);
         if (body.city && body.location && body.fromdate && body.todate && body.fromtime && body.totime) {
             getVehicle(body)
                 .then(data => {

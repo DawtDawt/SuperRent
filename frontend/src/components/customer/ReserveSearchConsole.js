@@ -4,6 +4,7 @@ import {DateRangePicker} from 'react-dates';
 import ReactDOM from "react-dom";
 import ReserveTable from "./ReserveTable";
 import Spinner from "react-bootstrap/Spinner";
+import {getVehicle} from "../Fetch";
 
 
 class ReserveSearchConsole extends React.Component {
@@ -15,18 +16,15 @@ class ReserveSearchConsole extends React.Component {
 
     handleSubmit = (state) => {
         if (state["reserve-location"] && state["reserve-startDate"] && state["reserve-endDate"] && state["reserve-fromtime"] && state["reserve-totime"]) {
-            const query = this.getQuery();
-            this.getResults(query);
+            const body = this.getBody();
+            this.getResults(body);
         }
 
     };
 
-    getResults(query) {
+    getResults(body) {
         const vehicleTypes = [];
-        fetch("http://localhost:8080/vehicle/get/?" + query)
-            .then(response => {
-                return response.json();
-            })
+        getVehicle(body)
             .then(data => {
                 if (data.error) {
                     console.log(data.error);
@@ -65,7 +63,7 @@ class ReserveSearchConsole extends React.Component {
             .catch(console.log);
     }
 
-    getQuery = () => {
+    getBody = () => {
         const body = {};
         body["city"] = this.state["reserve-location"].split(" - ")[0];
         body["location"] = this.state["reserve-location"].split(" - ")[1];
@@ -74,10 +72,7 @@ class ReserveSearchConsole extends React.Component {
         body["fromtime"] = this.state["reserve-fromtime"];
         body["totime"] = this.state["reserve-totime"];
 
-        const query = Object.keys(body).map(function (key) {
-            return key + '=' + encodeURIComponent(body[key]);
-        }).join('&');
-        return query;
+        return body;
     };
 
     handleChange = (event) => {

@@ -27,7 +27,6 @@ class RentWithResSearchConsole extends React.Component {
         let RentalResponse;
         let rentDetail;
         let license;
-        console.log("confno: " + this.state.confno);
         return getReserve(this.state.confno)
             .then(data => {
                 if (data.error) {
@@ -46,10 +45,8 @@ class RentWithResSearchConsole extends React.Component {
                 body["vtname"] = data.vtname;
 
                 let odometer;
-                const response = getVehicle(body)
+                getVehicle(body)
                     .then(vdata => {
-                        console.log(vdata.data[0].vlicense);
-                        console.log(data.city);
                         if (vdata.error) {
                             console.log(vdata.error);
                             this.setState({vehicles: []});
@@ -57,20 +54,17 @@ class RentWithResSearchConsole extends React.Component {
                             this.setState({vehicles: vdata.data});
                         }
                         license = vdata.data[0].vlicense;
-                        console.log(data.dlicense);
                         odometer = vdata.data[0].odometer;
-                        console.log("before: " + this.state.expdate);
                         let expdate = document.getElementById("expdate").value;
                         this.validateExpDate(expdate);
                         expdate = moment("28/" + expdate, "DD/MM/YY").format("YYYY-MM-DD");
-                        console.log(this.state.expdate);
                         return createRent(vdata.data[0].vlicense, data.dlicense, data.fromdate, data.todate, data.fromtime, data.totime, this.state.cardname, this.state.cardno, expdate, this.state.confno);
                     })
-                    .then(rid => {
-                        console.log(rid);
+                    .then(response => {
+                        console.log(response.rid);
                         rentDetail = {
-                            rid: rid,
-                            confno: this.state.confno,
+                            rid: response.rid,
+                            confno: response.confno,
                             vtname: data.vtname,
                             vlicense: license,
                             dlicense: data.dlicense,
@@ -80,9 +74,9 @@ class RentWithResSearchConsole extends React.Component {
                             todate: moment(data.todate).format("YYYY-MM-DD"),
                             fromtime: data.fromtime,
                             totime: data.totime,
-                            cardname: this.state.cardname,
-                            cardno: this.state.cardno,
-                            expdate: this.state.expdate,
+                            cardname: response.cardname,
+                            cardno: response.cardno,
+                            expdate: response.expdate,
                             odometer: odometer
                         };
 

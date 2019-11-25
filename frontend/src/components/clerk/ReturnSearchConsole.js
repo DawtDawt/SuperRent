@@ -40,12 +40,12 @@ class ReturnSearchConsole extends React.Component {
             setTimeout(() => {
                 ReactDOM.render(<ReturnTable ref={this.ReportTable}
                                              rentDetail={{
-                                                 rid: response,
+                                                 rid: response.rid,
                                                  date: moment().format("YYYY-MM-DD"),
                                                  time: moment().format("LT"),
                                                  odometer: this.state.odometer,
                                                  fulltank: this.state.isChecked,
-                                                 value: 150
+                                                 value: response.value
                                              }}/>, document.getElementById("return-result"));
             }, 500);
         }
@@ -64,7 +64,7 @@ class ReturnSearchConsole extends React.Component {
         this.setState({
             isChecked: !this.state.isChecked,
         });
-    }
+    };
 
     render() {
         const consoleStyle = {

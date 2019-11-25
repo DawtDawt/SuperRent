@@ -44,7 +44,7 @@ app.get('/reserve/get', query.getReserve);
 
 // Make a reservation
 // requires: vtname, dlicense, location, city, fromdate, todate, fromtime, totime
-// @return data: confno
+// @return data: tuple if found, error if not found
 app.post('/reserve/create', query.createReserve);
 
 // View the information about the customer
@@ -54,7 +54,7 @@ app.get('/customer/get', query.getCustomer);
 
 // Create a new customer profile
 // requires: dlicense, cellphone, name, address
-// @return data: dlicense
+// @return data: tuple if found, error if not found
 app.post('/customer/create', query.createCustomer);
 
 // Get a rent based off rid
@@ -65,7 +65,7 @@ app.get('/rent/get', query.getRent);
 // Rent a vehicle
 // requires: vlicense, dlicense, fromdate, todate, fromtime, totime, cardname, expdate, confno
 // requirement: a valid confno from reservation
-// @return data: rid
+// @return data: tuple if found, error if not found
 app.post('/rent/create', query.createRent);
 
 // Get a return based off rid
@@ -76,7 +76,7 @@ app.get('/return/get', query.getReturn);
 // Return a vehicle
 // require: id, date, time, odometer, fulltank, value
 // requirement: a valid rid from rental
-// @return data: rid
+// @return data: tuple if found, error if not found
 app.post('/return/create', query.createReturn);
 
 // Daily Rental Report

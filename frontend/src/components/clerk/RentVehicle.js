@@ -50,20 +50,8 @@ class RentVehicle extends React.Component {
             const {city, location, fromdate, todate, fromtime, totime, vtname, vlicense} = this.props.match.params;
             const {cardno, cardname, expdate} = this.getCardInfo();
 
-            // console.log(city);
-            // console.log(location);
-            // console.log(fromdate);
-            // console.log(todate);
-            // console.log(fromtime);
-            // console.log(totime);
-            // console.log(vtname);
-            // console.log(vlicense);
-            // console.log(cardno);
-            // console.log(cardname);
-            // console.log(expdate);
-
             // Register customer
-            const newDlicense = await this.register();
+            const customerResponse = await this.register();
 
             const vehicles = await getVehicle({
                 vtname,
@@ -76,12 +64,12 @@ class RentVehicle extends React.Component {
             });
 
             // Reserve
-            const confNo = await this.reserve(newDlicense);
+            const reserveResponse = await this.reserve(customerResponse.dlicense);
 
             // Rent
-            const rid = await createRent(vehicles.data[0].vlicense, newDlicense, fromdate, todate, decodeURIComponent(fromtime), decodeURIComponent(totime), cardname, cardno, expdate, confNo);
+            const rentResponse = await createRent(vehicles.data[0].vlicense, customerResponse.dlicense, fromdate, todate, decodeURIComponent(fromtime), decodeURIComponent(totime), cardname, cardno, expdate, reserveResponse.confno);
 
-            window.location.href = `/clerk/rent/success/${city}/${location}/${fromdate}/${todate}/${fromtime}/${totime}/${vtname}/${vlicense}/${rid}/${newDlicense}`;
+            window.location.href = `/clerk/rent/success/${city}/${location}/${fromdate}/${todate}/${fromtime}/${totime}/${vtname}/${vlicense}/${rentResponse.rid}/${customerResponse.dlicense}`;
         } catch (e) {
             console.log(e);
         }
@@ -106,12 +94,12 @@ class RentVehicle extends React.Component {
             });
 
             // Reserve
-            const confNo = await this.reserve(dlicense);
+            const reserveResponse = await this.reserve(dlicense);
 
             // Rent
-            const rid = await createRent(vehicles.data[0].vlicense, dlicense, fromdate, todate, decodeURIComponent(fromtime), decodeURIComponent(totime), cardname, cardno, expdate, confNo);
+            const rentResponse = await createRent(vehicles.data[0].vlicense, dlicense, fromdate, todate, decodeURIComponent(fromtime), decodeURIComponent(totime), cardname, cardno, expdate, reserveResponse.confno);
 
-            window.location.href = `/clerk/rent/success/${city}/${location}/${fromdate}/${todate}/${fromtime}/${totime}/${vtname}/${vlicense}/${rid}/${dlicense}`;
+            window.location.href = `/clerk/rent/success/${city}/${location}/${fromdate}/${todate}/${fromtime}/${totime}/${vtname}/${vlicense}/${rentResponse.rid}/${dlicense}`;
         } catch (e) {
             console.log(e);
         }
