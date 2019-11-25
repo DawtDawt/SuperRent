@@ -1,4 +1,7 @@
 # SuperRent
+## To Run the Website:
+1. Run ```yarn install```
+2. Run ```yarn start```
 ## Getting Started
 ### 1) Setup PostgreSQL
 1. After installing postgresql, run the following in psql CLI to create a user called ```me``` with the password ```password```.
