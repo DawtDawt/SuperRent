@@ -165,7 +165,7 @@ function createReserve(request, response) {
         }).then(confnoResult => {
             if (confnoResult.rows.length > 0) {
                 return Promise.reject({message: "Only one reservation can be made per customer. You have either made a reservation with" +
-                        "the confirmation number: " + confnoResult.rows[0].confno + ". Or you're are currently renting using the given reservation number."});
+                        " the confirmation number: " + confnoResult.rows[0].confno + ". Or you're are currently renting using the given reservation number."});
             }
             // perform actual reservation, returning confno
             return pool.query(`INSERT INTO reservation(vtname, dlicense, location, city, fromdate, todate, fromtime, totime)
