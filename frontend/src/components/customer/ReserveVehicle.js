@@ -21,11 +21,11 @@ class ReserveVehicle extends React.Component {
     newCustomer = async () => {
         try {
             // Register customer
-            const newDlicense = await this.register();
+            const customerResponse = await this.register();
             // Reserve
-            const confNo = await this.reserve(newDlicense);
+            const reserveResponse = await this.reserve(customerResponse.dlicense);
             const {city, location, fromdate, todate, fromtime, totime, vtname} = this.props.match.params;
-            window.location.href = `/customer/reserve/success/${city}/${location}/${fromdate}/${todate}/${fromtime}/${totime}/${vtname}/${confNo}`;
+            window.location.href = `/customer/reserve/success/${city}/${location}/${fromdate}/${todate}/${fromtime}/${totime}/${vtname}/${reserveResponse.confno}`;
         } catch (e) {
             console.log(e);
         }
@@ -35,11 +35,9 @@ class ReserveVehicle extends React.Component {
     returningCustomer = async () => {
         try {
             const dlicense = document.getElementById("returning-customer-dlicense").value;
-            const confNo = await this.reserve(dlicense);
-            console.log("continuing");
-            console.log(confNo);
+            const reserveResponse = await this.reserve(dlicense);
             const {city, location, fromdate, todate, fromtime, totime, vtname} = this.props.match.params;
-            window.location.href = `/customer/reserve/success/${city}/${location}/${fromdate}/${todate}/${fromtime}/${totime}/${vtname}/${confNo}`;
+            window.location.href = `/customer/reserve/success/${city}/${location}/${fromdate}/${todate}/${fromtime}/${totime}/${vtname}/${reserveResponse.confno}`;
         } catch (e) {
             console.log(e);
         }

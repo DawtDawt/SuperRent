@@ -20,7 +20,7 @@ class ReturnSearchConsole extends React.Component {
     handleSubmit = async (event) => {
         let response;
         try {
-            response = await createReturn(this.state.rid,moment().format("YYYY-MM-DD"),moment().format("LT"),this.state.odometer,this.state.isChecked,150);
+            response = await createReturn(this.state.rid, moment().format("YYYY-MM-DD"), moment().format("LT"), this.state.odometer, this.state.isChecked, 150);
             renderOnDiv("return-result", <ReturnTable ref={this.ReportTable}
                                                       rentDetail={{
                                                           rid: response,
@@ -36,7 +36,7 @@ class ReturnSearchConsole extends React.Component {
     };
 
     handleChange = (event) => {
-        this.setState({ [event.target.name]: event.target.value });
+        this.setState({[event.target.name]: event.target.value});
         console.log(event.target.name);
         console.log(event.target.value);
     };
@@ -71,7 +71,7 @@ class ReturnSearchConsole extends React.Component {
                                     Rent ID
                                 </Form.Label>
                                 <Col sm="8">
-                                    <Form.Control type="number" placeholder="Enter Rent ID" name = "rid"
+                                    <Form.Control type="number" placeholder="Enter Rent ID" name="rid"
                                                   onChange={this.handleChange}/>
                                 </Col>
                             </Form.Group>
@@ -80,12 +80,13 @@ class ReturnSearchConsole extends React.Component {
                                     Odometer
                                 </Form.Label>
                                 <Col sm="8">
-                                    <Form.Control type="number" placeholder="Enter Odometer" name = "odometer"
+                                    <Form.Control type="number" placeholder="Enter Odometer" name="odometer"
                                                   onChange={this.handleChange}/>
                                 </Col>
                             </Form.Group>
                             <Form.Group controlId="fulltank">
-                                <Form.Check type="checkbox" label="Full Tank"  name ="fulltank" checked={this.state.isChecked} onChange={this.toggleChange}/>
+                                <Form.Check type="checkbox" label="Full Tank" name="fulltank"
+                                            checked={this.state.isChecked} onChange={this.toggleChange}/>
                             </Form.Group>
                         </Form>
                     </div>

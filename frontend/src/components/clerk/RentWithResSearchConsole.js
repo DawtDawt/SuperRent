@@ -61,22 +61,22 @@ class RentWithResSearchConsole extends React.Component {
                 this.state.confno);
 
             const rentDetail = {
-                    rid: rid,
-                    confno: this.state.confno,
-                    vtname: reserveReponse.vtname,
-                    vlicense: vehicleResponse.data[0].vlicense,
-                    dlicense: reserveReponse.dlicense,
-                    location: reserveReponse.location,
-                    city: reserveReponse.city,
-                    fromdate: moment(reserveReponse.fromdate).format("YYYY-MM-DD"),
-                    todate: moment(reserveReponse.todate).format("YYYY-MM-DD"),
-                    fromtime: reserveReponse.fromtime,
-                    totime: reserveReponse.totime,
-                    cardname: this.state.cardname,
-                    cardno: this.state.cardno,
-                    expdate: this.state.expdate,
-                    odometer: vehicleResponse.data[0].odometer
-                };
+                rid: rid,
+                confno: this.state.confno,
+                vtname: reserveReponse.vtname,
+                vlicense: vehicleResponse.data[0].vlicense,
+                dlicense: reserveReponse.dlicense,
+                location: reserveReponse.location,
+                city: reserveReponse.city,
+                fromdate: moment(reserveReponse.fromdate).format("YYYY-MM-DD"),
+                todate: moment(reserveReponse.todate).format("YYYY-MM-DD"),
+                fromtime: reserveReponse.fromtime,
+                totime: reserveReponse.totime,
+                cardname: this.state.cardname,
+                cardno: this.state.cardno,
+                expdate: this.state.expdate,
+                odometer: vehicleResponse.data[0].odometer
+            };
 
             renderOnDiv("rent-result", <RentWithResTable rentDetail={rentDetail}/>);
 

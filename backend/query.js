@@ -167,13 +167,13 @@ function createReserve(request, response) {
             }
             // perform actual reservation, returning confno
             return pool.query(`INSERT INTO reservation(vtname, dlicense, location, city, fromdate, todate, fromtime, totime)
-                        VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING confno;`,
+                        VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *;`,
                 [vtname, dlicense, location, city, fromdate, todate, fromtime, totime]);
         })
         .then(result => {
             // data = confno
             return response.json({
-                data: result.rows[0].confno
+                data: result.rows[0]
             });
         })
         .catch(error => {
@@ -215,13 +215,13 @@ function createCustomer(request, response) {
             if (result.rows.length > 0) {
                 return Promise.reject({message: "Customer is already an existing member."});
             }
-            return pool.query(`INSERT INTO customer VALUES($1, $2, $3, $4) RETURNING dlicense`,
+            return pool.query(`INSERT INTO customer VALUES($1, $2, $3, $4) RETURNING *`,
                 [dlicense, cellphone, name, address]);
         })
         .then(result => {
             // data = dlicense
             return response.json({
-                data: result.rows[0].dlicense
+                data: result.rows[0]
             });
         })
         .catch(error => {
@@ -295,7 +295,7 @@ function createRent(request, response) {
         .then(result => {
             odometer = Number(result.rows[0].odometer);
             return pool.query(`INSERT INTO rental(vlicense, dlicense, fromdate, todate, fromtime, totime, odometer, cardname, cardno, expdate, confno)
-        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING rid`,
+        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *`,
                 [vlicense, dlicense, fromdate, todate, fromtime, totime, odometer, cardname, cardno, expdate, confno]);
         })
         .then(result => {
@@ -305,7 +305,7 @@ function createRent(request, response) {
         .then(() => {
             return response.json({
                 // data = rid
-                data: finalResult.rows[0].rid
+                data: finalResult.rows[0]
             });
         })
         .catch(error => {
@@ -364,7 +364,7 @@ function createReturn(request, response) {
             if (result.rows.length === 0) {
                 return Promise.reject({message: "No rental record found in database with given rental id."});
             }
-            return pool.query(`SELECT * FROM reserve WHERE rid = $1`, [rid]);
+            return pool.query(`SELECT * FROM return WHERE rid = $1`, [rid]);
         })
         .then(result => {
             if (result.rows.length > 0) {
@@ -397,9 +397,12 @@ function createReturn(request, response) {
             const hrate = result.rows[0].hrate;
             const tvalue = wrate * ww + drate * dd + hrate * hh;
             value = kvalue + tvalue;
+            if (!fulltank) {
+                value += 50;
+            }
             console.log(value);
             return pool.query(`INSERT INTO return(rid, date, time, odometer, fulltank, value)
-                    VALUES ($1, $2, $3, $4, $5, $6) RETURNING rid`,
+                    VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
                 [rid, date, time, odometer, fulltank, value]);
         })
         .then(result => {
@@ -410,7 +413,7 @@ function createReturn(request, response) {
         .then(() => {
             // data = rid
             return response.json({
-                data: finalResult.rows[0].rid
+                data: finalResult.rows[0]
             });
         })
         .catch(error => {
