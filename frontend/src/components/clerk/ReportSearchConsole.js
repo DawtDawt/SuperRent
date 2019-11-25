@@ -68,13 +68,6 @@ class ReportSearchConsole extends React.Component {
         }
     };
 
-    encodeQuery(query) {
-        return Object.keys(query).map(function (key) {
-            return key + '=' + encodeURIComponent(query[key]);
-        }).join('&');
-    }
-
-
     handleChange = (event) => {
         const btnName = event.target.className.split(" ")[0];
         document.getElementById(btnName).innerText = event.target.value;

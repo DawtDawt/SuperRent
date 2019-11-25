@@ -15,105 +15,91 @@ class RentWithResSearchConsole extends React.Component {
         this.state = {};
     }
 
-    validateExpDate (expdate) {
-        if (!expdate.includes("/") || expdate.split("/").length !== 2 || expdate.split("/")[0].length !== 2 || expdate.split("/")[1].length !== 2) {
-            alert("Invalid expiry date format");
-            throw Error("Invalid expiry date format")
-        }
-    }
+    getBody = (data) => {
+        const body = {};
+        body["city"] = data.city;
+        body["location"] = data.location;
+        body["fromdate"] = data.fromdate;
+        body["todate"] = data.todate;
+        body["fromtime"] = data.fromtime;
+        body["totime"] = data.totime;
+        body["vtname"] = data.vtname;
+        return body;
+    };
 
     handleSubmit = async (event) =>{
-        // temp handle submit before fetch is setup
-        let RentalResponse;
-        let rentDetail;
-        let license;
-        return getReserve(this.state.confno)
-            .then(data => {
-                if (data.error) {
-                    console.log(data.error);
-                    this.setState({ReservationDetail: []});
-                } else {
-                    this.setState({ReservationDetail: data.data});
-                }
-                const body = {};
-                body["city"] = data.city;
-                body["location"] = data.location;
-                body["fromdate"] = data.fromdate;
-                body["todate"] = data.todate;
-                body["fromtime"] = data.fromtime;
-                body["totime"] = data.totime;
-                body["vtname"] = data.vtname;
+        try {
+            const confno = this.state.confno;
 
-                let odometer;
-                getVehicle(body)
-                    .then(vdata => {
-                        if (vdata.error) {
-                            console.log(vdata.error);
-                            this.setState({vehicles: []});
-                        } else {
-                            this.setState({vehicles: vdata.data});
-                        }
-                        license = vdata.data[0].vlicense;
-                        odometer = vdata.data[0].odometer;
-                        let expdate = document.getElementById("expdate").value;
-                        this.validateExpDate(expdate);
-                        expdate = moment("28/" + expdate, "DD/MM/YY").format("YYYY-MM-DD");
-                        return createRent(vdata.data[0].vlicense, data.dlicense, data.fromdate, data.todate, data.fromtime, data.totime, this.state.cardname, this.state.cardno, expdate, this.state.confno);
-                    })
-                    .then(response => {
-                        console.log(response.rid);
-                        rentDetail = {
-                            rid: response.rid,
-                            confno: response.confno,
-                            vtname: data.vtname,
-                            vlicense: license,
-                            dlicense: data.dlicense,
-                            location: data.location,
-                            city: data.city,
-                            fromdate: moment(data.fromdate).format("YYYY-MM-DD"),
-                            todate: moment(data.todate).format("YYYY-MM-DD"),
-                            fromtime: data.fromtime,
-                            totime: data.totime,
-                            cardname: response.cardname,
-                            cardno: response.cardno,
-                            expdate: response.expdate,
-                            odometer: odometer
-                        };
+            // Get reservation
+            const reserveResponse = await getReserve(confno);
+            this.setState({ReservationDetail: reserveResponse.data});
 
-                        ReactDOM.render(
-                            <div style={{margin: "30px"}}>
-                                <Spinner animation="border" role="status">
-                                    <span className="sr-only">Loading...</span>
-                                </Spinner>
-                            </div>,
-                            document.getElementById("rent-result")
-                        );
+            // Get vehicles
+            const body = this.getBody(reserveResponse);
+            const vehicles = await getVehicle(body);
+            this.setState({vehicles: vehicles.data});
 
-                        setTimeout(() => {
-                            ReactDOM.render(<RentWithResTable rentDetail={rentDetail}/>, document.getElementById("rent-result"))
-                        }, 500);
-                    })
-                    .catch(console.log);
+            // Get params
+            const vlicense = vehicles.data[0].vlicense;
+            const dlicense = reserveResponse.dlicense;
+            const fromdate = reserveResponse.fromdate;
+            const todate = reserveResponse.todate;
+            const fromtime = reserveResponse.fromtime;
+            const totime = reserveResponse.totime;
+            const cardname = this.state.cardname;
+            const cardno = this.state.cardno;
+            let expdate = document.getElementById("expdate").value;
+            if (!expdate.includes("/") || expdate.split("/").length !== 2 || expdate.split("/")[0].length !== 2 || expdate.split("/")[1].length !== 2) {
+                alert("Invalid expiry date format");
+                throw Error("Invalid expiry date format")
+            }
+            expdate = moment("28/" + expdate, "DD/MM/YY").format("YYYY-MM-DD");
 
-                // try {
-                //     console.log(license);
-                //     RentalResponse = createRent(license, data.dlicense, moment(data.fromdate).format("YYYY-MM-DD"), moment(data.todate).format("YYYY-MM-DD"), data.fromtime, data.totime, 3000, this.state.cardname, this.state.cardno, this.state.expdate, this.state.cardno);
-                // } catch (error) {
-                //     console.log(error);
-                // }
+            // Create Rent
+            const rentResponse = await createRent(vlicense, dlicense, fromdate, todate, fromtime, totime, cardname, cardno, expdate, confno);
 
+            const rid = rentResponse.rid;
+            const vtname = reserveResponse.vtname;
+            const location = reserveResponse.location;
+            const city = reserveResponse.city;
+            const odometer = vehicles.data[0].odometer;
+            const rentDetail = {
+                rid: rid,
+                confno: confno,
+                vtname: vtname,
+                vlicense: vlicense,
+                dlicense: dlicense,
+                location: location,
+                city: city,
+                fromdate: fromdate,
+                todate: todate,
+                fromtime: fromtime,
+                totime: totime,
+                cardname: cardname,
+                cardno: cardno,
+                expdate: expdate,
+                odometer: odometer
+            };
+            ReactDOM.render(
+                <div style={{margin: "30px"}}>
+                    <Spinner animation="border" role="status">
+                        <span className="sr-only">Loading...</span>
+                    </Spinner>
+                </div>,
+                document.getElementById("rent-result")
+            );
 
-
-
-            })
-            .catch(console.log);
-    }
+            setTimeout(() => {
+                ReactDOM.render(<RentWithResTable rentDetail={rentDetail}/>, document.getElementById("rent-result"))
+            }, 500);
+        } catch (e) {
+            console.log(e);
+        }
+    };
 
     handleChange = (event) => {
         this.setState({ [event.target.name]: event.target.value });
-        // console.log(event.target.name);
-        // console.log(event.target.value);
-        console.log(this.state.expdate);
     };
 
     render() {

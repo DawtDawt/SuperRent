@@ -34,8 +34,8 @@ function getVehicle(request, response) {
     let city = '%';
     let fromdate = '9999-01-01';
     let todate = '9999-02-01';
-    let fromtime = '10:00:00';
-    let totime = '12:00:00';
+    let fromtime = '00:00:00';
+    let totime = '23:59:59';
     if (request.query.hasOwnProperty("vtname")) {
         vtname = request.query.vtname;
     }

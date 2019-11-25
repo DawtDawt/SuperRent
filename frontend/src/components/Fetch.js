@@ -240,8 +240,6 @@ async function createRent(vlicense, dlicense, fromdate, todate, fromtime, totime
         alert("Missing required rental information: Confirmation Number.");
         throw Error("Missing required rental information.");
     }
-    console.log(confno);
-    console.log(typeof confno);
 
     const response = await fetch("http://localhost:8080/rent/create", {
         method: 'POST',
@@ -265,6 +263,11 @@ async function createRent(vlicense, dlicense, fromdate, todate, fromtime, totime
 
     const content = await response.json();
     if (content.error) {
+        if (content.error.code === "22007") {
+            alert("Date entered is not a valid date");
+            console.log(content.error);
+            throw Error(content.error);
+        } else
         if (content.error.hasOwnProperty("message")) {
             alert(content.error.message);
             console.log(content.error);

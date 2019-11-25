@@ -19,17 +19,14 @@ class ReturnSearchConsole extends React.Component {
     }
 
     handleSubmit = async (event) => {
-        let run;
-        let response;
         try {
-            response = await createReturn(this.state.rid,moment().format("YYYY-MM-DD"),moment().format("LT"),this.state.odometer,this.state.isChecked,150);
-            run = true;
-        } catch (error) {
-            run = false;
-            console.log(error);
-        }
-        // temp rendering for testing
-        if (run) {
+            const rid = this.state.rid;
+            const date = moment().format("YYYY-MM-DD");
+            const time = moment().format("LT");
+            const odometer = this.state.odometer;
+            const fulltank = this.state.isChecked;
+            const returnResponse = await createReturn(rid, date, time, odometer, fulltank);
+            const value = returnResponse.value;
             ReactDOM.render(
                 <div style={{margin: "30px"}}>
                     <Spinner animation="border" role="status">
@@ -40,22 +37,21 @@ class ReturnSearchConsole extends React.Component {
             setTimeout(() => {
                 ReactDOM.render(<ReturnTable ref={this.ReportTable}
                                              rentDetail={{
-                                                 rid: response.rid,
-                                                 date: moment().format("YYYY-MM-DD"),
-                                                 time: moment().format("LT"),
-                                                 odometer: this.state.odometer,
-                                                 fulltank: this.state.isChecked,
-                                                 value: response.value
+                                                 rid: rid,
+                                                 date: date,
+                                                 time: time,
+                                                 odometer: odometer,
+                                                 fulltank: fulltank,
+                                                 value: value
                                              }}/>, document.getElementById("return-result"));
             }, 500);
+        } catch (error) {
+            console.log(error);
         }
-
     };
 
     handleChange = (event) => {
         this.setState({ [event.target.name]: event.target.value });
-        console.log(event.target.name);
-        console.log(event.target.value);
     };
 
 

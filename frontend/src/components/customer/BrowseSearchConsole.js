@@ -15,33 +15,28 @@ class BrowseSearchConsole extends React.Component {
         };
     }
 
-    handleSubmit = (state) => {
-        const body = this.getBody(state);
-        getVehicle(body)
-            .then(data => {
-                if (data.error) {
-                    console.log(data.error);
-                    this.setState({vehicles: []});
-                } else {
-                    this.setState({vehicles: data.data});
-                }
-
-                ReactDOM.render(
-                    <div>
-                        <div style={{margin: "20px"}}>
-                            <Spinner animation="border" role="status">
-                                <span className="sr-only">Loading...</span>
-                            </Spinner>
-                        </div>
+    handleSubmit = async (state) => {
+        try {
+            const body = this.getBody(state);
+            const vehicleResponse = await getVehicle(body);
+            this.setState({vehicles: vehicleResponse.data});
+            ReactDOM.render(
+                <div>
+                    <div style={{margin: "20px"}}>
+                        <Spinner animation="border" role="status">
+                            <span className="sr-only">Loading...</span>
+                        </Spinner>
                     </div>
-                    , document.getElementById("browse-result"));
+                </div>
+                , document.getElementById("browse-result"));
 
-                setTimeout(() => {
-                    ReactDOM.render(<BrowseTable vehicles={this.state.vehicles}/>, document.getElementById("browse-result"));
-                }, 200);
+            setTimeout(() => {
+                ReactDOM.render(<BrowseTable vehicles={this.state.vehicles}/>, document.getElementById("browse-result"));
+            }, 200);
+        } catch (e) {
+            console.log(e);
+        }
 
-            })
-            .catch(console.log);
     };
 
 
@@ -62,9 +57,6 @@ class BrowseSearchConsole extends React.Component {
         if (state["browse-vtname"]) {
             body["vtname"] = state["browse-vtname"]
         }
-        /*const query = Object.keys(body).map(function (key) {
-            return key + '=' + encodeURIComponent(body[key]);
-        }).join('&');*/
         return body;
     };
 
